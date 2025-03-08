@@ -57,7 +57,17 @@ void getImageSize(int* width,
     qCDebug(DIGIKAM_DPLUGIN_EDITOR_LOG) << "Calling GmicQt getImageSize()";
 
     ImageIface iface;
-    QSize size = iface.originalSize();
+    QSize size;
+    QRect selection = iface.selectionRect();
+
+    if (selection.isNull())
+    {
+        size = iface.originalSize();
+    }
+    else
+    {
+        size = selection.size();
+    }
 
     *width     = size.width();
     *height    = size.height();
@@ -95,7 +105,19 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
     }
 
     ImageIface iface;
-    DImg* const input_image = iface.original();
+
+    QRect selection   = iface.selectionRect();
+    DImg input_image;
+
+    if (selection.isNull())
+    {
+        input_image = iface.original()->copy();
+    }
+    else
+    {
+        input_image = iface.original()->copy(selection);
+    }
+
     const bool entireImage  = (
                                (x      < 0.0) &&
                                (y      < 0.0) &&
@@ -119,24 +141,24 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
     gmic_image<char>::string(ba.constData()).move_to(imageNames[0]);
 
     const int ix = static_cast<int>(entireImage ? 0
-                                                : std::floor(x * input_image->width()));
+                                                : std::floor(x * input_image.width()));
 
     const int iy = static_cast<int>(entireImage ? 0
-                                                : std::floor(y * input_image->height()));
+                                                : std::floor(y * input_image.height()));
 
-    const int iw = entireImage ? input_image->width()
+    const int iw = entireImage ? input_image.width()
                                : std::min(
-                                          static_cast<int>(input_image->width()  - ix),
-                                          static_cast<int>(1 + std::ceil(width  * input_image->width()))
+                                          static_cast<int>(input_image.width()  - ix),
+                                          static_cast<int>(1 + std::ceil(width  * input_image.width()))
                                          );
 
-    const int ih = entireImage ? input_image->height()
+    const int ih = entireImage ? input_image.height()
                                : std::min(
-                                          static_cast<int>(input_image->height() - iy),
-                                          static_cast<int>(1 + std::ceil(height * input_image->height()))
+                                          static_cast<int>(input_image.height() - iy),
+                                          static_cast<int>(1 + std::ceil(height * input_image.height()))
                                          );
 
-    GMicQtImageConverter::convertDImgtoCImg(input_image->copy(ix, iy, iw, ih), images[0]);
+    GMicQtImageConverter::convertDImgtoCImg(input_image.copy(ix, iy, iw, ih), images[0]);
 }
 
 void applyColorProfile(cimg_library::CImg<gmic_pixel_type>& images) // cppcheck-suppress constParameterReference
@@ -182,8 +204,20 @@ void outputImages(cimg_library::CImgList<gmic_pixel_type>& images,
                                                    QString::fromStdString(parameters.filterName())
                                                   );
 
-        iface.setOriginal(QString::fromUtf8("G'MIC-Qt - %1").arg(QString::fromStdString(parameters.filterName())),
-                          action, dest);
+        QRect selection = iface.selectionRect();
+
+        if (selection.isNull())
+        {
+            iface.setOriginal(QString::fromUtf8("G'MIC-Qt - %1").arg(QString::fromStdString(parameters.filterName())),
+                              action, dest);
+        }
+        else
+        {
+            DImg input_image = iface.original()->copy();
+            input_image.bitBltImage(&dest, selection.x(), selection.y());
+            iface.setOriginal(QString::fromUtf8("G'MIC-Qt - %1").arg(QString::fromStdString(parameters.filterName())),
+                              action, input_image);
+        }
     }
 }
 
