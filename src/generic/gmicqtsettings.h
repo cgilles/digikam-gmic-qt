@@ -21,7 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QUrl>
-#include <QMap>
+#include <QSettings>
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -54,8 +54,8 @@ public:
     /**
      * Read and write settings in config file between sessions.
      */
-    void  readSettings(const KConfigGroup& group);
-    void  writeSettings(KConfigGroup& group);
+    void  readSettings();
+    void  writeSettings();
 
     QString format()           const;
 
@@ -71,8 +71,6 @@ public:
     QList<QUrl>               inputImages;      ///< Selected items to send.
 
     ImageFormat               imageFormat       = JPEG;
-
-    QMap<QUrl, QUrl>          itemsList;        ///< Map of original item and attached item (can be resized).
 };
 
 } // namespace DigikamGenericGmicQtPlugin

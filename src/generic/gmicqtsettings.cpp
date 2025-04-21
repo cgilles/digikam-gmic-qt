@@ -17,18 +17,22 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-void GmicQtSettings::readSettings(const KConfigGroup& group)
+void GmicQtSettings::readSettings()
 {
-    selMode           = (Selection)group.readEntry("SelMode",
-                        (int)IMAGES);
-    imageFormat       = (ImageFormat)group.readEntry("ImageFormat",
-                        (int)JPEG);
+    QSettings config;
+    config.beginGroup(QLatin1String("GmicQt Generic Plugin"));
+    selMode     = (Selection)config.value(QLatin1String("SelMode"),       (int)IMAGES);
+    imageFormat = (ImageFormat)config.value(QLatin1String("ImageFormat"), (int)JPEG);
+    config.endGroup();
 }
 
-void GmicQtSettings::writeSettings(KConfigGroup& group)
+void GmicQtSettings::writeSettings()
 {
-    group.writeEntry("SelMode",            (int)selMode);
-    group.writeEntry("ImageFormat",        (int)imageFormat);
+    QSettings config;
+    config.beginGroup(QLatin1String("GmicQt Generic Plugin"));
+    config.setValue(QLatin1String("SelMode"),     (int)selMode);
+    config.setValue(QLatin1String("ImageFormat"), (int)imageFormat);
+    config.endGroup();
 }
 
 QString GmicQtSettings::format() const
