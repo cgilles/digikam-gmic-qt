@@ -202,6 +202,7 @@ target_link_libraries(gmic_qt_common
 
 include(${CMAKE_SOURCE_DIR}/src/editor/EditorPluginRules.cmake)
 include(${CMAKE_SOURCE_DIR}/src/bqm/BqmPluginRules.cmake)
+#include(${CMAKE_SOURCE_DIR}/src/generic/GenericPluginRules.cmake)
 
 if(BUILD_TESTING)
 
