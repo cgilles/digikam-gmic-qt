@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-04-21
- * Description : digiKam generic GmicQt plugin supporting layer mode.
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -26,17 +26,17 @@
 
 using namespace Digikam;
 
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-class MailAlbumsPage : public DWizardPage
+class GmicQtAlbumsPage : public DWizardPage
 {
     Q_OBJECT
 
 public:
 
-    explicit MailAlbumsPage(QWizard* const dialog, const QString& title);
-    ~MailAlbumsPage()       override;
+    explicit GmicQtAlbumsPage(QWizard* const dialog, const QString& title);
+    ~GmicQtAlbumsPage()       override;
 
     bool validatePage()     override;
     bool isComplete() const override;
@@ -47,4 +47,4 @@ private:
     Private* const d = nullptr;
 };
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin

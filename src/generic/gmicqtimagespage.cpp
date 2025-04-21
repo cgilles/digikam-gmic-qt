@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-04-21
- * Description : digiKam generic GmicQt plugin supporting layer mode.
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -30,16 +30,16 @@
 #include "ditemslist.h"
 #include "dlayoutbox.h"
 
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-class Q_DECL_HIDDEN MailImagesPage::Private
+class Q_DECL_HIDDEN GmicQtImagesPage::Private
 {
 public:
 
     explicit Private(QWizard* const dialog)
     {
-        wizard = dynamic_cast<MailWizard*>(dialog);
+        wizard = dynamic_cast<GmicQtWizard*>(dialog);
 
         if (wizard)
         {
@@ -48,11 +48,11 @@ public:
     }
 
     DItemsList*     imageList   = nullptr;
-    MailWizard*     wizard      = nullptr;
+    GmicQtWizard*     wizard      = nullptr;
     DInfoInterface* iface       = nullptr;
 };
 
-MailImagesPage::MailImagesPage(QWizard* const dialog, const QString& title)
+GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)
     : DWizardPage(dialog, title),
       d          (new Private(dialog))
 {
@@ -61,7 +61,7 @@ MailImagesPage::MailImagesPage(QWizard* const dialog, const QString& title)
     desc->setText(i18n("<p>This view list all items to export by mail.</p>"));
 
     d->imageList       = new DItemsList(vbox);
-    d->imageList->setObjectName(QLatin1String("MailImages ImagesList"));
+    d->imageList->setObjectName(QLatin1String("GmicQtImages ImagesList"));
     d->imageList->setControlButtonsPlacement(DItemsList::ControlButtonsBelow);
 
     setPageWidget(vbox);
@@ -71,22 +71,22 @@ MailImagesPage::MailImagesPage(QWizard* const dialog, const QString& title)
             this, SIGNAL(completeChanged()));
 }
 
-MailImagesPage::~MailImagesPage()
+GmicQtImagesPage::~GmicQtImagesPage()
 {
     delete d;
 }
 
-void MailImagesPage::setItemsList(const QList<QUrl>& urls)
+void GmicQtImagesPage::setItemsList(const QList<QUrl>& urls)
 {
     d->imageList->slotAddImages(urls);
 }
 
-void MailImagesPage::initializePage()
+void GmicQtImagesPage::initializePage()
 {
     d->imageList->setIface(d->iface);
     d->imageList->listView()->clear();
 
-    if (d->wizard->settings()->selMode == MailSettings::IMAGES)
+    if (d->wizard->settings()->selMode == GmicQtSettings::IMAGES)
     {
         d->imageList->loadImagesFromCurrentSelection();
     }
@@ -96,7 +96,7 @@ void MailImagesPage::initializePage()
     }
 }
 
-bool MailImagesPage::validatePage()
+bool GmicQtImagesPage::validatePage()
 {
     if (d->imageList->imageUrls().isEmpty())
     {
@@ -108,11 +108,11 @@ bool MailImagesPage::validatePage()
     return true;
 }
 
-bool MailImagesPage::isComplete() const
+bool GmicQtImagesPage::isComplete() const
 {
     return (!d->imageList->imageUrls().isEmpty());
 }
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin
 
-#include "moc_mailimagespage.cpp"
+#include "moc_gmicqtimagespage.cpp"

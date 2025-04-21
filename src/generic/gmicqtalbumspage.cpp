@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-04-21
- * Description : digiKam generic GmicQt plugin supporting layer mode.
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -21,18 +21,18 @@
 
 // Local includes
 
-#include "mailwizard.h"
+#include "gmicqtwizard.h"
 
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-class Q_DECL_HIDDEN MailAlbumsPage::Private
+class Q_DECL_HIDDEN GmicQtAlbumsPage::Private
 {
 public:
 
     explicit Private(QWizard* const dialog)
     {
-        wizard = dynamic_cast<MailWizard*>(dialog);
+        wizard = dynamic_cast<GmicQtWizard*>(dialog);
 
         if (wizard)
         {
@@ -42,11 +42,11 @@ public:
 
     bool             albumSupport   = false;
     QWidget*         albumSelector  = nullptr;
-    MailWizard*      wizard         = nullptr;
+    GmicQtWizard*    wizard         = nullptr;
     DInfoInterface*  iface          = nullptr;
 };
 
-MailAlbumsPage::MailAlbumsPage(QWizard* const dialog, const QString& title)
+GmicQtAlbumsPage::GmicQtAlbumsPage(QWizard* const dialog, const QString& title)
     : DWizardPage(dialog, title),
       d          (new Private(dialog))
 {
@@ -66,12 +66,12 @@ MailAlbumsPage::MailAlbumsPage(QWizard* const dialog, const QString& title)
     setLeftBottomPix(QIcon::fromTheme(QLatin1String("folder-mail")));
 }
 
-MailAlbumsPage::~MailAlbumsPage()
+GmicQtAlbumsPage::~GmicQtAlbumsPage()
 {
     delete d;
 }
 
-bool MailAlbumsPage::validatePage()
+bool GmicQtAlbumsPage::validatePage()
 {
     if (!d->iface)
     {
@@ -97,7 +97,7 @@ bool MailAlbumsPage::validatePage()
     return true;
 }
 
-bool MailAlbumsPage::isComplete() const
+bool GmicQtAlbumsPage::isComplete() const
 {
     if (!d->iface)
     {
@@ -107,6 +107,6 @@ bool MailAlbumsPage::isComplete() const
     return (!d->iface->albumChooserItems().isEmpty());
 }
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin
 
-#include "moc_mailalbumspage.cpp"
+#include "moc_gmicqtalbumspage.cpp"

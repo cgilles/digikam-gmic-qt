@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-04-21
- * Description : digiKam generic GmicQt plugin supporting layer mode.
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -24,87 +24,69 @@
 #include <QListWidget>
 #include <QTextBrowser>
 
-// KDE includes
-
-#include <klocalizedstring.h>
-#include <ksharedconfig.h>
-#include <kconfiggroup.h>
-
 // Local includes
 
 #include "dwizardpage.h"
-#include "digikam_debug.h"
-#include "mailintropage.h"
-#include "mailalbumspage.h"
-#include "mailimagespage.h"
-#include "mailsettingspage.h"
-#include "mailfinalpage.h"
+#include "gmicqtintropage.h"
+#include "gmicqtalbumspage.h"
+#include "gmicqtimagespage.h"
+#include "gmicqtsettings.h"
 
 namespace DigikamGenericGmicQtPlugin
 {
 
-class Q_DECL_HIDDEN MailWizard::Private
+class Q_DECL_HIDDEN GmicQtWizard::Private
 {
 public:
 
     explicit Private() = default;
 
+public:
+
     DInfoInterface*     iface           = nullptr;
-    MailIntroPage*      introPage       = nullptr;
-    MailAlbumsPage*     albumsPage      = nullptr;
-    MailImagesPage*     imagesPage      = nullptr;
-    MailSettingsPage*   settingsPage    = nullptr;
-    MailFinalPage*      finalPage       = nullptr;
-    MailSettings*       settings        = nullptr;
+    GmicQtIntroPage*    introPage       = nullptr;
+    GmicQtAlbumsPage*   albumsPage      = nullptr;
+    GmicQtImagesPage*   imagesPage      = nullptr;
+    GmicQtSettings*     settings        = nullptr;
 };
 
-MailWizard::MailWizard(QWidget* const parent, DInfoInterface* const iface)
-    : DWizardDlg(parent, QLatin1String("Email Dialog")),
+GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
+    : DWizardDlg(parent, QLatin1String("GmicQt Wizard")),
       d         (new Private)
 {
-    setWindowTitle(i18nc("@title:window", "Send by Email"));
+    setWindowTitle(tr("G'MIC-Qt Wizard"));
     setOption(QWizard::NoCancelButtonOnLastPage);
     setModal(true);
 
-    d->iface             = iface;
-    d->settings          = new MailSettings;
+    d->iface      = iface;
+    d->settings   = new GmicQtSettings;
 
-    KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
-    d->settings->readSettings(group);
-
-    d->introPage         = new MailIntroPage(this,    i18n("Welcome to Email Tool"));
-    d->albumsPage        = new MailAlbumsPage(this,   i18n("Albums Selection"));
-    d->imagesPage        = new MailImagesPage(this,   i18n("Images List"));
-    d->settingsPage      = new MailSettingsPage(this, i18n("Email Settings"));
-    d->finalPage         = new MailFinalPage(this,    i18n("Export by Email"));
+    d->introPage  = new GmicQtIntroPage(this,  tr("Welcome to G'MIC-Qt Tool (Layers Mode)"));
+    d->albumsPage = new GmicQtAlbumsPage(this, tr("Albums Selection"));
+    d->imagesPage = new GmicQtImagesPage(this, tr("Images List"));
 }
 
-MailWizard::~MailWizard()
+GmicQtWizard::~GmicQtWizard()
 {
-    KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
-    d->settings->writeSettings(group);
-
     delete d;
 }
 
-void MailWizard::setItemsList(const QList<QUrl>& urls)
+void GmicQtWizard::setItemsList(const QList<QUrl>& urls)
 {
     d->imagesPage->setItemsList(urls);
 }
 
-DInfoInterface* MailWizard::iface() const
+DInfoInterface* GmicQtWizard::iface() const
 {
     return d->iface;
 }
 
-MailSettings* MailWizard::settings() const
+GmicQtSettings* GmicQtWizard::settings() const
 {
     return d->settings;
 }
 
-bool MailWizard::validateCurrentPage()
+bool GmicQtWizard::validateCurrentPage()
 {
     if (!DWizardDlg::validateCurrentPage())
     {
@@ -114,9 +96,9 @@ bool MailWizard::validateCurrentPage()
     return true;
 }
 
-int MailWizard::nextId() const
+int GmicQtWizard::nextId() const
 {
-    if (d->settings->selMode == MailSettings::ALBUMS)
+    if (d->settings->selMode == GmicQtSettings::ALBUMS)
     {
         if (currentPage() == d->introPage)
         {

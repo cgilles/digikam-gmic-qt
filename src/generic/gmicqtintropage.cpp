@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-04-21
- * Description : digiKam generic GmicQt plugin supporting layer mode.
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -12,7 +12,7 @@
  *
  * ============================================================ */
 
-#include "mailintropage.h"
+#include "gmicqtintropage.h"
 
 // Qt includes
 
@@ -45,16 +45,16 @@
 #include "sylpheedbinary.h"
 #include "thunderbirdbinary.h"
 
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-class Q_DECL_HIDDEN MailIntroPage::Private
+class Q_DECL_HIDDEN GmicQtIntroPage::Private
 {
 public:
 
     explicit Private(QWizard* const dialog)
     {
-        wizard = dynamic_cast<MailWizard*>(dialog);
+        wizard = dynamic_cast<GmicQtWizard*>(dialog);
 
         if (wizard)
         {
@@ -66,11 +66,11 @@ public:
 
     QComboBox*        imageGetOption    = nullptr;
     DHBox*            hbox              = nullptr;
-    MailWizard*       wizard            = nullptr;
+    GmicQtWizard*       wizard            = nullptr;
     DInfoInterface*   iface             = nullptr;
     DBinarySearch*    binSearch         = nullptr;
     BalsaBinary       balsaBin;
-    ClawsMailBinary   clawsBin;
+    ClawsGmicQtBinary   clawsBin;
     EvolutionBinary   evoluBin;
     KmailBinary       kmailBin;
     NetscapeBinary    netscBin;
@@ -79,7 +79,7 @@ public:
     ThunderbirdBinary thundBin;
 };
 
-MailIntroPage::MailIntroPage(QWizard* const dialog, const QString& title)
+GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
     : DWizardPage(dialog, title),
       d          (new Private(dialog))
 {
@@ -101,8 +101,8 @@ MailIntroPage::MailIntroPage(QWizard* const dialog, const QString& title)
     d->hbox                     = new DHBox(vbox);
     QLabel* const getImageLabel = new QLabel(i18n("&Choose image selection method:"), d->hbox);
     d->imageGetOption           = new QComboBox(d->hbox);
-    d->imageGetOption->insertItem(MailSettings::ALBUMS, i18n("Albums"));
-    d->imageGetOption->insertItem(MailSettings::IMAGES, i18n("Images"));
+    d->imageGetOption->insertItem(GmicQtSettings::ALBUMS, i18n("Albums"));
+    d->imageGetOption->insertItem(GmicQtSettings::IMAGES, i18n("Images"));
     getImageLabel->setBuddy(d->imageGetOption);
 
     // --------------------
@@ -110,7 +110,7 @@ MailIntroPage::MailIntroPage(QWizard* const dialog, const QString& title)
     QGroupBox* const binaryBox      = new QGroupBox(vbox);
     QGridLayout* const binaryLayout = new QGridLayout;
     binaryBox->setLayout(binaryLayout);
-    binaryBox->setTitle(i18nc("@title:group", "Mail client application Binaries"));
+    binaryBox->setTitle(i18nc("@title:group", "GmicQt client application Binaries"));
     d->binSearch = new DBinarySearch(binaryBox);
     d->binSearch->addBinary(d->balsaBin);
     d->binSearch->addBinary(d->clawsBin);
@@ -154,18 +154,18 @@ MailIntroPage::MailIntroPage(QWizard* const dialog, const QString& title)
             this, SLOT(slotBinariesFound()));
 }
 
-MailIntroPage::~MailIntroPage()
+GmicQtIntroPage::~GmicQtIntroPage()
 {
     delete d;
 }
 
-void MailIntroPage::initializePage()
+void GmicQtIntroPage::initializePage()
 {
     bool albumSupport = (d->iface && d->iface->supportAlbums());
 
     if (!albumSupport)
     {
-        d->imageGetOption->setCurrentIndex(MailSettings::IMAGES);
+        d->imageGetOption->setCurrentIndex(GmicQtSettings::IMAGES);
         d->hbox->setEnabled(false);
     }
     else
@@ -177,43 +177,43 @@ void MailIntroPage::initializePage()
     slotBinariesFound();
 }
 
-bool MailIntroPage::validatePage()
+bool GmicQtIntroPage::validatePage()
 {
-    d->wizard->settings()->selMode = (MailSettings::Selection)d->imageGetOption->currentIndex();
+    d->wizard->settings()->selMode = (GmicQtSettings::Selection)d->imageGetOption->currentIndex();
 
     return true;
 }
 
-void MailIntroPage::slotBinariesFound()
+void GmicQtIntroPage::slotBinariesFound()
 {
-    d->wizard->settings()->binPaths.insert(MailSettings::BALSA, d->balsaBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::BALSA, d->balsaBin.isValid() ?
                                            d->balsaBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::CLAWSMAIL, d->clawsBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::CLAWSMAIL, d->clawsBin.isValid() ?
                                            d->clawsBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::EVOLUTION, d->evoluBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::EVOLUTION, d->evoluBin.isValid() ?
                                            d->evoluBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::KMAIL, d->kmailBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::KMAIL, d->kmailBin.isValid() ?
                                            d->kmailBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::NETSCAPE, d->netscBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::NETSCAPE, d->netscBin.isValid() ?
                                            d->netscBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::OUTLOOK, d->outloBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::OUTLOOK, d->outloBin.isValid() ?
                                            d->outloBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::SYLPHEED, d->sylphBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::SYLPHEED, d->sylphBin.isValid() ?
                                            d->sylphBin.path() : QString());
 
-    d->wizard->settings()->binPaths.insert(MailSettings::THUNDERBIRD, d->thundBin.isValid() ?
+    d->wizard->settings()->binPaths.insert(GmicQtSettings::THUNDERBIRD, d->thundBin.isValid() ?
                                            d->thundBin.path() : QString());
 
     Q_EMIT completeChanged();
 }
 
-bool MailIntroPage::isComplete() const
+bool GmicQtIntroPage::isComplete() const
 {
     const auto vals = d->wizard->settings()->binPaths.values();
     QString val     = vals.join(QString());
@@ -222,6 +222,6 @@ bool MailIntroPage::isComplete() const
     return (!val.isEmpty());
 }
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin
 
-#include "moc_mailintropage.cpp"
+#include "moc_gmicqtintropage.cpp"
