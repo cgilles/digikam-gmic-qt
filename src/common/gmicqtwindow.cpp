@@ -43,10 +43,10 @@ using namespace GmicQt;
 namespace DigikamGmicQtPluginCommon
 {
 
-GMicQtWindow* s_mainWindow = nullptr;
+GmicQtWindow* s_mainWindow = nullptr;
 QString       s_filterName;
 
-class Q_DECL_HIDDEN GMicQtWindow::Private
+class Q_DECL_HIDDEN GmicQtWindow::Private
 {
 public:
 
@@ -67,7 +67,7 @@ public:
     QString*        filterName  = nullptr;
 };
 
-GMicQtWindow::GMicQtWindow(
+GmicQtWindow::GmicQtWindow(
                            DPlugin* const tool,
                            QWidget* const parent,
                            QString* const filterName
@@ -124,12 +124,12 @@ GMicQtWindow::GMicQtWindow(
     }
 }
 
-GMicQtWindow::~GMicQtWindow()
+GmicQtWindow::~GmicQtWindow()
 {
     delete d;
 }
 
-void GMicQtWindow::setHostType(HostType type)
+void GmicQtWindow::setHostType(HostType type)
 {
     // Customize the rc settings file-name depending of the host application running Gmic-Qt.
 
@@ -166,7 +166,7 @@ void GMicQtWindow::setHostType(HostType type)
     }
 }
 
-void GMicQtWindow::setFilterSelectionMode()
+void GmicQtWindow::setFilterSelectionMode()
 {
     QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
 
@@ -178,7 +178,7 @@ void GMicQtWindow::setFilterSelectionMode()
                    static_cast<MainWindow*>(this), &MainWindow::onOkClicked);
 
         connect(pbOk, &QPushButton::clicked,
-                this, &GMicQtWindow::slotOkClicked);
+                this, &GmicQtWindow::slotOkClicked);
     }
     else
     {
@@ -215,7 +215,7 @@ void GMicQtWindow::setFilterSelectionMode()
     }
 }
 
-void GMicQtWindow::slotOkClicked()
+void GmicQtWindow::slotOkClicked()
 {
     // Return current filter name.
 
@@ -232,17 +232,17 @@ void GMicQtWindow::slotOkClicked()
     close();
 }
 
-void GMicQtWindow::slotLayersDialog()
+void GmicQtWindow::slotLayersDialog()
 {
     // TODO
 }
 
-void GMicQtWindow::saveParameters()
+void GmicQtWindow::saveParameters()
 {
     saveSettings();
 }
 
-void GMicQtWindow::showEvent(QShowEvent* event)
+void GmicQtWindow::showEvent(QShowEvent* event)
 {
     if (d->plugOrg.isEmpty())
     {
@@ -266,7 +266,7 @@ void GMicQtWindow::showEvent(QShowEvent* event)
     MainWindow::showEvent(event);
 }
 
-void GMicQtWindow::closeEvent(QCloseEvent* event)
+void GmicQtWindow::closeEvent(QCloseEvent* event)
 {
     QCoreApplication::setOrganizationName(d->hostOrg);
     QCoreApplication::setOrganizationDomain(d->hostDom);
@@ -277,7 +277,7 @@ void GMicQtWindow::closeEvent(QCloseEvent* event)
 
 // --- Static method ---
 
-QString GMicQtWindow::execWindow(DPlugin* const tool,
+QString GmicQtWindow::execWindow(DPlugin* const tool,
                                  HostType type,
                                  const QString& command)
 {
@@ -320,9 +320,9 @@ QString GMicQtWindow::execWindow(DPlugin* const tool,
      * seen side effects, for example with the settings to host in RC file.
      */
 
-    s_mainWindow = new GMicQtWindow(tool, qApp->activeWindow(), &s_filterName);
+    s_mainWindow = new GmicQtWindow(tool, qApp->activeWindow(), &s_filterName);
 
-    if (type == GMicQtWindow::BQM)
+    if (type == GmicQtWindow::BQM)
     {
         s_mainWindow->setFilterSelectionMode();
     }

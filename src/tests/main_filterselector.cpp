@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
         s_imagePath   = parser.positionalArguments().constFirst();
         qCDebug(DIGIKAM_TESTS_LOG) << "Image to Process:" << s_imagePath;
 
-        QString fname = GMicQtWindow::execWindow(
+        QString fname = GmicQtWindow::execWindow(
                                                  nullptr,
-                                                 GMicQtWindow::BQM,
+                                                 GmicQtWindow::BQM,
                                                  QLatin1String("samj_Barbouillage_Paint_Daub 2,2,100,0.2,1,4,1,0,8")
                                                 );
 

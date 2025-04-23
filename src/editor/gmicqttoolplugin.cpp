@@ -108,14 +108,14 @@ void GmicQtToolPlugin::setup(QObject* const parent)
 
 void GmicQtToolPlugin::slotGmicQt()
 {
-    GMicQtWindow::HostType type = GMicQtWindow::ImageEditor;
+    GmicQtWindow::HostType type = GmicQtWindow::ImageEditor;
 
     if (qApp->applicationName() == QLatin1String("showfoto"))
     {
-        type = GMicQtWindow::Showfoto;
+        type = GmicQtWindow::Showfoto;
     }
 
-    GMicQtWindow::execWindow(this, type);
+    GmicQtWindow::execWindow(this, type);
 }
 
 } // namespace DigikamEditorGmicQtPlugin

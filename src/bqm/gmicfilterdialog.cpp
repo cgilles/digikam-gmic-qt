@@ -212,9 +212,9 @@ void GmicFilterDialog::slotGmicQt(const QString& command)
     QClipboard* const clipboard = QGuiApplication::clipboard();
     clipboard->clear();
 
-    QString fname = GMicQtWindow::execWindow(
+    QString fname = GmicQtWindow::execWindow(
                                              d->plugin,                       // BQM plugin instance.
-                                             GMicQtWindow::BQM,               // Host type.
+                                             GmicQtWindow::BQM,               // Host type.
                                              command                          // The G'MIC command in Edit mode, else empty in ADD mode.
                                             );
 

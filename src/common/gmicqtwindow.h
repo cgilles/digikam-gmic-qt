@@ -37,7 +37,7 @@ using namespace Digikam;
 namespace DigikamGmicQtPluginCommon
 {
 
-class GMicQtWindow : public MainWindow
+class GmicQtWindow : public MainWindow
 {
     Q_OBJECT
 
@@ -54,12 +54,12 @@ public:
 
 public:
 
-    explicit GMicQtWindow(
+    explicit GmicQtWindow(
                           DPlugin* const tool,
                           QWidget* const parent,
                           QString* const filterName
                          );
-    ~GMicQtWindow()                     override;
+    ~GmicQtWindow()                     override;
 
     void saveParameters();
     void setFilterSelectionMode();

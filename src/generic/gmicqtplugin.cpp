@@ -124,7 +124,7 @@ void GmicQtPlugin::slotGmicQt()
         return;
     }
 
-    GMicQtWindow::execWindow(this, GMicQtWindow::Generic);
+    GmicQtWindow::execWindow(this, GmicQtWindow::Generic);
 }
 
 } // namespace DigikamGenericGmicQtPlugin
