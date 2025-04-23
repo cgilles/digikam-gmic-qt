@@ -8,6 +8,7 @@
 
 set(gmic_generic_SRCS
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtplugin.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/host_digikam_generic.cpp
 )
 
 foreach(_file ${gmic_bqm_SRCS})

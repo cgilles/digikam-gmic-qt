@@ -25,8 +25,6 @@ using namespace Digikam;
 namespace DigikamGenericGmicQtPlugin
 {
 
-class GmicQtWizard;
-
 class GmicQtPlugin : public DPluginGeneric
 {
     Q_OBJECT
@@ -36,7 +34,7 @@ class GmicQtPlugin : public DPluginGeneric
 public:
 
     explicit GmicQtPlugin(QObject* const parent = nullptr);
-    ~GmicQtPlugin()                  override = default;
+    ~GmicQtPlugin()                      override = default;
 
     QString name()                 const override;
     QString iid()                  const override;
@@ -53,10 +51,6 @@ public:
 private Q_SLOTS:
 
     void slotGmicQt();
-
-private:
-
-//    QPointer<GmicQtWizard> m_toolDlg;
 };
 
 } // namespace DigikamGenericGmicQtPlugin

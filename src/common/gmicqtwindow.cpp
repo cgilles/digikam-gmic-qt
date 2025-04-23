@@ -153,6 +153,12 @@ void GMicQtWindow::setHostType(HostType type)
             break;
         }
 
+        case Generic:
+        {
+            d->dkModule = QLatin1String("digikam-generic-");
+            break;
+        }
+
         default:
         {
             break;
@@ -250,7 +256,6 @@ void GMicQtWindow::showEvent(QShowEvent* event)
 
     if (d->plugName.isEmpty())
     {
-
         d->plugName = d->dkModule + QCoreApplication::applicationName();
     }
 

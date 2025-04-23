@@ -18,8 +18,6 @@
 
 #include <QApplication>
 #include <QTranslator>
-#include <QSettings>
-#include <QEventLoop>
 #include <QPointer>
 #include <QImage>
 #include <QBuffer>
@@ -31,11 +29,15 @@
 #   include <fftw3.h>
 #endif
 
+// digiKam includes
+
+#include "dinfointerface.h"
+#include "digikam_debug.h"
+
 // Local includes
 
-#include "gmicqtwizard.h"
-#include "gmicqtcommon.h"
 #include "gmicqtwindow.h"
+#include "gmicqtcommon.h"
 #include "gmic.h"
 
 using namespace GmicQt;
@@ -44,6 +46,8 @@ using namespace DigikamGmicQtPluginCommon;
 namespace DigikamGenericGmicQtPlugin
 {
 
+DInfoInterface* s_infoIface = nullptr;
+
 GmicQtPlugin::GmicQtPlugin(QObject* const parent)
     : DPluginGeneric(parent)
 {
@@ -51,7 +55,6 @@ GmicQtPlugin::GmicQtPlugin(QObject* const parent)
 
 void GmicQtPlugin::cleanUp()
 {
-//    delete m_toolDlg;
 }
 
 QString GmicQtPlugin::name() const
@@ -111,16 +114,17 @@ void GmicQtPlugin::setup(QObject* const parent)
 
 void GmicQtPlugin::slotGmicQt()
 {
-/*
-    if (!reactivateToolDialog(m_toolDlg))
-    {
-        delete m_toolDlg;
+    s_infoIface = infoIface(sender());
 
-        m_toolDlg = new GmicQtWizard(nullptr, infoIface(sender()));
-        m_toolDlg->setPlugin(this);
-        m_toolDlg->show();
+    QList<QUrl> selection = s_infoIface->currentSelectedItems();
+
+    if (selection.count() == 0)
+    {
+        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "no image selected, load entire album";
+        return;
     }
-*/
+
+    GMicQtWindow::execWindow(this, GMicQtWindow::Generic);
 }
 
 } // namespace DigikamGenericGmicQtPlugin

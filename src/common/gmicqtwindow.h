@@ -48,6 +48,7 @@ public:
         ImageEditor = 0,
         BQM,
         Showfoto,
+        Generic,
         Unknow
     };
 
