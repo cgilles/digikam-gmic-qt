@@ -103,7 +103,7 @@ void GmicQtPlugin::setup(QObject* const parent)
     DPluginAction* const ac = new DPluginAction(parent);
     ac->setIcon(icon());
     ac->setText(tr("G'MIC-Qt (layers mode)..."));
-    ac->setObjectName(QLatin1String("gmicqt"));
+    ac->setObjectName(QLatin1String("GmicQt"));
     ac->setActionCategory(DPluginAction::GenericTool);
 
     connect(ac, SIGNAL(triggered(bool)),
