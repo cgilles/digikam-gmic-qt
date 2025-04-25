@@ -14,6 +14,8 @@
 
 // Qt includes
 
+#include <QObject>
+#include <QApplication>
 #include <QDataStream>
 #include <QTextStream>
 #include <QStringList>
@@ -25,6 +27,7 @@
 #include "digikam_debug.h"
 #include "dinfointerface.h"
 #include "previewloadthread.h"
+#include "imagedialog.h"
 
 // Local includes
 
@@ -53,6 +56,7 @@ namespace GmicQtHost
 const QString ApplicationName          = QLatin1String("digiKam");
 const char* const ApplicationShortname = GMIC_QT_XSTRINGIFY(GMIC_HOST);
 const bool DarkThemeIsDefault          = false;
+QUrl  s_currentAlbumUrl;
 
 void getLayersExtent(int* width,
                      int* height,
@@ -106,6 +110,7 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
 
     images.assign(list.size());
     imageNames.assign(list.size());
+    s_currentAlbumUrl = list[0];
 
     for (int i = 0 ; i < list.size() ; ++i)
     {
@@ -171,7 +176,13 @@ void outputImages(cimg_library::CImgList<gmic_pixel_type>& images,  // cppcheck-
 {
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt outputImages()";
 
-    Q_UNUSED(images);
+    if (images.size() > 0)
+    {
+        QUrl url = ImageDialog::getImageURL(qApp->activeWindow(), s_currentAlbumUrl,
+                                            QObject::tr("Output Image File"));
+
+    }
+
     Q_UNUSED(imageNames);
     Q_UNUSED(mode);
 }
