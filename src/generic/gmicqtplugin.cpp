@@ -59,7 +59,7 @@ void GmicQtPlugin::cleanUp()
 
 QString GmicQtPlugin::name() const
 {
-    return tr("GmicQt (layers mode)");
+    return QString::fromUtf8("GmicQt");
 }
 
 QString GmicQtPlugin::iid() const
@@ -80,7 +80,7 @@ QString GmicQtPlugin::description() const
 QString GmicQtPlugin::details() const
 {
     return s_gmicQtPluginDetails(tr("An Generic tool for G'MIC-Qt supporting layers mode "
-                                    "by selecting more than one item from icon-view or from albums."));
+                                    "by selecting more than one item from icon-view or from the stack."));
 }
 
 QString GmicQtPlugin::handbookSection() const

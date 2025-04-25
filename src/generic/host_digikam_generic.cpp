@@ -54,10 +54,12 @@ const QString ApplicationName          = QLatin1String("digiKam");
 const char* const ApplicationShortname = GMIC_QT_XSTRINGIFY(GMIC_HOST);
 const bool DarkThemeIsDefault          = false;
 
-void getImageSize(int* width,
-                  int* height)
+void getLayersExtent(int* width,
+                     int* height,
+                     GmicQt::InputMode mode)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getImageSize()";
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getLayersExtent(): InputMode="
+                                         << (int)mode;
 
     QList<QUrl> list = s_infoIface->currentSelectedItems();
 
@@ -72,16 +74,6 @@ void getImageSize(int* width,
         *width  = 0;
         *height = 0;
     }
-}
-
-void getLayersExtent(int* width,
-                     int* height,
-                     GmicQt::InputMode mode)
-{
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getLayersExtent(): InputMode="
-                                         << (int)mode;
-
-    getImageSize(width, height);
 
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "W=" << *width;
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "H=" << *height;
@@ -112,48 +104,51 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
         return;
     }
 
-    DImg input_image       = PreviewLoadThread::loadFastSynchronously(list.first().toLocalFile(), 1024);
-    const bool entireImage = (
-                              (x      < 0.0) &&
-                              (y      < 0.0) &&
-                              (width  < 0.0) &&
-                              (height < 0.0)
-                             );
+    images.assign(list.size());
+    imageNames.assign(list.size());
 
-    if (entireImage)
+    for (int i = 0 ; i < list.size() ; ++i)
     {
-        x      = 0.0;
-        y      = 0.0;
-        width  = 1.0;
-        height = 1.0;
+        DImg input_image       = PreviewLoadThread::loadFastSynchronously(list[i].toLocalFile(), 1024);
+        const bool entireImage = (
+                                  (x      < 0.0) &&
+                                  (y      < 0.0) &&
+                                  (width  < 0.0) &&
+                                  (height < 0.0)
+                                 );
+
+        if (entireImage)
+        {
+            x      = 0.0;
+            y      = 0.0;
+            width  = 1.0;
+            height = 1.0;
+        }
+
+        QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(QFileInfo(list[i].toLocalFile()).baseName());
+        QByteArray ba = name.toUtf8();
+        gmic_image<char>::string(ba.constData()).move_to(imageNames[i]);
+
+        const int ix = static_cast<int>(entireImage ? 0
+                                                    : std::floor(x * input_image.width()));
+
+        const int iy = static_cast<int>(entireImage ? 0
+                                                    : std::floor(y * input_image.height()));
+
+        const int iw = entireImage ? input_image.width()
+                                   : std::min(
+                                              static_cast<int>(input_image.width()  - ix),
+                                              static_cast<int>(1 + std::ceil(width  * input_image.width()))
+                                             );
+
+        const int ih = entireImage ? input_image.height()
+                                   : std::min(
+                                              static_cast<int>(input_image.height() - iy),
+                                              static_cast<int>(1 + std::ceil(height * input_image.height()))
+                                             );
+
+        GMicQtImageConverter::convertDImgtoCImg(input_image.copy(ix, iy, iw, ih), images[i]);
     }
-
-    images.assign(1);
-    imageNames.assign(1);
-
-    QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(QLatin1String("Batch Queue Manager Item Preview"));
-    QByteArray ba = name.toUtf8();
-    gmic_image<char>::string(ba.constData()).move_to(imageNames[0]);
-
-    const int ix = static_cast<int>(entireImage ? 0
-                                                : std::floor(x * input_image.width()));
-
-    const int iy = static_cast<int>(entireImage ? 0
-                                                : std::floor(y * input_image.height()));
-
-    const int iw = entireImage ? input_image.width()
-                               : std::min(
-                                          static_cast<int>(input_image.width()  - ix),
-                                          static_cast<int>(1 + std::ceil(width  * input_image.width()))
-                                         );
-
-    const int ih = entireImage ? input_image.height()
-                               : std::min(
-                                          static_cast<int>(input_image.height() - iy),
-                                          static_cast<int>(1 + std::ceil(height * input_image.height()))
-                                         );
-
-    GMicQtImageConverter::convertDImgtoCImg(input_image.copy(ix, iy, iw, ih), images[0]);
 }
 
 void applyColorProfile(cimg_library::CImg<gmic_pixel_type>& images) // cppcheck-suppress constParameterReference
