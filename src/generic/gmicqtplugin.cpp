@@ -22,6 +22,7 @@
 #include <QImage>
 #include <QBuffer>
 #include <QByteArray>
+#include <QClipboard>
 
 // Libfftw includes
 
@@ -102,7 +103,7 @@ void GmicQtPlugin::setup(QObject* const parent)
 {
     DPluginAction* const ac = new DPluginAction(parent);
     ac->setIcon(icon());
-    ac->setText(tr("G'MIC-Qt (layers mode)..."));
+    ac->setText(tr("G'MIC-Qt..."));
     ac->setObjectName(QLatin1String("GmicQt"));
     ac->setActionCategory(DPluginAction::GenericTool);
 
@@ -124,7 +125,18 @@ void GmicQtPlugin::slotGmicQt()
         return;
     }
 
-    GmicQtWindow::execWindow(this, GmicQtWindow::Generic);
+    QClipboard* const clipboard = QGuiApplication::clipboard();
+    clipboard->clear();
+
+    GmicQtWindow::execWindow(
+                             this,                      // Plugin instance.
+                             GmicQtWindow::Generic      // Host type.
+                            );
+
+    if (!clipboard->text().isEmpty())
+    {
+        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GMic selected command:" << clipboard->text();
+    }
 }
 
 } // namespace DigikamGenericGmicQtPlugin

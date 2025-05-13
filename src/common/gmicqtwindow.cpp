@@ -322,7 +322,10 @@ QString GmicQtWindow::execWindow(DPlugin* const tool,
 
     s_mainWindow = new GmicQtWindow(tool, qApp->activeWindow(), &s_filterName);
 
-    if (type == GmicQtWindow::BQM)
+    if (
+        (type == GmicQtWindow::BQM) ||
+        (type == GmicQtWindow::Generic)
+       )
     {
         s_mainWindow->setFilterSelectionMode();
     }
