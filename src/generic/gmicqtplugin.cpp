@@ -48,6 +48,8 @@ namespace DigikamGenericGmicQtPlugin
 {
 
 DInfoInterface* s_infoIface = nullptr;
+QUrl            s_currentAlbumUrl;
+QList<QUrl>     s_urlList;
 
 GmicQtPlugin::GmicQtPlugin(QObject* const parent)
     : DPluginGeneric(parent)
@@ -117,14 +119,6 @@ void GmicQtPlugin::slotGmicQt()
 {
     s_infoIface = infoIface(sender());
 
-    QList<QUrl> selection = s_infoIface->currentSelectedItems();
-
-    if (selection.count() == 0)
-    {
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "No image selected...";
-        return;
-    }
-
     QClipboard* const clipboard = QGuiApplication::clipboard();
     clipboard->clear();
 
@@ -136,6 +130,8 @@ void GmicQtPlugin::slotGmicQt()
     if (!clipboard->text().isEmpty())
     {
         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GMic selected command:" << clipboard->text();
+        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Input image files    :" << s_urlList;
+        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image file     :" << s_currentAlbumUrl;
     }
 }
 

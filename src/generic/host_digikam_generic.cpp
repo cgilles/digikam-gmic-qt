@@ -39,6 +39,8 @@ namespace DigikamGenericGmicQtPlugin
 {
 
 extern DInfoInterface* s_infoIface;
+extern QUrl            s_currentAlbumUrl;
+extern QList<QUrl>     s_urlList;
 
 } // namespace DigikamBqmGmicQtPlugin
 
@@ -56,7 +58,6 @@ namespace GmicQtHost
 const QString ApplicationName          = QLatin1String("digiKam");
 const char* const ApplicationShortname = GMIC_QT_XSTRINGIFY(GMIC_HOST);
 const bool DarkThemeIsDefault          = false;
-QUrl  s_currentAlbumUrl;
 
 void getLayersExtent(int* width,
                      int* height,
@@ -93,14 +94,14 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
 {
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getCroppedImages()";
 
-    QList<QUrl> list = s_infoIface->currentSelectedItems();
+    s_urlList = s_infoIface->currentSelectedItems();
 
-    if (list.isEmpty())
+    if (s_urlList.isEmpty())
     {
-        list = s_infoIface->currentAlbumItems();
+        s_urlList = s_infoIface->currentAlbumItems();
     }
 
-    if (mode == GmicQt::InputMode::NoInput || list.isEmpty())
+    if ((mode == GmicQt::InputMode::NoInput) || s_urlList.isEmpty())
     {
         images.assign();
         imageNames.assign();
@@ -108,13 +109,13 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
         return;
     }
 
-    images.assign(list.size());
-    imageNames.assign(list.size());
-    s_currentAlbumUrl = list[0];
+    images.assign(s_urlList.size());
+    imageNames.assign(s_urlList.size());
+    s_currentAlbumUrl = s_urlList[0];
 
-    for (int i = 0 ; i < list.size() ; ++i)
+    for (int i = 0 ; i < s_urlList.size() ; ++i)
     {
-        DImg input_image       = PreviewLoadThread::loadFastSynchronously(list[i].toLocalFile(), 1024);
+        DImg input_image       = PreviewLoadThread::loadFastSynchronously(s_urlList[i].toLocalFile(), 1024);
         const bool entireImage = (
                                   (x      < 0.0) &&
                                   (y      < 0.0) &&
@@ -130,7 +131,7 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
             height = 1.0;
         }
 
-        QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(QFileInfo(list[i].toLocalFile()).baseName());
+        QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(QFileInfo(s_urlList[i].toLocalFile()).baseName());
         QByteArray ba = name.toUtf8();
         gmic_image<char>::string(ba.constData()).move_to(imageNames[i]);
 
@@ -178,8 +179,8 @@ void outputImages(cimg_library::CImgList<gmic_pixel_type>& images,  // cppcheck-
 
     if (images.size() > 0)
     {
-        QUrl url = ImageDialog::getImageURL(qApp->activeWindow(), s_currentAlbumUrl,
-                                            QObject::tr("Output Image File"));
+        s_currentAlbumUrl = ImageDialog::getImageURL(qApp->activeWindow(), s_currentAlbumUrl,
+                                                     QObject::tr("Output Image File"));
 
     }
 
