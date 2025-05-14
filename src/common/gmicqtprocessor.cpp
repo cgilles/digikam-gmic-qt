@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2019-11-28
- * Description : digiKam Batch Queue Manager plugin for GmicQt.
+ * Description : GmicQt Command Processor.
  *
  * SPDX-FileCopyrightText: 2019-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -12,7 +12,7 @@
  *
  * ============================================================ */
 
-#include "gmicbqmprocessor.h"
+#include "gmicqtprocessor.h"
 
 // digiKam includes
 
@@ -28,13 +28,12 @@
 #include "GmicQt.h"
 #include "gmicqtimageconverter.h"
 
-using namespace DigikamGmicQtPluginCommon;
 using namespace GmicQt;
 
-namespace DigikamBqmGmicQtPlugin
+namespace DigikamGmicQtPluginCommon
 {
 
-class Q_DECL_HIDDEN GmicBqmProcessor::Private
+class Q_DECL_HIDDEN GmicQtProcessor::Private
 {
 public:
 
@@ -55,25 +54,25 @@ public:
     DImg                            outImage;
 };
 
-GmicBqmProcessor::GmicBqmProcessor(QObject* const parent)
+GmicQtProcessor::GmicQtProcessor(QObject* const parent)
     : QObject(parent),
       d      (new Private)
 {
     GmicStdLib::Array = Updater::getInstance()->buildFullStdlib();
 }
 
-GmicBqmProcessor::~GmicBqmProcessor()
+GmicQtProcessor::~GmicQtProcessor()
 {
     delete d->gmicImages;
     delete d;
 }
 
-void GmicBqmProcessor::setInputImage(const DImg& inImage)
+void GmicQtProcessor::setInputImage(const DImg& inImage)
 {
     d->inImage = inImage;
 }
 
-bool GmicBqmProcessor::setProcessingCommand(const QString& command)
+bool GmicQtProcessor::setProcessingCommand(const QString& command)
 {
     if (command.isEmpty())
     {
@@ -90,7 +89,7 @@ bool GmicBqmProcessor::setProcessingCommand(const QString& command)
     return true;
 }
 
-void GmicBqmProcessor::startProcessing()
+void GmicQtProcessor::startProcessing()
 {
     gmic_list<char> imageNames;
 
@@ -130,18 +129,18 @@ void GmicBqmProcessor::startProcessing()
     d->completed = false;
 
     connect(d->filterThread, &FilterThread::finished,
-            this, &GmicBqmProcessor::slotProcessingFinished);
+            this, &GmicQtProcessor::slotProcessingFinished);
 
     d->timer.setInterval(250);
 
     connect(&d->timer, &QTimer::timeout,
-            this, &GmicBqmProcessor::slotSendProgressInformation);
+            this, &GmicQtProcessor::slotSendProgressInformation);
 
     d->timer.start();
     d->filterThread->start();
 }
 
-void GmicBqmProcessor::slotSendProgressInformation()
+void GmicQtProcessor::slotSendProgressInformation()
 {
     if (d->filterThread)
     {
@@ -149,7 +148,7 @@ void GmicBqmProcessor::slotSendProgressInformation()
     }
 }
 
-void GmicBqmProcessor::slotProcessingFinished()
+void GmicQtProcessor::slotProcessingFinished()
 {
     d->timer.stop();
     QString errorMessage;
@@ -200,7 +199,7 @@ void GmicBqmProcessor::slotProcessingFinished()
     Q_EMIT signalDone(errorMessage);
 }
 
-void GmicBqmProcessor::cancel()
+void GmicQtProcessor::cancel()
 {
     if (d->filterThread)
     {
@@ -208,26 +207,26 @@ void GmicBqmProcessor::cancel()
     }
 }
 
-DImg GmicBqmProcessor::outputImage() const
+DImg GmicQtProcessor::outputImage() const
 {
     return d->outImage;
 }
 
-QString GmicBqmProcessor::processingCommand() const
+QString GmicQtProcessor::processingCommand() const
 {
     return d->command;
 }
 
-QString GmicBqmProcessor::filterName() const
+QString GmicQtProcessor::filterName() const
 {
     return d->filterName;
 }
 
-bool GmicBqmProcessor::processingComplete() const
+bool GmicQtProcessor::processingComplete() const
 {
     return d->completed;
 }
 
-} // namespace DigikamBqmGmicQtPlugin
+} // namespace DigikamGmicQtPluginCommon
 
-#include "moc_gmicbqmprocessor.cpp"
+#include "moc_gmicqtprocessor.cpp"

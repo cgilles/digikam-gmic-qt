@@ -121,7 +121,7 @@ void GmicQtPlugin::slotGmicQt()
 
     if (selection.count() == 0)
     {
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "no image selected, load entire album";
+        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "No image selected...";
         return;
     }
 

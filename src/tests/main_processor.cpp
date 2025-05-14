@@ -25,9 +25,9 @@
 #include "dpluginloader.h"
 #include "dimg.h"
 
-// local includes
+// Local includes
 
-#include "gmicbqmprocessor.h"
+#include "gmicqtprocessor.h"
 
 namespace DigikamBqmGmicQtPlugin
 {
@@ -37,7 +37,7 @@ QString s_imagePath;
 } // namespace DigikamBqmGmicQtPlugin
 
 using namespace Digikam;
-using namespace DigikamBqmGmicQtPlugin;
+using namespace DigikamGmicQtPluginCommon;
 
 int main(int argc, char* argv[])
 {
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
         QString path = parser.positionalArguments().constFirst();
         qCDebug(DIGIKAM_TESTS_LOG) << "Image to Process:" << path;
 
-        GmicBqmProcessor* const gmicProcessor = new GmicBqmProcessor();
+        GmicQtProcessor* const gmicProcessor = new GmicQtProcessor();
         img.load(path);
         gmicProcessor->setInputImage(img);
 

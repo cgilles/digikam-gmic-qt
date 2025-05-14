@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2019-11-28
- * Description : digiKam Batch Queue Manager plugin for GmicQt.
+ * Description : GmicQt Command Processor.
  *
  * SPDX-FileCopyrightText: 2019-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -25,17 +25,17 @@
 
 using namespace Digikam;
 
-namespace DigikamBqmGmicQtPlugin
+namespace DigikamGmicQtPluginCommon
 {
 
-class GmicBqmProcessor : public QObject
+class GmicQtProcessor : public QObject
 {
     Q_OBJECT
 
 public:
 
-    explicit GmicBqmProcessor(QObject* const parent = nullptr);
-    ~GmicBqmProcessor()                   override;
+    explicit GmicQtProcessor(QObject* const parent = nullptr);
+    ~GmicQtProcessor()                   override;
 
     QString processingCommand()     const;
     QString filterName()            const;
@@ -63,4 +63,4 @@ private:
     Private* const d = nullptr;
 };
 
-} // namespace DigikamBqmGmicQtPlugin
+} // namespace DigikamGmicQtPluginCommon

@@ -18,7 +18,6 @@ set(gmic_bqm_SRCS
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicfiltermngr_delegate.cpp
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicfilterwidget.cpp
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicfilterdialog.cpp
-    ${CMAKE_SOURCE_DIR}/src/bqm/gmicbqmprocessor.cpp
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicbqmtool.cpp
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicbqmplugin.cpp
     ${CMAKE_SOURCE_DIR}/src/bqm/gmicfilterchain.cpp

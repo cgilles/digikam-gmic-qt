@@ -36,8 +36,6 @@ target_link_libraries(GmicQt_FilterSelector_test
 include_directories(${CMAKE_SOURCE_DIR}/src/bqm/)
 
 set(Processor_test_SRCS
-    ${CMAKE_SOURCE_DIR}/src/bqm/gmicbqmprocessor.cpp
-
     ${CMAKE_SOURCE_DIR}/src/tests/host_test.cpp
     ${CMAKE_SOURCE_DIR}/src/tests/main_processor.cpp
 )

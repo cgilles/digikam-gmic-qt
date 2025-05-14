@@ -28,7 +28,7 @@
 // Local includes
 
 #include "gmicfilterwidget.h"
-#include "gmicbqmprocessor.h"
+#include "gmicqtprocessor.h"
 #include "gmicqtcommon.h"
 #include "GmicQt.h"
 
@@ -46,7 +46,7 @@ public:
 public:
 
     GmicFilterWidget* gmicWidget     = nullptr;
-    GmicBqmProcessor* gmicProcessor  = nullptr;
+    GmicQtProcessor*  gmicProcessor  = nullptr;
 
     bool              changeSettings = true;
 };
@@ -134,7 +134,7 @@ bool GmicBqmTool::toolOperations()
         return false;
     }
 
-    d->gmicProcessor = new GmicBqmProcessor();
+    d->gmicProcessor = new GmicQtProcessor();
     d->gmicProcessor->setInputImage(image());
 
     if (!d->gmicProcessor->setProcessingCommand(command))
