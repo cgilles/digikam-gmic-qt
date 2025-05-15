@@ -37,14 +37,17 @@ public:
     explicit GmicQtProcessor(QObject* const parent = nullptr);
     ~GmicQtProcessor()                   override;
 
-    QString processingCommand()     const;
     QString filterName()            const;
+
+    bool setProcessingCommand(const QString& command);
+    QString processingCommand()     const;
+
+    void setInputImage(const DImg& inImage);
+    void startProcessingImage();
+
     bool processingComplete()       const;
     DImg outputImage()              const;
 
-    void setInputImage(const DImg& inImage);
-    bool setProcessingCommand(const QString& command);
-    void startProcessing();
     void cancel();
 
 Q_SIGNALS:

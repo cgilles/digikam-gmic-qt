@@ -146,7 +146,7 @@ bool GmicBqmTool::toolOperations()
         return false;
     }
 
-    d->gmicProcessor->startProcessing();
+    d->gmicProcessor->startProcessingImage();
 
     QEventLoop loop;
 

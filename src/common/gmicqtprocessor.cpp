@@ -76,7 +76,7 @@ bool GmicQtProcessor::setProcessingCommand(const QString& command)
 {
     if (command.isEmpty())
     {
-        qCWarning(DIGIKAM_DPLUGIN_BQM_LOG) << "The G'MIC command is empty.";
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "The G'MIC command is empty.";
 
         return false;
     }
@@ -89,19 +89,18 @@ bool GmicQtProcessor::setProcessingCommand(const QString& command)
     return true;
 }
 
-void GmicQtProcessor::startProcessing()
+void GmicQtProcessor::startProcessingImage()
 {
     gmic_list<char> imageNames;
 
     d->gmicImages->assign(1);
     imageNames.assign(1);
 
-    QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(QLatin1String("Batch Queue Manager"));
+    QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(d->inImage.originalFilePath());
     QByteArray ba = name.toUtf8();
     gmic_image<char>::string(ba.constData()).move_to(imageNames[0]);
 
-    qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "Processing image size"
-                                     << d->inImage.size();
+    qCDebug(DIGIKAM_DPLUGIN_LOG) << "Processing image size" << d->inImage.size();
 
     GMicQtImageConverter::convertDImgtoCImg(
                                             d->inImage.copy(
@@ -112,7 +111,7 @@ void GmicQtProcessor::startProcessing()
                                             *d->gmicImages[0]
                                            );
 
-    qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
+    qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
 
     QString env = QString::fromLatin1("_input_layers=%1").arg((int)DefaultInputMode);
     env        += QString::fromLatin1(" _output_mode=%1").arg((int)DefaultOutputMode);
@@ -154,11 +153,11 @@ void GmicQtProcessor::slotProcessingFinished()
     QString errorMessage;
     QStringList status = d->filterThread->gmicStatus();
 
-    qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "G'MIC Filter status" << status;
+    qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter status" << status;
 
     if (d->filterThread->failed())
     {
-        qCWarning(DIGIKAM_DPLUGIN_BQM_LOG) << "G'MIC Filter execution failed!";
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution failed!";
 
         errorMessage = d->filterThread->errorMessage();
 
@@ -167,7 +166,7 @@ void GmicQtProcessor::slotProcessingFinished()
             errorMessage = QLatin1String("G'MIC Filter execution failed without error message.");
         }
 
-        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << errorMessage;
+        qCDebug(DIGIKAM_DPLUGIN_LOG) << errorMessage;
         d->completed = false;
     }
     else
@@ -182,13 +181,13 @@ void GmicQtProcessor::slotProcessingFinished()
                                                     d->inImage.sixteenBit()
                                                    );
 
-            qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "G'MIC Filter execution completed!";
+            qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution completed!";
 
             d->completed = true;
         }
         else
         {
-            qCWarning(DIGIKAM_DPLUGIN_BQM_LOG) << "G'MIC Filter execution aborted...";
+            qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution aborted...";
         }
 
     }
