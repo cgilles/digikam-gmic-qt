@@ -45,6 +45,9 @@ public:
     void setInputImage(const DImg& inImage);
     void startProcessingImage();
 
+    void setInputFiles(const QStringList& inFiles);
+    void startProcessingFiles();
+
     bool processingComplete()       const;
     DImg outputImage()              const;
 

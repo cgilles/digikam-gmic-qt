@@ -42,7 +42,7 @@ public:
 public:
 
     FilterThread*                   filterThread = nullptr;
-    gmic_library::gmic_list<float>* gmicImages   = new gmic_library::gmic_list<gmic_pixel_type>;
+    gmic_library::gmic_list<float>* gmicImages   = nullptr;
 
     QTimer                          timer;
     QString                         filterName;
@@ -51,6 +51,7 @@ public:
     bool                            completed    = false;
 
     DImg                            inImage;
+    QStringList                     inFiles;
     DImg                            outImage;
 };
 
@@ -70,6 +71,11 @@ GmicQtProcessor::~GmicQtProcessor()
 void GmicQtProcessor::setInputImage(const DImg& inImage)
 {
     d->inImage = inImage;
+}
+
+void GmicQtProcessor::setInputFiles(const QStringList& inFiles)
+{
+    d->inFiles = inFiles;
 }
 
 bool GmicQtProcessor::setProcessingCommand(const QString& command)
@@ -93,6 +99,7 @@ void GmicQtProcessor::startProcessingImage()
 {
     gmic_list<char> imageNames;
 
+    d->gmicImages = new gmic_library::gmic_list<gmic_pixel_type>;
     d->gmicImages->assign(1);
     imageNames.assign(1);
 
@@ -110,6 +117,71 @@ void GmicQtProcessor::startProcessingImage()
                                                            ),
                                             *d->gmicImages[0]
                                            );
+
+    qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
+
+    QString env = QString::fromLatin1("_input_layers=%1").arg((int)DefaultInputMode);
+    env        += QString::fromLatin1(" _output_mode=%1").arg((int)DefaultOutputMode);
+    env        += QString::fromLatin1(" _output_messages=%1").arg((int)OutputMessageMode::VerboseConsole);
+
+    d->filterThread = new FilterThread(this,
+                                       QLatin1String("skip 0"),
+                                       d->command,
+                                       env);
+
+    d->filterThread->swapImages(*d->gmicImages);
+    d->filterThread->setImageNames(imageNames);
+
+    d->completed = false;
+
+    connect(d->filterThread, &FilterThread::finished,
+            this, &GmicQtProcessor::slotProcessingFinished);
+
+    d->timer.setInterval(250);
+
+    connect(&d->timer, &QTimer::timeout,
+            this, &GmicQtProcessor::slotSendProgressInformation);
+
+    d->timer.start();
+    d->filterThread->start();
+}
+
+void GmicQtProcessor::startProcessingFiles()
+{
+    gmic_list<char> imageNames;
+
+    qCDebug(DIGIKAM_DPLUGIN_LOG) << "Processing images as layers:" << d->inFiles.size();
+
+    d->gmicImages = new gmic_library::gmic_list<gmic_pixel_type>(d->inFiles.size());
+    d->gmicImages->assign(d->inFiles.size());
+    imageNames.assign(d->inFiles.size());
+
+    for (int i = 0 ; i < d->inFiles.size() ; i++)
+    {
+        QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(d->inFiles[i]);
+        QByteArray ba = name.toUtf8();
+        gmic_image<char>::string(ba.constData()).move_to(imageNames[i]);
+
+        qCDebug(DIGIKAM_DPLUGIN_LOG) << "Converting image" << d->inFiles[i];
+
+        bool b = d->inImage.load(d->inFiles[i]);
+
+        if (b)
+        {
+            GMicQtImageConverter::convertDImgtoCImg(
+                                                    d->inImage.copy(
+                                                                    0, 0,
+                                                                    d->inImage.width(),
+                                                                    d->inImage.height()
+                                                                   ),
+                                                    *d->gmicImages[i]
+                                                   );
+        }
+        else
+        {
+            qCCritical(DIGIKAM_DPLUGIN_LOG) << "Error while loading" << d->inFiles[i];
+        }
+    }
 
     qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
 
