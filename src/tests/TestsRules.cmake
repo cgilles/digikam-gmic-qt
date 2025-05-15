@@ -33,22 +33,22 @@ target_link_libraries(GmicQt_FilterSelector_test
 
 ###########################################################################################@@
 
-set(ProcessorOneImage_test_SRCS
+set(ProcessorBqm_test_SRCS
     ${CMAKE_SOURCE_DIR}/src/tests/host_test.cpp
-    ${CMAKE_SOURCE_DIR}/src/tests/main_processor_oneimage.cpp
+    ${CMAKE_SOURCE_DIR}/src/tests/main_processor_bqm.cpp
 )
 
-foreach(_file ${ProcessorOneImage_test_SRCS})
+foreach(_file ${ProcessorBqm_test_SRCS})
     set_property(SOURCE ${_file} PROPERTY COMPILE_DEFINITIONS ${modern_qt_definitions})
 endforeach()
 
-add_executable(GmicQt_Processor_OneImage_test
+add_executable(GmicQt_Processor_Bqm_test
                ${gmic_qt_QRC}
                ${gmic_qt_QM}
-               ${ProcessorOneImage_test_SRCS}
+               ${ProcessorBqm_test_SRCS}
 )
 
-target_link_libraries(GmicQt_Processor_OneImage_test
+target_link_libraries(GmicQt_Processor_Bqm_test
                       PRIVATE
 
                       gmic_qt_common
