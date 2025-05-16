@@ -20,12 +20,12 @@
 
 // Local includes
 
+#include "GmicQt.h"
 #include "Common.h"
 #include "FilterThread.h"
 #include "GmicStdlib.h"
 #include "Misc.h"
 #include "Updater.h"
-#include "GmicQt.h"
 #include "gmicqtimageconverter.h"
 
 using namespace GmicQt;
@@ -42,7 +42,7 @@ public:
 public:
 
     FilterThread*                   filterThread = nullptr;
-    gmic_library::gmic_list<float>* gmicImages   = nullptr;
+    gmic_library::gmic_list<float>* gmicImages   = new gmic_library::gmic_list<float>;
 
     QTimer                          timer;
     QString                         filterName;
@@ -60,6 +60,7 @@ GmicQtProcessor::GmicQtProcessor(QObject* const parent)
       d      (new Private)
 {
     GmicStdLib::Array = Updater::getInstance()->buildFullStdlib();
+    d->gmicImages->assign();
 }
 
 GmicQtProcessor::~GmicQtProcessor()
@@ -99,7 +100,6 @@ void GmicQtProcessor::startProcessingImage()
 {
     gmic_list<char> imageNames;
 
-    d->gmicImages = new gmic_library::gmic_list<gmic_pixel_type>;
     d->gmicImages->assign(1);
     imageNames.assign(1);
 
@@ -152,11 +152,10 @@ void GmicQtProcessor::startProcessingFiles()
 
     qCDebug(DIGIKAM_DPLUGIN_LOG) << "Processing images as layers:" << d->inFiles.size();
 
-    d->gmicImages = new gmic_library::gmic_list<gmic_pixel_type>(d->inFiles.size());
     d->gmicImages->assign(d->inFiles.size());
     imageNames.assign(d->inFiles.size());
 
-    for (int i = 0 ; i < d->inFiles.size() ; i++)
+    for (int i = 0 ; i < d->inFiles.size() ; ++i)
     {
         QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(d->inFiles[i]);
         QByteArray ba = name.toUtf8();
