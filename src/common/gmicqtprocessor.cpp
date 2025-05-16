@@ -37,12 +37,15 @@ class Q_DECL_HIDDEN GmicQtProcessor::Private
 {
 public:
 
-    Private() = default;
+    Private()
+        : gmicImages(new gmic_library::gmic_list<gmic_pixel_type>)
+    {
+    }
 
 public:
 
     FilterThread*                   filterThread = nullptr;
-    gmic_library::gmic_list<float>* gmicImages   = new gmic_library::gmic_list<float>;
+    gmic_library::gmic_list<float>* gmicImages   = nullptr;
 
     QTimer                          timer;
     QString                         filterName;
