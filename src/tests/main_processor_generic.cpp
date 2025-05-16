@@ -49,7 +49,9 @@ int main(int argc, char* argv[])
     QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
-    parser.addPositionalArgument(QString::fromLatin1("image paths"), QLatin1String("Image file paths"), QString::fromLatin1("[paths]"));
+    parser.addPositionalArgument(QString::fromLatin1("image paths"),
+                                 QLatin1String("Image file paths"),
+                                 QString::fromLatin1("[paths]"));
     parser.process(app);
 
     DImg img;
@@ -67,7 +69,7 @@ int main(int argc, char* argv[])
         if (!gmicProcessor->setProcessingCommand(command))
         {
             delete gmicProcessor;
-            qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicBqmTool: cannot setup G'MIC filter!";
+            qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: cannot setup G'MIC filter!";
 
             return (-1);
         }
@@ -79,15 +81,15 @@ int main(int argc, char* argv[])
         QObject::connect(gmicProcessor, SIGNAL(signalDone(QString)),
                          &loop, SLOT(quit()));
 
-        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicBqmTool: started G'MIC filter...";
+        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: started G'MIC filter...";
 
         loop.exec();
 
         bool b = gmicProcessor->processingComplete();
 
-        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicBqmTool: G'MIC filter completed:" << b;
+        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: G'MIC filter completed:" << b;
 
-        gmicProcessor->outputImage().save(paths.constFirst() + QLatin1String("_gmic.jpg"), QLatin1String("JPG"));
+        gmicProcessor->outputImage().save(QLatin1String("out.jpg"), QLatin1String("JPG"));
 
         delete gmicProcessor;
     }
