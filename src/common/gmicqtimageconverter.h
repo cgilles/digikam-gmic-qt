@@ -28,7 +28,7 @@ namespace DigikamGmicQtPluginCommon
 {
 
 /**
- * Helper methods for Digikam::DImg to CImg image data container conversions and vis-versa.
+ * @brief Helper methods for Digikam::DImg to CImg image data container conversions and vis-versa.
  */
 class GMicQtImageConverter
 {

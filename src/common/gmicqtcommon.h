@@ -32,22 +32,22 @@ namespace DigikamGmicQtPluginCommon
 {
 
 /**
- * Return the G'MIC plugin description and details.
+ * @return the G'MIC plugin description and details.
  */
 QString              s_gmicQtPluginDetails(const QString& title);
 
 /**
- * Return the G'MIC plugin authors list.
+ * @return the G'MIC plugin authors list.
  */
 QList<DPluginAuthor> s_gmicQtPluginAuthors();
 
 /**
- * Return the G'MIC plugin icon.
+ * @return the G'MIC plugin icon.
  */
 QIcon                s_gmicQtPluginIcon();
 
 /**
- * Return the digiKam image versioning container populated with the G'MIC filter properties.
+ * @return the digiKam image versioning container populated with the G'MIC filter properties.
  */
 FilterAction         s_gmicQtFilterAction(const QString& gmicCommand,
                                           const QString& filterPath,
@@ -56,7 +56,7 @@ FilterAction         s_gmicQtFilterAction(const QString& gmicCommand,
                                           const QString& filterName);
 
 /**
- * Populate the dialog Help Button with about and documentation support.
+ * @brief Populate the dialog Help Button with about and documentation support.
  */
 void s_gmicQtPluginPopulateHelpButton(QWidget* const parent,
                                       DPlugin* const tool,

@@ -38,53 +38,53 @@ public:
     ~GmicQtProcessor()                   override;
 
     /**
-     * Set the Gmic command to process. More than one command can be chained using space separator.
+     * @brief Set the G'MIC command to process. More than one command can be chained using space separator.
      */
     bool setProcessingCommand(const QString& command);
     QString processingCommand()     const;
 
     /**
-     * Return a litteral name of the Gmic command.
+     * @return a litteral name of the G'MIC command.
      */
     QString filterName()            const;
 
     /**
-     * Process one single image. Used by the BQM plugin.
+     * @brief Process one single image. Used by the BQM plugin.
      */
     void setInputImage(const DImg& inImage);
     void startProcessingImage();
 
     /**
-     * Process multiple files as layer. Used by the Generic plugin.
+     * @brief Process multiple files as layer. Used by the Generic plugin.
      */
     void setInputFiles(const QStringList& inFiles);
     void startProcessingFiles();
 
     /**
-     * Return true if the Gmic processing is completed.
+     * @return true if the G'MIC processing is completed.
      */
     bool processingComplete()       const;
 
     /**
-     * Return the result image processed by the Gmic command.
+     * @return the result image processed by the G'MIC command.
      */
     DImg outputImage()              const;
 
     /**
-     * Allow to cancel the current Gmic command process.
+     * @brief Allow to cancel the current G'MIC command process.
      */
     void cancel();
 
 Q_SIGNALS:
 
     /**
-     * Emitted when the processing is complete.
-     * errorMessage contains a litteral string of the error occured during Gmic processing, if any.
+     * @brief Emitted when the G'MIC processing is complete.
+     * @param errorMessage contains a litteral string of the error occured during Gmic processing, if any.
      */
     void signalDone(const QString& errorMessage);
 
     /**
-     * Return a progress value during Gmic processing.
+     * @brief Emit a progress value during G'MIC processing.
      */
     void signalProgress(float progress);
 
