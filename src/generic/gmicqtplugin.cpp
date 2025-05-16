@@ -27,6 +27,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QImageWriter>
+#include <QFuture>
+#include <QtConcurrentRun>
 
 // Libfftw includes
 
@@ -221,8 +223,8 @@ void GmicQtPlugin::slotGmicQt()
 
         if (!newURL.isValid())
         {
-            QMessageBox::critical(nullptr, QObject::tr("Cannot Save File"),
-                                  QObject::tr("Failed to save file\n\"%1\" to\n\"%2\".")
+            QMessageBox::critical(nullptr, QObject::tr("Cannot Create File"),
+                                  QObject::tr("Failed to create file\n\"%1\" to\n\"%2\".")
                                   .arg(newURL.fileName())
                                   .arg(QDir::toNativeSeparators(newURL.toLocalFile().section(QLatin1Char('/'), -2, -2))));
 
@@ -254,7 +256,39 @@ void GmicQtPlugin::slotGmicQt()
 
         delete imageFileSaveDialog;
 
-        runGmicProcessor(clipboard->text(), newURL.toLocalFile(), format);
+        QFuture<bool> task = QtConcurrent::run(
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+
+                                               &GmicQtPlugin::runGmicProcessor, this,
+
+#else
+
+                                               this, &GmicQtPlugin::runGmicProcessor,
+
+#endif
+
+                                               clipboard->text(),
+                                               newURL.toLocalFile(),
+                                               format
+                                              );
+        task.waitForFinished();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+
+        bool ret = task.takeResult();
+
+#else
+
+        bool ret = task.result();
+
+#endif
+
+        if (!ret)
+        {
+            QMessageBox::critical(nullptr, QObject::tr("Cannot Process Filter"),
+                                  QObject::tr("Failed to process the G'MIC filter and save data."));
+        }
     }
     else
     {
@@ -303,7 +337,8 @@ bool GmicQtPlugin::runGmicProcessor(const QString& command, const QString& outpu
 
     if (b)
     {
-        gmicProcessor->outputImage().save(outputPath, outputFormat);
+         b = gmicProcessor->outputImage().save(outputPath, outputFormat);
+         qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: G'MIC save data completed:" << b;
     }
 
     delete gmicProcessor;

@@ -13,6 +13,30 @@ index 47face8..a3a2fa1 100644
    else()
    set (GMIC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../gmic/src" CACHE STRING "Define the path to the gmic headers")
    endif()
+@@ -168,6 +168,7 @@ if(BUILD_WITH_QT6)
+             Gui
+             Widgets
+             Network
++            Concurrent
+     )
+ 
+     #
+@@ -188,6 +189,7 @@ else()
+             Gui
+             Widgets
+             Network
++            Concurrent
+     )
+ 
+     #
+@@ -308,6 +310,7 @@ set(gmic_qt_LIBRARIES
+         Qt${QT_VERSION_MAJOR}::Widgets
+         Qt${QT_VERSION_MAJOR}::Gui
+         Qt${QT_VERSION_MAJOR}::Network
++        Qt${QT_VERSION_MAJOR}::Concurrent
+         ${PNG_LIBRARIES}
+         ${FFTW3_LIBRARIES}
+         ${ZLIB_LIBRARIES}
 @@ -781,6 +781,11 @@ elseif (${GMIC_QT_HOST} STREQUAL "8bf")
  	${LCMS2_LIBRARIES}
      )

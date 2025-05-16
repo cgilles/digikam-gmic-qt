@@ -168,6 +168,7 @@ if(BUILD_WITH_QT6)
             Gui
             Widgets
             Network
+            Concurrent
     )
 
     #
@@ -188,6 +189,7 @@ else()
             Gui
             Widgets
             Network
+            Concurrent
     )
 
     #
@@ -308,6 +310,7 @@ set(gmic_qt_LIBRARIES
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Gui
         Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::Concurrent
         ${PNG_LIBRARIES}
         ${FFTW3_LIBRARIES}
         ${ZLIB_LIBRARIES}
