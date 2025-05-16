@@ -51,6 +51,10 @@ public:
 private Q_SLOTS:
 
     void slotGmicQt();
+
+private:
+
+    bool runGmicProcessor(const QString& command, const QString& outputPath, const QString& outputFormat);
 };
 
 } // namespace DigikamGenericGmicQtPlugin

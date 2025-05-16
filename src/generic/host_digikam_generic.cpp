@@ -27,7 +27,6 @@
 #include "digikam_debug.h"
 #include "dinfointerface.h"
 #include "previewloadthread.h"
-#include "imagedialog.h"
 
 // Local includes
 
@@ -175,15 +174,7 @@ void outputImages(cimg_library::CImgList<gmic_pixel_type>& images,  // cppcheck-
                   const cimg_library::CImgList<char>& imageNames,
                   GmicQt::OutputMode mode)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt outputImages()";
-
-    if (images.size() > 0)
-    {
-        s_currentAlbumUrl = ImageDialog::getImageURL(qApp->activeWindow(), s_currentAlbumUrl,
-                                                     QObject::tr("Output Image File"));
-
-    }
-
+    Q_UNUSED(images);
     Q_UNUSED(imageNames);
     Q_UNUSED(mode);
 }
