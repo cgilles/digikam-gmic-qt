@@ -129,12 +129,12 @@ void GmicQtPlugin::slotGmicQt()
     QClipboard* const clipboard = QGuiApplication::clipboard();
     clipboard->clear();
 
-    GmicQtWindow::execWindow(
-                             this,                      // Plugin instance.
-                             GmicQtWindow::Generic      // Host type.
-                            );
+    QString fname = GmicQtWindow::execWindow(
+                                             this,                      // Plugin instance.
+                                             GmicQtWindow::Generic      // Host type.
+                                            );
 
-    if (!clipboard->text().isEmpty())
+    if (!clipboard->text().isEmpty() && !fname.isEmpty())
     {
         QStringList writableMimetypes;
         QList<QByteArray> supported = QImageWriter::supportedMimeTypes();
