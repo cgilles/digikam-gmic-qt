@@ -28,6 +28,11 @@
 #include "Updater.h"
 #include "gmicqtimageconverter.h"
 
+namespace gmic_library
+{
+template <typename T> struct gmic_list;
+}
+
 using namespace GmicQt;
 
 namespace DigikamGmicQtPluginCommon
@@ -103,7 +108,8 @@ void GmicQtProcessor::startProcessingImage()
 {
     gmic_list<char> imageNames;
 
-    d->gmicImages->assign(1);
+    gmic_library::gmic_list<float>& images = *d->gmicImages;
+    images.assign(1);
     imageNames.assign(1);
 
     QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(d->inImage.originalFilePath());
@@ -118,7 +124,7 @@ void GmicQtProcessor::startProcessingImage()
                                                             d->inImage.width(),
                                                             d->inImage.height()
                                                            ),
-                                            *d->gmicImages[0]
+                                            images[0]
                                            );
 
     qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
@@ -132,7 +138,7 @@ void GmicQtProcessor::startProcessingImage()
                                        d->command,
                                        env);
 
-    d->filterThread->swapImages(*d->gmicImages);
+    d->filterThread->swapImages(images);
     d->filterThread->setImageNames(imageNames);
 
     d->completed = false;
@@ -155,7 +161,8 @@ void GmicQtProcessor::startProcessingFiles()
 
     qCDebug(DIGIKAM_DPLUGIN_LOG) << "Processing images as layers:" << d->inFiles.size();
 
-    d->gmicImages->assign(d->inFiles.size());
+    gmic_library::gmic_list<float>& images = *d->gmicImages;
+    images.assign(d->inFiles.size());
     imageNames.assign(d->inFiles.size());
 
     for (int i = 0 ; i < d->inFiles.size() ; ++i)
@@ -176,7 +183,7 @@ void GmicQtProcessor::startProcessingFiles()
                                                                     d->inImage.width(),
                                                                     d->inImage.height()
                                                                    ),
-                                                    *d->gmicImages[i]
+                                                    images[i]
                                                    );
         }
         else
@@ -196,7 +203,7 @@ void GmicQtProcessor::startProcessingFiles()
                                        d->command,
                                        env);
 
-    d->filterThread->swapImages(*d->gmicImages);
+    d->filterThread->swapImages(images);
     d->filterThread->setImageNames(imageNames);
 
     d->completed = false;
