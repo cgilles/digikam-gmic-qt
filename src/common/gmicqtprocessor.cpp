@@ -171,7 +171,7 @@ void GmicQtProcessor::startProcessingFiles()
         QByteArray ba = name.toUtf8();
         gmic_image<char>::string(ba.constData()).move_to(imageNames[i]);
 
-        qCDebug(DIGIKAM_DPLUGIN_LOG) << "Converting image" << d->inFiles[i];
+        Q_EMIT signalProgressInfo(tr("Converting image\n%1").arg(d->inFiles[i]));
 
         bool b = d->inImage.load(d->inFiles[i]);
 
@@ -192,7 +192,7 @@ void GmicQtProcessor::startProcessingFiles()
         }
     }
 
-    qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
+    Q_EMIT signalProgressInfo(tr("Running G'MIC command\n%1").arg(d->command));
 
     QString env = QString::fromLatin1("_input_layers=%1").arg((int)DefaultInputMode);
     env        += QString::fromLatin1(" _output_mode=%1").arg((int)DefaultOutputMode);

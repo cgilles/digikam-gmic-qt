@@ -27,8 +27,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QImageWriter>
-#include <QFuture>
-#include <QtConcurrentRun>
 
 // Libfftw includes
 
@@ -41,14 +39,14 @@
 #include "dinfointerface.h"
 #include "digikam_debug.h"
 #include "dfiledialog.h"
+#include "dimg.h"
 
 // Local includes
 
 #include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
-#include "gmicqtprocessor.h"
+#include "gmicqtprocessordlg.h"
 #include "gmic.h"
-
 
 using namespace GmicQt;
 using namespace DigikamGmicQtPluginCommon;
@@ -235,115 +233,26 @@ void GmicQtPlugin::slotGmicQt()
             return;
         }
 
-        // Check for overwrite ----------------------------------------------------------
-
-        if (fi.exists())
-        {
-            int result = QMessageBox::warning(nullptr, QObject::tr("Overwrite File?"),
-                                              QObject::tr("A file named \"%1\" already "
-                                                          "exists. Are you sure you want "
-                                                          "to overwrite it?")
-                                                          .arg(newURL.fileName()),
-                                              QMessageBox::Yes | QMessageBox::No);
-
-            if (result != QMessageBox::Yes)
-            {
-                delete imageFileSaveDialog;
-
-                return;
-            }
-        }
-
         delete imageFileSaveDialog;
 
-        QFuture<bool> task = QtConcurrent::run(
+        QStringList paths;
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-
-                                               &GmicQtPlugin::runGmicProcessor, this,
-
-#else
-
-                                               this, &GmicQtPlugin::runGmicProcessor,
-
-#endif
-
-                                               clipboard->text(),
-                                               newURL.toLocalFile(),
-                                               format
-                                              );
-        task.waitForFinished();
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-
-        bool ret = task.takeResult();
-
-#else
-
-        bool ret = task.result();
-
-#endif
-
-        if (!ret)
+        for (const QUrl& url : s_urlList)
         {
-            QMessageBox::critical(nullptr, QObject::tr("Cannot Process Filter"),
-                                  QObject::tr("Failed to process the G'MIC filter and save data."));
+            paths.append(url.toLocalFile());
         }
+
+        GmicQtProcessorDlg* const dlg = new GmicQtProcessorDlg;
+
+        dlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
+        dlg->exec();
+
+        delete dlg;
     }
     else
     {
         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC Generic tool aborted";
     }
-}
-
-bool GmicQtPlugin::runGmicProcessor(const QString& command, const QString& outputPath, const QString& outputFormat)
-{
-    QStringList paths;
-
-    for (const QUrl& url : s_urlList)
-    {
-        paths.append(url.toLocalFile());
-    }
-
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GMic selected command:" << command;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process    :" << paths;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image file     :" << outputPath;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image format   :" << outputFormat;
-
-    GmicQtProcessor* const gmicProcessor = new GmicQtProcessor();
-    gmicProcessor->setInputFiles(paths);
-
-    if (!gmicProcessor->setProcessingCommand(command))
-    {
-        delete gmicProcessor;
-        qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: cannot setup G'MIC filter!";
-
-        return false;
-    }
-
-    gmicProcessor->startProcessingFiles();
-
-    QEventLoop loop;
-
-    QObject::connect(gmicProcessor, SIGNAL(signalDone(QString)),
-                     &loop, SLOT(quit()));
-
-    qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: started G'MIC filter...";
-
-    loop.exec();
-
-    bool b = gmicProcessor->processingComplete();
-    qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: G'MIC filter completed:" << b;
-
-    if (b)
-    {
-         b = gmicProcessor->outputImage().save(outputPath, outputFormat);
-         qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "GmicGenericTool: G'MIC save data completed:" << b;
-    }
-
-    delete gmicProcessor;
-
-    return b;
 }
 
 } // namespace DigikamGenericGmicQtPlugin

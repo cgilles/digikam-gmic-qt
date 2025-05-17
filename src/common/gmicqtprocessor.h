@@ -85,8 +85,12 @@ Q_SIGNALS:
 
     /**
      * @brief Emit a progress value during G'MIC processing.
+     * This depend of the filter implementation.
+     * If no feedback is suported in the filter, -1 is always sent.
      */
     void signalProgress(float progress);
+
+    void signalProgressInfo(const QString& info);
 
 private Q_SLOTS:
 

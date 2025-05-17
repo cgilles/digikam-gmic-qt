@@ -8,6 +8,7 @@
 
 set(gmicqt_generic_SRCS
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtplugin.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/gmicqtprocessordlg.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/host_digikam_generic.cpp
 )
 
