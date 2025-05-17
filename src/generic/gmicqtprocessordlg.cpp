@@ -23,12 +23,15 @@
 #include <QImage>
 #include <QByteArray>
 #include <QBuffer>
+#include <QGridLayout>
+#include <QDialogButtonBox>
 
 // digiKam includes
 
 #include "dimg.h"
 #include "digikam_debug.h"
 #include "ditemtooltip.h"
+#include "dhistoryview.h"
 
 // Local includes
 
@@ -95,7 +98,7 @@ void GmicQtProcessorThread::run()
         {
             qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-            Q_EMIT signalProgressInfo(tr("Save data into<br>%1").arg(m_outputPath));
+            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(m_outputPath));
 
             if (m_proc->outputImage().save(m_outputPath, m_outputFormat))
             {
@@ -127,27 +130,66 @@ public:
 
 public:
 
-    GmicQtProcessorThread* thread   = nullptr;
-    QPushButton*           closeBtn = nullptr;
-    QString                title    = tr("Processing G'MIC filter. Please wait...");
+    GmicQtProcessorThread* thread  = nullptr;
+    DHistoryView*          history = nullptr;
+    QDialogButtonBox*      buttons = nullptr;
+    QProgressBar*          pbar    = nullptr;
 };
 
 GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
-    : QProgressDialog(parent, Qt::FramelessWindowHint),
-      d              (new Private)
+    : QDialog(parent, Qt::FramelessWindowHint),
+      d      (new Private)
 {
-    setMessage(d->title);
+    d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Close, this);
+    d->buttons->button(QDialogButtonBox::Close)->setVisible(false);
 
-    d->closeBtn = new QPushButton(tr("Close"));
-    setCancelButton(d->closeBtn);
-    d->closeBtn->setVisible(false);
-    setMinimumDuration(0);
-    setModal(true);
-    setAutoClose(false);
+    QWidget* const page     = new QWidget(this);
+    QGridLayout* const grid = new QGridLayout(page);
 
-    setMinimum(0);
-    setMaximum(0);
-    setValue(0);
+    // --------------------------------------------------------
+
+    QLabel* const logo      = new QLabel(page);
+    logo->setPixmap(s_gmicQtPluginIcon().pixmap(48, 48));
+
+    // --------------------------------------------------------
+
+    QLabel* const header    = new QLabel(page);
+    header->setWordWrap(true);
+    header->setText(tr("Processing G'MIC Filter"));
+
+    // --------------------------------------------------------
+
+    d->history              = new DHistoryView(page);
+    d->pbar                 = new QProgressBar(page);
+    d->pbar->setMinimum(0);
+    d->pbar->setMaximum(0);
+    d->pbar->setValue(0);
+
+    // --------------------------------------------------------
+
+    grid->addWidget(logo,        0, 0, 1, 1);
+    grid->addWidget(header,      0, 1, 1, 1);
+    grid->addWidget(d->history,  1, 0, 1, 2);
+    grid->addWidget(d->pbar,     2, 0, 1, 2);
+    grid->setColumnStretch(1, 10);
+    grid->setRowStretch(1, 10);
+    grid->setContentsMargins(QMargins());
+    grid->setSpacing(layoutSpacing());
+
+    QVBoxLayout* const vbx = new QVBoxLayout(this);
+    vbx->addWidget(page);
+    vbx->addWidget(d->buttons);
+    setLayout(vbx);
+
+    resize(600, 400);
+
+    // --------------------------------------------------------
+
+    connect(d->buttons->button(QDialogButtonBox::Close), SIGNAL(clicked()),
+            this, SLOT(accept()));
+
+    connect(d->buttons->button(QDialogButtonBox::Help), SIGNAL(clicked()),
+            this, SLOT(slotHelp()));
 
     d->thread = new GmicQtProcessorThread(this);
 
@@ -174,44 +216,24 @@ void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
 
 void GmicQtProcessorDlg::slotProgressInfo(const QString& info)
 {
-    setMessage(QString::fromUtf8("%1<br>%2").arg(d->title).arg(info));
+    d->history->addEntry(info, DHistoryView::ProgressEntry);
 }
 
 void GmicQtProcessorDlg::slotComplete(const QString& error)
 {
-    d->closeBtn->setVisible(true);
-    setMaximum(1);
-    setValue(1);
+    d->buttons->button(QDialogButtonBox::Close)->setVisible(true);
+    d->pbar->setMaximum(1);
+    d->pbar->setValue(1);
 
     if (error.isEmpty())
     {
-        setMessage(tr("G'MIC filter is done"));
+        d->history->addEntry(tr("G'MIC filter is done"), DHistoryView::SuccessEntry);
     }
     else
     {
-        setMessage(tr("Error while processing G'MIC filter:<br>%1").arg(error));
+        d->history->addEntry(tr("Error while processing G'MIC filter"), DHistoryView::ErrorEntry);
+        d->history->addEntry(error, DHistoryView::ErrorEntry);
     }
-}
-
-void GmicQtProcessorDlg::setMessage(const QString& txt)
-{
-    QString rtxt;
-    DToolTipStyleSheet cnt;
-
-    QImage img = s_gmicQtPluginIcon().pixmap(48, 48).toImage();
-    QByteArray byteArray;
-    QBuffer    buffer(&byteArray);
-    img.save(&buffer, "PNG");
-
-    rtxt += QLatin1String("<qt><table>");
-    rtxt += cnt.cellBeg +
-            QString::fromLatin1("<img src=\"data:image/png;base64,%1\">").arg(QString::fromLatin1(byteArray.toBase64().data())) +
-            cnt.cellMid +
-            txt         +
-            cnt.cellEnd;
-    rtxt += QLatin1String("</table></center></qt>");
-
-    setLabelText(rtxt);
 }
 
 } // namespace DigikamGenericGmicQtPlugin

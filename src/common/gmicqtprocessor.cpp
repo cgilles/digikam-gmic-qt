@@ -172,7 +172,7 @@ void GmicQtProcessor::startProcessingFiles()
         QByteArray ba = name.toUtf8();
         gmic_image<char>::string(ba.constData()).move_to(imageNames[i]);
 
-        Q_EMIT signalProgressInfo(tr("Converting image<br>%1").arg(QFileInfo(d->inFiles[i]).fileName()));
+        Q_EMIT signalProgressInfo(tr("Converting image %1").arg(QFileInfo(d->inFiles[i]).fileName()));
 
         bool b = d->inImage.load(d->inFiles[i]);
 
@@ -193,7 +193,7 @@ void GmicQtProcessor::startProcessingFiles()
         }
     }
 
-    Q_EMIT signalProgressInfo(tr("Running G'MIC filter<br>%1").arg(DToolTipStyleSheet().elidedText(d->command, Qt::ElideRight)));
+    Q_EMIT signalProgressInfo(tr("Running G'MIC filter %1").arg(DToolTipStyleSheet().elidedText(d->command, Qt::ElideRight)));
 
     QString env = QString::fromLatin1("_input_layers=%1").arg((int)DefaultInputMode);
     env        += QString::fromLatin1(" _output_mode=%1").arg((int)DefaultOutputMode);

@@ -19,7 +19,7 @@
 #include <QThread>
 #include <QString>
 #include <QStringList>
-#include <QProgressDialog>
+#include <QDialog>
 
 // Local includes
 
@@ -64,7 +64,7 @@ private:
 
 // ----------------------------------------------------------------------------------
 
-class GmicQtProcessorDlg : public QProgressDialog
+class GmicQtProcessorDlg : public QDialog
 {
     Q_OBJECT
 
@@ -82,10 +82,6 @@ public Q_SLOTS:
 
     void slotProgressInfo(const QString& info);
     void slotComplete(const QString& error);
-
-private:
-
-    void setMessage(const QString& txt);
 
 private:
 
