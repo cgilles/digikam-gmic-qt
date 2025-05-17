@@ -46,8 +46,8 @@ public:
 
 Q_SIGNALS:
 
-    void signalComplete();
-    void signalProgressInfo(const QString&);
+    void signalComplete(const QString& error);
+    void signalProgressInfo(const QString& info);
 
 private:
 
@@ -80,7 +80,12 @@ public:
 
 public Q_SLOTS:
 
-    void slotComplete();
+    void slotProgressInfo(const QString& info);
+    void slotComplete(const QString& error);
+
+private:
+
+    void setMessage(const QString& txt);
 
 private:
 

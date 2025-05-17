@@ -19,11 +19,20 @@
 #include <QPushButton>
 #include <QProgressBar>
 #include <QEventLoop>
+#include <QLabel>
+#include <QImage>
+#include <QByteArray>
+#include <QBuffer>
 
 // digiKam includes
 
 #include "dimg.h"
 #include "digikam_debug.h"
+#include "ditemtooltip.h"
+
+// Local includes
+
+#include "gmicqtcommon.h"
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -56,6 +65,8 @@ void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
 
 void GmicQtProcessorThread::run()
 {
+    QString error;
+
     m_proc = new GmicQtProcessor();
 
     connect(m_proc, SIGNAL(signalProgressInfo(QString)),
@@ -65,7 +76,7 @@ void GmicQtProcessorThread::run()
 
     if (!m_proc->setProcessingCommand(m_command))
     {
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: cannot setup G'MIC filter!";
+        error = tr("Cannot setup G'MIC filter!");
     }
     else
     {
@@ -80,21 +91,30 @@ void GmicQtProcessorThread::run()
 
         loop.exec();
 
-        bool b = m_proc->processingComplete();
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed:" << b;
-
-        if (b)
+        if (m_proc->processingComplete())
         {
-            Q_EMIT signalProgressInfo(tr("Save data into\n%1").arg(m_outputPath));
+            qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-            b = m_proc->outputImage().save(m_outputPath, m_outputFormat);
-            qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed:" << b;
+            Q_EMIT signalProgressInfo(tr("Save data into<br>%1").arg(m_outputPath));
+
+            if (m_proc->outputImage().save(m_outputPath, m_outputFormat))
+            {
+                qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
+            }
+            else
+            {
+                error = tr("Cannot save G'MIC filter data!");
+            }
+        }
+        else
+        {
+            error = tr("Cannot process G'MIC filter!");
         }
     }
 
     delete m_proc;
 
-    Q_EMIT signalComplete();
+    Q_EMIT signalComplete(error);
 }
 
 // ----------------------------------------------------------------------------------
@@ -107,16 +127,20 @@ public:
 
 public:
 
-    GmicQtProcessorThread* thread = nullptr;
+    GmicQtProcessorThread* thread   = nullptr;
+    QPushButton*           closeBtn = nullptr;
+    QString                title    = tr("Processing G'MIC filter. Please wait...");
 };
 
 GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
     : QProgressDialog(parent, Qt::FramelessWindowHint),
       d              (new Private)
 {
-    QString title = tr("Processing G'MIC filter. Please wait...");
-    setLabelText(title);
-    setCancelButton(nullptr);
+    setMessage(d->title);
+
+    d->closeBtn = new QPushButton(tr("Close"));
+    setCancelButton(d->closeBtn);
+    d->closeBtn->setVisible(false);
     setMinimumDuration(0);
     setModal(true);
     setAutoClose(false);
@@ -127,15 +151,11 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
 
     d->thread = new GmicQtProcessorThread(this);
 
-    connect(d->thread, SIGNAL(signalComplete()),
-            this, SLOT(slotComplete()));
+    connect(d->thread, SIGNAL(signalComplete(QString)),
+            this, SLOT(slotComplete(QString)));
 
-    connect(d->thread, &GmicQtProcessorThread::signalProgressInfo,
-            [=](const QString& info)
-        {
-            setLabelText(QString::fromUtf8("%1\n%2").arg(title).arg(info));
-        }
-    );
+    connect(d->thread, SIGNAL(signalProgressInfo(QString)),
+            this, SLOT(slotProgressInfo(QString)));
 }
 
 GmicQtProcessorDlg::~GmicQtProcessorDlg()
@@ -152,10 +172,46 @@ void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
     d->thread->start();
 }
 
-void GmicQtProcessorDlg::slotComplete()
+void GmicQtProcessorDlg::slotProgressInfo(const QString& info)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Thread is complete";
-    accept();
+    setMessage(QString::fromUtf8("%1<br>%2").arg(d->title).arg(info));
+}
+
+void GmicQtProcessorDlg::slotComplete(const QString& error)
+{
+    d->closeBtn->setVisible(true);
+    setMaximum(1);
+    setValue(1);
+
+    if (error.isEmpty())
+    {
+        setMessage(tr("G'MIC filter is done"));
+    }
+    else
+    {
+        setMessage(tr("Error while processing G'MIC filter:<br>%1").arg(error));
+    }
+}
+
+void GmicQtProcessorDlg::setMessage(const QString& txt)
+{
+    QString rtxt;
+    DToolTipStyleSheet cnt;
+
+    QImage img = s_gmicQtPluginIcon().pixmap(48, 48).toImage();
+    QByteArray byteArray;
+    QBuffer    buffer(&byteArray);
+    img.save(&buffer, "PNG");
+
+    rtxt += QLatin1String("<qt><table>");
+    rtxt += cnt.cellBeg +
+            QString::fromLatin1("<img src=\"data:image/png;base64,%1\">").arg(QString::fromLatin1(byteArray.toBase64().data())) +
+            cnt.cellMid +
+            txt         +
+            cnt.cellEnd;
+    rtxt += QLatin1String("</table></center></qt>");
+
+    setLabelText(rtxt);
 }
 
 } // namespace DigikamGenericGmicQtPlugin
