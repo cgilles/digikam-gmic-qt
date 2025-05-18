@@ -58,6 +58,7 @@ public:
 
     QString                         command;
     bool                            completed    = false;
+    bool                            cancel       = false;
 
     DImg                            inImage;
     QStringList                     inFiles;
@@ -166,7 +167,7 @@ void GmicQtProcessor::startProcessingFiles()
     images.assign(d->inFiles.size());
     imageNames.assign(d->inFiles.size());
 
-    for (int i = 0 ; i < d->inFiles.size() ; ++i)
+    for (int i = 0 ; (i < d->inFiles.size()) && !d->cancel ; ++i)
     {
         QString name  = QString::fromUtf8("pos(0,0),name(%1)").arg(d->inFiles[i]);
         QByteArray ba = name.toUtf8();
@@ -271,7 +272,6 @@ void GmicQtProcessor::slotProcessingFinished()
         {
             qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution aborted...";
         }
-
     }
 
     d->filterThread->deleteLater();
@@ -282,6 +282,8 @@ void GmicQtProcessor::slotProcessingFinished()
 
 void GmicQtProcessor::cancel()
 {
+    d->cancel = true;
+
     if (d->filterThread)
     {
         d->filterThread->abortGmic();

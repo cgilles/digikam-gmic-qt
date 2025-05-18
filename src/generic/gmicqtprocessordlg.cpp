@@ -56,8 +56,8 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
     : QDialog(parent),
       d      (new Private)
 {
-    d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Close, this);
-    d->buttons->button(QDialogButtonBox::Close)->setVisible(false);
+    d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Cancel, this);
+    d->buttons->button(QDialogButtonBox::Cancel)->setVisible(true);
     s_gmicQtPluginPopulateHelpButton(this, tool, d->buttons->button(QDialogButtonBox::Help));
 
     QWidget* const page     = new QWidget(this);
@@ -102,8 +102,11 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
 
     // --------------------------------------------------------
 
-    connect(d->buttons->button(QDialogButtonBox::Close), SIGNAL(clicked()),
+    connect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
             this, SLOT(accept()));
+
+    connect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
+            this, SLOT(slotCancel()));
 
     connect(d->buttons->button(QDialogButtonBox::Help), SIGNAL(clicked()),
             this, SLOT(slotHelp()));
@@ -129,8 +132,13 @@ void GmicQtProcessorDlg::closeEvent(QCloseEvent* e)
         return;
     }
 
-    d->thread->cancel();
+    slotCancel();
     e->accept();
+}
+
+void GmicQtProcessorDlg::slotCancel()
+{
+    d->thread->cancel();
 }
 
 void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
@@ -149,7 +157,13 @@ void GmicQtProcessorDlg::slotProgressInfo(const QString& info)
 
 void GmicQtProcessorDlg::slotComplete(const QString& error)
 {
-    d->buttons->button(QDialogButtonBox::Close)->setVisible(true);
+    d->buttons->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
+
+    disconnect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()));
+
+    connect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
+            this, SLOT(accept()));
+
     d->pbar->setMaximum(1);
     d->pbar->setValue(1);
 

@@ -44,10 +44,11 @@ public:
                      const QString& outputPath,
                      const QString& outputFormat);
 
-public Q_SLOTS:
+private Q_SLOTS:
 
     void slotProgressInfo(const QString& info);
     void slotComplete(const QString& error);
+    void slotCancel();
 
 private:
 
