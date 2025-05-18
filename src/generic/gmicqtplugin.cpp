@@ -242,7 +242,7 @@ void GmicQtPlugin::slotGmicQt()
             paths.append(url.toLocalFile());
         }
 
-        GmicQtProcessorDlg* const dlg = new GmicQtProcessorDlg;
+        GmicQtProcessorDlg* const dlg = new GmicQtProcessorDlg(this);
 
         dlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
         dlg->exec();

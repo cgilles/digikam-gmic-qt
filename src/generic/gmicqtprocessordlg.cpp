@@ -52,12 +52,13 @@ public:
     QProgressBar*          pbar    = nullptr;
 };
 
-GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
+GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const parent)
     : QDialog(parent),
       d      (new Private)
 {
     d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Close, this);
     d->buttons->button(QDialogButtonBox::Close)->setVisible(false);
+    s_gmicQtPluginPopulateHelpButton(this, tool, d->buttons->button(QDialogButtonBox::Help));
 
     QWidget* const page     = new QWidget(this);
     QGridLayout* const grid = new QGridLayout(page);

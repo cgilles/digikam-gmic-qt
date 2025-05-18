@@ -21,6 +21,12 @@
 #include <QDialog>
 #include <QCloseEvent>
 
+// digiKam includes
+
+#include "dplugin.h"
+
+using namespace Digikam;
+
 namespace DigikamGenericGmicQtPlugin
 {
 
@@ -30,7 +36,7 @@ class GmicQtProcessorDlg : public QDialog
 
 public:
 
-    explicit GmicQtProcessorDlg(QWidget* const parent = nullptr);
+    explicit GmicQtProcessorDlg(DPlugin* const tool, QWidget* const parent = nullptr);
     ~GmicQtProcessorDlg()           override;
 
     void setSettings(const QStringList& inputPaths,
