@@ -19,6 +19,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDialog>
+#include <QCloseEvent>
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -30,7 +31,7 @@ class GmicQtProcessorDlg : public QDialog
 public:
 
     explicit GmicQtProcessorDlg(QWidget* const parent = nullptr);
-    ~GmicQtProcessorDlg() override;
+    ~GmicQtProcessorDlg()           override;
 
     void setSettings(const QStringList& inputPaths,
                      const QString& command,
@@ -41,6 +42,10 @@ public Q_SLOTS:
 
     void slotProgressInfo(const QString& info);
     void slotComplete(const QString& error);
+
+private:
+
+    void closeEvent(QCloseEvent*)   override;
 
 private:
 

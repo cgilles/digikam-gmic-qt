@@ -53,7 +53,7 @@ public:
 };
 
 GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
-    : QDialog(parent, Qt::FramelessWindowHint),
+    : QDialog(parent),
       d      (new Private)
 {
     d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Close, this);
@@ -119,6 +119,17 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(QWidget* const parent)
 GmicQtProcessorDlg::~GmicQtProcessorDlg()
 {
     delete d;
+}
+
+void GmicQtProcessorDlg::closeEvent(QCloseEvent* e)
+{
+    if (!e)
+    {
+        return;
+    }
+
+    d->thread->cancel();
+    e->accept();
 }
 
 void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
