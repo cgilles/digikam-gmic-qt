@@ -44,6 +44,8 @@ public:
                      const QString& outputPath,
                      const QString& outputFormat);
 
+    void cancel();
+
 Q_SIGNALS:
 
     void signalComplete(const QString& error);
@@ -53,13 +55,14 @@ private:
 
     void run() override;
 
+public:
+
+    // Declared as public due to GmicQtProcessorThreadObserver class.
+    class Private;
+
 private:
 
-    GmicQtProcessor* m_proc = nullptr;
-    QStringList      m_inputPaths;
-    QString          m_command;
-    QString          m_outputPath;
-    QString          m_outputFormat;
+    Private* const d = nullptr;
 };
 
 // ----------------------------------------------------------------------------------

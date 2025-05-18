@@ -32,6 +32,7 @@
 #include "digikam_debug.h"
 #include "ditemtooltip.h"
 #include "dhistoryview.h"
+#include "dimgloaderobserver.h"
 
 // Local includes
 
@@ -40,14 +41,71 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-GmicQtProcessorThread::GmicQtProcessorThread(QObject* const parent)
-    : QThread(parent)
+class GmicQtProcessorThreadObserver;
+
+class Q_DECL_HIDDEN GmicQtProcessorThread::Private
 {
+
+public:
+
+    Private() = default;
+
+public:
+
+    bool                            cancel      = false;
+    GmicQtProcessor*                proc        = nullptr;
+    GmicQtProcessorThreadObserver*  observer    = nullptr;
+    QStringList                     inputPaths;
+    QString                         command;
+    QString                         outputPath;
+    QString                         outputFormat;
+};
+
+// ---
+
+class Q_DECL_HIDDEN GmicQtProcessorThreadObserver : public DImgLoaderObserver
+{
+public:
+
+    explicit GmicQtProcessorThreadObserver(GmicQtProcessorThread::Private* const priv)
+        : DImgLoaderObserver(),
+          d                 (priv)
+    {
+    }
+
+    ~GmicQtProcessorThreadObserver() override = default;
+
+    bool continueQuery() override
+    {
+        return (!d->cancel);
+    }
+
+private:
+
+    GmicQtProcessorThread::Private* const d = nullptr;
+};
+
+// ---
+
+GmicQtProcessorThread::GmicQtProcessorThread(QObject* const parent)
+    : QThread(parent),
+      d      (new Private)
+{
+    d->observer = new GmicQtProcessorThreadObserver(d);
 }
 
 GmicQtProcessorThread::~GmicQtProcessorThread()
 {
     wait();
+
+    delete d->observer;
+    delete d;
+}
+
+void GmicQtProcessorThread::cancel()
+{
+    d->proc->cancel();
+    d->cancel = true;
 }
 
 void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
@@ -60,24 +118,24 @@ void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image file   :" << outputPath;
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image format :" << outputFormat;
 
-    m_inputPaths   = inputPaths;
-    m_command      = command;
-    m_outputPath   = outputPath;
-    m_outputFormat = outputFormat;
+    d->inputPaths   = inputPaths;
+    d->command      = command;
+    d->outputPath   = outputPath;
+    d->outputFormat = outputFormat;
 }
 
 void GmicQtProcessorThread::run()
 {
     QString error;
 
-    m_proc = new GmicQtProcessor();
+    d->proc = new GmicQtProcessor();
 
-    connect(m_proc, SIGNAL(signalProgressInfo(QString)),
+    connect(d->proc, SIGNAL(signalProgressInfo(QString)),
             this, SIGNAL(signalProgressInfo(QString)));
 
-    m_proc->setInputFiles(m_inputPaths);
+    d->proc->setInputFiles(d->inputPaths);
 
-    if (!m_proc->setProcessingCommand(m_command))
+    if (!d->proc->setProcessingCommand(d->command))
     {
         error = tr("Cannot setup G'MIC filter!");
     }
@@ -85,22 +143,22 @@ void GmicQtProcessorThread::run()
     {
         QEventLoop loop;
 
-        connect(m_proc, SIGNAL(signalDone(QString)),
+        connect(d->proc, SIGNAL(signalDone(QString)),
                 &loop, SLOT(quit()));
 
-        m_proc->startProcessingFiles();
+        d->proc->startProcessingFiles();
 
         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: started G'MIC filter...";
 
         loop.exec();
 
-        if (m_proc->processingComplete())
+        if (d->proc->processingComplete())
         {
             qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(m_outputPath));
+            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(d->outputPath));
 
-            if (m_proc->outputImage().save(m_outputPath, m_outputFormat))
+            if (d->proc->outputImage().save(d->outputPath, d->outputFormat, d->observer))
             {
                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
             }
@@ -115,7 +173,7 @@ void GmicQtProcessorThread::run()
         }
     }
 
-    delete m_proc;
+    delete d->proc;
 
     Q_EMIT signalComplete(error);
 }
