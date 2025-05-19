@@ -1,6 +1,6 @@
 #
 # Set HOST variable to define target host software.
-# Possible values are "none", "gimp", "gimp3" (experimental), and "paintdotnet"
+# Possible values are "none", "gimp", and "paintdotnet"
 #
 #
 
@@ -64,11 +64,9 @@ VERSION = 0.0.0
 PKGCONFIG += fftw3 zlib libpng libjpeg libcurl
 
 equals( HOST, "gimp" ) {
-  PKGCONFIG += gimp-2.0
-}
-
-equals( HOST, "gimp3" ) {
-  PKGCONFIG += gimp-3.0
+  GIMP_VERSION = $$system(bash check_versions.sh . gimp)
+  message("GIMP major version is ............" $$GIMP_VERSION)
+  PKGCONFIG += gimp-$${GIMP_VERSION}.0
 }
 
 equals( HOST, "8bf") {
@@ -173,7 +171,7 @@ LIBS += -lfftw3_threads
 win32 {
   DEFINES += _IS_WINDOWS_
   DEFINES += cimg_display=2
-  LIBS += -mwindows -lpthread -DPSAPI_VERSION=1 -lpsapi -lgdi32
+  LIBS += -mwindows -lpthread -DPSAPI_VERSION=1 -lpsapi -lgdi32 -Wl,--stack,16777216
   message( Windows/GDI32 platform )
 }
 
@@ -196,7 +194,7 @@ macx {
   message( Unknown platform )
 }
 
-equals( HOST, "gimp")|equals( HOST, "gimp3") {
+equals( HOST, "gimp") {
  TARGET = gmic_gimp_qt
  SOURCES += src/Host/Gimp/host_gimp.cpp
  DEFINES += GMIC_HOST=gimp

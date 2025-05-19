@@ -371,7 +371,7 @@ QStringList quotedStringList(const QStringList & stringList)
 QString unescaped(const QString & text)
 {
   QByteArray ba = text.toUtf8();
-  gmic_library::cimg::strunescape(ba.data());
+  if (ba.data() && *ba.data()) gmic_library::cimg::strunescape(ba.data());
   return QString::fromUtf8(ba.data());
 }
 

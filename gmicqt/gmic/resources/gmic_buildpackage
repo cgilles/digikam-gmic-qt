@@ -46,8 +46,12 @@
 if [ "$OSTYPE" == "msys" ]; then
 
     # Determine 32/64 bits architecture.
-    BITS=`g++ -v 2>&1 | grep Target | tail -c+9`
-    if [ "$BITS" == "x86_64-w64-mingw32" ]; then BITS=64; else BITS=32; fi
+    arch=$(uname -m)
+    if [[ "$arch" == "x86_64" ]]; then
+        BITS=64
+    else
+        BITS=32
+    fi
     echo
     echo " - Build G'MIC packages for Windows ($BITS bits)."
 
@@ -60,7 +64,6 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic-qt $HOME
     cp -rf /e/work/src/gmic/src $HOME/gmic
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
-    cp -rf /e/work/src/zart $HOME/gmic/
 
     # Get version number.
     cd $HOME/gmic/src
@@ -70,7 +73,10 @@ if [ "$OSTYPE" == "msys" ]; then
     RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
     VERSION=${RELEASE1}${RELEASE2}${RELEASE3}
     SVERSION=${RELEASE1}.${RELEASE2}.${RELEASE3}
-    GIMPVER=2.10
+
+    GIMPTOOL=$(command -v gimptool-3.0 >/dev/null && echo gimptool-3.0 || echo gimptool-2.0)
+    GIMPVER=$(echo `$GIMPTOOL --version` | cut -d. -f1-2)
+
     if [ "$1" == "final" ]; then
         SUFFIX="";
         sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
@@ -87,7 +93,9 @@ if [ "$OSTYPE" == "msys" ]; then
     # Delete old package files.
     cd $HOME
     cp -rf /e/work/src/gmic/resources/gmic_cluts.gmz $HOME/build${BITS}-gimp
+    cp -rf /e/work/src/gmic/resources/gmic_demos.cimgz $HOME/build${BITS}-gimp
     cp -rf /e/work/src/gmic/resources/gmic_denoise_cnn.gmz $HOME/build${BITS}-gimp
+    cp -rf /e/work/src/gmic/resources/gmic_scale2x_cnn.gmz $HOME/build${BITS}-gimp
     cp -rf /e/work/src/gmic/resources/gmic_fonts.gmz $HOME/build${BITS}-gimp
     cp -rf /e/work/src/gmic/resources/gmic_lightleaks.gmz $HOME/build${BITS}-gimp
     rm -rf $HOME/build${BITS}-gimp/update*.gmic gmic_*${SVERSION}${SUFFIX}*_win${BITS}* gmic-*${SVERSION}${SUFFIX}*-win${BITS}*
@@ -101,9 +109,6 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTDIR_LIB=gmic-${SVERSION}${SUFFIX}-lib-win${BITS}
     OUTZIP_LIB=gmic_${SVERSION}${SUFFIX}_lib_win${BITS}.zip
 
-    OUTDIR_ZART=gmic-${SVERSION}${SUFFIX}-zart-win${BITS}
-    OUTZIP_ZART=gmic_${SVERSION}${SUFFIX}_zart_win${BITS}.zip
-
     OUTDIR_QT=gmic-${SVERSION}${SUFFIX}-qt-win${BITS}
     OUTZIP_QT=gmic_${SVERSION}${SUFFIX}_qt_win${BITS}.zip
 
@@ -112,51 +117,73 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTINST_GIMP=gmic_${SVERSION}${SUFFIX}_gimp${GIMPVER}_win${BITS}.exe
 
     # Generate binaries.
-    cd $HOME/gmic/src && make clean && rm -f gmic *.o && cp -f /e/work/src/CImg/CImg.h .
-    make EXTRA_CFLAGS="-m${BITS}" cli lib libc libcstatic
+    cd $HOME/gmic/src && make CXX="clang++" clean && rm -f gmic *.o && cp -f /e/work/src/CImg/CImg.h .
+    if [[ "$GIMPVER" != "3.0" ]]; then
+        make CXX="clang++" EXTRA_CFLAGS="-m${BITS}" cli lib libc # libc_static
+    fi
     cd $HOME/gmic-qt && rm -rf .obj
     if [ "$1" == "final" ]; then
-        qmake PRERELEASE= HOST=none gmic_qt.pro && make clean && make release
-        qmake PRERELEASE= HOST=gimp gmic_qt.pro && make release
+        qmake COMPILER=clang PRERELEASE= HOST=none gmic_qt.pro && make clean
+        sed "s/-fno-keep-inline-dllexport //" Makefile.Release > /tmp/Makefile
+        mv /tmp/Makefile Makefile.Release
+        make -j8 release
+        qmake COMPILER=clang PRERELEASE= HOST=gimp gmic_qt.pro
+        sed "s/-fno-keep-inline-dllexport //" Makefile.Release > /tmp/Makefile
+        mv /tmp/Makefile Makefile.Release
+        make -j8 release
     else
-        qmake PRERELEASE=`date +%y%m%d%H` HOST=none gmic_qt.pro && make clean && make release
-        qmake PRERELEASE=`date +%y%m%d%H` HOST=gimp gmic_qt.pro && make release
+        qmake COMPILER=clang PRERELEASE=`date +%y%m%d%H` HOST=none gmic_qt.pro && make clean
+        sed "s/-fno-keep-inline-dllexport //" Makefile.Release > /tmp/Makefile
+        mv /tmp/Makefile Makefile.Release
+        make -j8 release
+        qmake COMPILER=clang PRERELEASE=`date +%y%m%d%H` HOST=gimp gmic_qt.pro
+        sed "s/-fno-keep-inline-dllexport //" Makefile.Release > /tmp/Makefile
+        mv /tmp/Makefile Makefile.Release
+        make -j8 release
     fi
 
     # Copy binaries into their respective folders.
     cd $HOME
-    cp -f gmic/src/gmic.exe build${BITS}-cli/
-    cp -f gmic/src/gmic.h gmic/src/gmic_libc.h gmic/src/use_lib* gmic/src/lib*.d* gmic/src/lib*.a build${BITS}-lib/
-    cp -f gmic-qt/release/gmic_qt.exe build${BITS}-qt/
+    if [[ "$GIMPVER" != "3.0" ]]; then
+        cp -f gmic/src/gmic.exe build${BITS}-cli/
+        cp -f gmic/src/gmic.h gmic/src/gmic_libc.h gmic/src/use_lib* gmic/src/lib*.d* gmic/src/lib*.a build${BITS}-lib/
+        cp -f gmic-qt/release/gmic_qt.exe build${BITS}-qt/
+    fi
     cp -f gmic-qt/release/gmic_gimp_qt.exe build${BITS}-gimp/
-    # cp -f gmic/zart/release/zart.exe build${BITS}-zart/
 
     # Construct G'MIC (CLI) archive.
-    cp -rf build${BITS}-cli ${OUTDIR_CLI} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_CLI} &&
-        sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_CLI}/README &&
-        zip -r -9 ${OUTZIP_CLI} ${OUTDIR_CLI} &&
-        cp -f ${OUTZIP_CLI} /e/work/src/
+    if [[ "$GIMPVER" != "3.0" ]]; then
+        cp -rf build${BITS}-cli ${OUTDIR_CLI} &&
+            cp -f /e/work/src/gmic/COPYING ${OUTDIR_CLI} &&
+            sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_CLI}/README &&
+            zip -r -9 ${OUTZIP_CLI} ${OUTDIR_CLI} &&
+            cp -f ${OUTZIP_CLI} /e/work/src/
+    fi
 
     # Construct G'MIC (LIB) archive.
-    cp -rf build${BITS}-lib ${OUTDIR_LIB} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_LIB} &&
-        sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_LIB}/README &&
-        zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
-        cp -f ${OUTZIP_LIB} /e/work/src/
+    if [[ "$GIMPVER" != "3.0" ]]; then
+        cp -rf build${BITS}-lib ${OUTDIR_LIB} &&
+            cp -f /e/work/src/gmic/COPYING ${OUTDIR_LIB} &&
+            sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_LIB}/README &&
+            zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
+            cp -f ${OUTZIP_LIB} /e/work/src/
+    fi
 
     # Construct G'MIC (Qt standalone) archive.
-    cp -rf build${BITS}-qt ${OUTDIR_QT} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
-        sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
-        zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
-        cp -f ${OUTZIP_QT} /e/work/src/
+    if [[ "$GIMPVER" != "3.0" ]]; then
+        cp -rf build${BITS}-qt ${OUTDIR_QT} &&
+            cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
+            sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
+            zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
+            cp -f ${OUTZIP_QT} /e/work/src/
+    fi
 
     # Construct G'MIC for GIMP archive and installer.
     cp -rf build${BITS}-gimp ${OUTDIR_GIMP} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP} &&
         sed s\/_gmic_version\/${SVERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP}/README &&
-        zip -r -9 ${OUTZIP_GIMP} ${OUTDIR_GIMP} &&
+        cp -rf ${OUTDIR_GIMP} gmic_gimp_qt  &&
+        zip -r -9 ${OUTZIP_GIMP} gmic_gimp_qt &&
         cp -f ${OUTZIP_GIMP} /e/work/src/
 
     cp -f /e/.config/gmic/update$VERSION.gmicz $HOME/build${BITS}-gimp/update$VERSION.gmic
@@ -180,7 +207,7 @@ else GIMPVER=2.8
 fi
 
 if [ "$HOSTNAME" != "C302L-G17P17.png.unicaen.fr" ] && [ "$HOSTNAME" != "C302L-G14F15.png.unicaen.fr" ] && [ "$HOSTNAME" != "C302L-G23P04.png.unicaen.fr" ]; then
-    SF_HOME=/media/sf_dtschump/
+    SF_HOME=/media/sf_tschumperle
     cd ${SF_HOME}/work/src
     RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
     RELEASE1=`echo $RELEASE0 | head -c1`
@@ -210,11 +237,11 @@ if [ "$HOSTNAME" != "C302L-G17P17.png.unicaen.fr" ] && [ "$HOSTNAME" != "C302L-G
         find gmic-${SVERSION}${SUFFIX} -exec touch {} ;
 
     cd $OUTDIR/src
-    sed "s/\$(MAKE) lib cli gimp gmic_qt libc zart/\$(MAKE) lib cli_shared gimp_shared gmic_qt_shared libc/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;
+    sed "s/\$(MAKE) lib cli gimp gmic_qt libc/\$(MAKE) lib cli_shared gimp_shared gmic_qt_shared libc/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;
     sed "s/\&\& \$(MAKE) clean//g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;  # Prevent 'qmake not found' bug when using dpkg-buildpackage, still don't know why.
 
     cd /tmp/$OUTDIR &&
-        dpkg-buildpackage -d -j3 -rfakeroot;
+        dpkg-buildpackage -d -j4 -rfakeroot;
     mv ../gmic_${SVERSION}_${ARCH}.deb ../$OUTPAK
     cp -f ../$OUTPAK $SF_HOME/work/src/
 
@@ -229,11 +256,11 @@ if [ "$HOSTNAME" != "C302L-G17P17.png.unicaen.fr" ] && [ "$HOSTNAME" != "C302L-G
     exit 0;
 fi
 
-# Build package from main machine (ELARA).
-#-----------------------------------------
+# Build package from main machine.
+#---------------------------------
 cd ${HOME}/work/src
-rm -rf gmic-qt zart
-git clone https://github.com/c-koi/gmic-qt.git
+rm -rf gmic-qt
+git clone git@github.com:GreycLab/gmic-qt.git
 RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
 RELEASE1=`echo $RELEASE0 | head -c1`
 RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1`
@@ -267,8 +294,6 @@ git merge develop -m "."
 git push
 git checkout develop
 rm -rf gmic-qt
-# rm -rf zart
-# ln -fs ../zart .
 ln -fs ../gmic-qt .
 
 # Perform filters update on the G'MIC server.
@@ -357,18 +382,11 @@ cd ..
 
 cd resources
 mkdir -p $DIR/resources
-cp -Lrf gmic_bashcompletion.sh gmic_cluts.gmz gmic_denoise_cnn.gmz gmic_fonts.gmz gmic_lightleaks.gmz $DIR/resources
+cp -Lrf gmic_bashcompletion.sh gmic_cluts.gmz gmic_demos.cimgz gmic_denoise_cnn.gmz gmic_scale2x_cnn.gmz gmic_fonts.gmz gmic_lightleaks.gmz $DIR/resources
 mkdir -p $DIR/resources/samples
 cp -Lrf samples/*.gmic $DIR/resources/samples
 cp -Lrf debian $DIR
 cd ..
-
-# cd zart
-# qmake zart.pro
-# make distclean
-# mkdir -p $DIR/zart
-# cp -Lrf icons images include src ui *.xml *.html README.md zart.pro zart.desktop zart.qrc $DIR/zart
-# cd ..
 
 cd gmic-qt
 qmake gmic_qt.pro
@@ -412,8 +430,6 @@ rm -f `find . -name "*~"`
 rm -r `find . -name "\#*"`
 rm -r `find . -name "CVS"`
 rm -r `find . -name ".git"`
-# cd zart
-# qmake CONFIG+=release GMIC_PATH=../src zart.pro
 
 # Create .tar.gz source archives.
 #--------------------------------
@@ -426,7 +442,6 @@ gzip deb_${TARFILE}
 cp -f deb_${TARFILE}.gz ${HOME}/work/src/
 
 rm -rf `basename $DIR`/debian
-#rm -rf `basename $DIR`/zart
 #rm -rf `basename $DIR`/gmic-qt
 #rm -rf `basename $DIR`/src/gmic_libc.cpp
 #rm -rf `basename $DIR`/src/gmic_libc.h
@@ -457,10 +472,10 @@ cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${SVERSION}${SUFFIX} -exec touch {} \; &&
     cd $OUTDIR/src &&
-    sed "s/\$(MAKE) lib cli gimp gmic_qt libc zart/\$(MAKE) lib cli_shared gimp_shared gmic_qt_shared libc/g" Makefile > /tmp/Makefile &&
+    sed "s/\$(MAKE) lib cli gimp gmic_qt libc/\$(MAKE) lib cli_shared gimp_shared gmic_qt_shared libc/g" Makefile > /tmp/Makefile &&
     mv /tmp/Makefile Makefile && cd ../..
 cd $OUTDIR &&
-    dpkg-buildpackage -d -j3 -rfakeroot;
+    dpkg-buildpackage -d -j4 -rfakeroot;
     mv ../gmic_${SVERSION}_amd64.deb ../$OUTPAK &&
     mkdir -p gmic_gimp_qt &&
     rm -f gmic-qt/gmic_gimp_qt &&

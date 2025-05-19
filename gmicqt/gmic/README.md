@@ -22,7 +22,7 @@ software suites.
 
 <a href="https://gmic.eu/img/gmic_libgmic.jpg">![interface_libgmic](https://gmic.eu/img/gmic_libgmic_thumb.jpg)</a>
 
-- **3** - **[G'MIC-Qt](https://github.com/c-koi/gmic-qt)**, a plug-in to bring **G'MIC** capabilities to the image retouching software [GIMP](http://www.gimp.org), [Krita](https://www.krita.org), [Photoshop](https://en.wikipedia.org/wiki/Adobe_Photoshop) and [Paint.NET](https://www.getpaint.net/). More than **500 filters** are already available, sorted by category (_Artistic, Black &amp; white, Colors, Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
+- **3** - **[G'MIC-Qt](https://github.com/GreycLab/gmic-qt)**, a plug-in to bring **G'MIC** capabilities to the image retouching software [GIMP](http://www.gimp.org), [Krita](https://www.krita.org), [Photoshop](https://en.wikipedia.org/wiki/Adobe_Photoshop) and [Paint.NET](https://www.getpaint.net/). More than **500 filters** are already available, sorted by category (_Artistic, Black &amp; white, Colors, Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
 Light &amp; shadows, Patterns, Rendering, Repair, Sequences_, etc.).
 
 <a href="https://gmic.eu/img/gmic_gimp.jpg">![gimp_interface](https://gmic.eu/img/gmic_gimp_thumb.jpg)</a>
@@ -59,14 +59,18 @@ Other open-source projects are known to use some of the <b><font color="#000066"
 
 -----------------------
 
-## Give Us Support !
+## Testing the software
 
-  If you appreciate what we do on G'MIC, please consider supporting us !
-
-  We collaborate with ["Association LILA (Libre comme l'Art)"](https://libreart.info/en/projects/gmic),
-  a French non-profit organization which collects donations to help developing the G'MIC project.
-
-  [Visit the donation page](https://libreart.info/en/projects/gmic)
+The correct functioning of the **G'MIC** software can be tested using these two commands, which execute all the commands
+and filters available in the framework:
+~~~
+$ gmic input_text https://gmic.eu/gmic_stdlib.\$_version parse_cli images
+~~~
+and
+~~~
+$ gmic input_text https://gmic.eu/gmic_stdlib.\$_version parse_gui images
+~~~
+Please make sure you run these commands in a new empty folder, as it generates a lot of new image files.
 
 -----------------------
 

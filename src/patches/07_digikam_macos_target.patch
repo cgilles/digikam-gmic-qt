@@ -1,7 +1,7 @@
-diff --git a/gmicqt/src/CMakeLists.txt b/gmicqt/src/CMakeLists.txt
+diff --git a/gmicqt/CMakeLists.txt b/gmicqt/CMakeLists.txt
 index 47face8..bfca33e 100644
---- a/gmicqt/src/CMakeLists.txt
-+++ b/gmicqt/src/CMakeLists.txt
+--- a/gmicqt/CMakeLists.txt
++++ b/gmicqt/CMakeLists.txt
 @@ -351,7 +351,12 @@ if (APPLE)
      add_definitions(-D_IS_MACOS_)
      set(CMAKE_MACOSX_RPATH 1)

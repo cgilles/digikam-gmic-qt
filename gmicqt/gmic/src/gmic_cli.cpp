@@ -120,36 +120,36 @@ int main(int argc, char **argv) {
   gmic_instance.add_commands("cli_start:");
 
   // Import update file (from resources directory).
-  CImg<char> filename_update, commands_update;
+  CImg<char> filename_update, command_updates;
   bool is_invalid_updatefile = false;
   char sep = 0;
   filename_update.assign(1024);
   cimg_snprintf(filename_update,filename_update.width(),"%supdate%u.gmic",
                 gmic::path_rc(),gmic_version);
-  try { commands_update.load_cimg(filename_update); }
+  try { command_updates.load_cimg(filename_update); }
   catch (...) {
-    try { commands_update.load_raw(filename_update); }
+    try { command_updates.load_raw(filename_update); }
     catch (...) { }
   }
-  if (commands_update) try {
-      commands_update.unroll('y');
-      commands_update.resize(1,commands_update.height() + 1,1,1,0);
-      gmic_instance.add_commands(commands_update);
+  if (command_updates) try {
+      command_updates.unroll('y');
+      command_updates.resize(1,command_updates.height() + 1,1,1,0);
+      gmic_instance.add_commands(command_updates);
     } catch (...) { is_invalid_updatefile = true; }
-  is_invalid_updatefile|=commands_update && (cimg_sscanf(commands_update," #@gmi%c",&sep)!=1 || sep!='c');
-  commands_update.assign();
+  is_invalid_updatefile|=command_updates && (cimg_sscanf(command_updates," #@gmi%c",&sep)!=1 || sep!='c');
+  command_updates.assign();
 
   // Import user file (in parent of resources directory).
-  CImg<char> commands_user;
+  CImg<char> command_user;
   bool is_invalid_userfile = false;
   const char *const filename_user = gmic::path_user();
-  try { commands_user.load_raw(filename_user); }
+  try { command_user.load_raw(filename_user); }
   catch (...) {}
-  if (commands_user) try {
-      commands_user.resize(1,commands_user.height() + 1,1,1,0);
-      gmic_instance.add_commands(commands_user,filename_user,is_debug);
+  if (command_user) try {
+      command_user.resize(1,command_user.height() + 1,1,1,0);
+      gmic_instance.add_commands(command_user,filename_user,is_debug);
     } catch (...) { is_invalid_userfile = true; }
-  commands_user.assign();
+  command_user.assign();
 
   // Convert 'argv' into G'MIC command line.
   CImgList<char> items;
@@ -186,9 +186,9 @@ int main(int argc, char **argv) {
             if (allow_main_ && argc==3) { // Check if command '_main_' has arguments
               const unsigned int hash = (int)gmic::hashcode("_main_",false);
               unsigned int ind = 0;
-              if (gmic::search_sorted("_main_",gi.commands_names[hash],
-                                      gi.commands_names[hash].size(),ind)) // Command found
-                allow_main_ = (bool)gi.commands_has_arguments[hash](ind,0);
+              if (gmic::search_sorted("_main_",gi.command_names[hash],
+                                      gi.command_names[hash].size(),ind)) // Command found
+                allow_main_ = (bool)gi.command_has_arguments[hash](ind,0);
             }
             gmic_instance.allow_main_ = allow_main_;
           }
@@ -230,11 +230,11 @@ int main(int argc, char **argv) {
   // Launch G'MIC interpreter.
   try {
     CImgList<gmic_pixel_type> images;
-    CImgList<char> images_names;
+    CImgList<char> image_names;
     if (is_help && !cimg::is_file(filename_update.data())) {
-      images.insert(gmic::stdlib); CImg<char>::string("stdlib").move_to(images_names);
+      images.insert(gmic::stdlib); CImg<char>::string("stdlib").move_to(image_names);
     }
-    gmic_instance.run(commands_line.data(),images,images_names);
+    gmic_instance.run(commands_line.data(),images,image_names);
   } catch (gmic_exception &e) {
     int error_code = 0;
     bool is_error_code = false;
@@ -259,25 +259,26 @@ int main(int argc, char **argv) {
                      cimg::t_red,e.command(),cimg::t_normal);
         std::fflush(cimg::output());
         CImgList<gmic_pixel_type> images;
-        CImgList<char> images_names;
+        CImgList<char> image_names;
         images.insert(gmic::stdlib);
-        CImg<char>::string("stdlib").move_to(images_names);
+        CImg<char>::string("stdlib").move_to(image_names);
         CImg<char> tmp_line(1024);
         cimg_snprintf(tmp_line,tmp_line.width(),
+                      "l[] { i raw:\"%s\",uint8 m \"%s\" onfail rm } "
+                      "l[] { i raw:\"%s\",uint8 m \"%s\" onfail rm } "
                       "cli_start , "
-                      "l[] { i raw:\"%s\",uint8 m \"%s\" onfail rm } "
-                      "l[] { i raw:\"%s\",uint8 m \"%s\" onfail rm } "
+                      "l[] { $_path_commands foreach { i raw:{n},uint8 rm[0] } onfail rm } "
                       "rv help \"%s\"",
                       filename_update.data(),filename_update.data(),
                       filename_user,filename_user,
                       e.command());
         try {
-          gmic(tmp_line,images,images_names);
+          gmic(tmp_line,images,image_names);
         } catch (...) { // Fallback in case overloaded version of 'help' crashed
           cimg_snprintf(tmp_line,tmp_line.width(),"help \"%s\"",e.command());
           images.assign().insert(gmic::stdlib);
-          images_names.assign();
-          gmic(tmp_line,images,images_names);
+          image_names.assign();
+          gmic(tmp_line,images,image_names);
         }
       } else {
         std::fprintf(cimg::output(),"\n\n");

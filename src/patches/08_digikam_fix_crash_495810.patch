@@ -1,7 +1,7 @@
-diff --git a/src/FilterSelector/FiltersView/FiltersView.cpp b/src/FilterSelector/FiltersView/FiltersView.cpp
+diff --git a/gmicqt/src/FilterSelector/FiltersView/FiltersView.cpp b/gmicqt/src/FilterSelector/FiltersView/FiltersView.cpp
 index 0309095..ff621b9 100644
---- a/src/FilterSelector/FiltersView/FiltersView.cpp
-+++ b/src/FilterSelector/FiltersView/FiltersView.cpp
+--- a/gmicqt/src/FilterSelector/FiltersView/FiltersView.cpp
++++ b/gmicqt/src/FilterSelector/FiltersView/FiltersView.cpp
 @@ -431,13 +431,13 @@ void FiltersView::onCustomContextMenu(const QPoint & point)
    }
    onItemClicked(index);

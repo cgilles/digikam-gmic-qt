@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp2.10_win64.iss
+; File : gmic_gimp3.0_win64.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -11,13 +11,13 @@
 ;
 ;---------------------------------------------
 
-#define AppName "G'MIC-Qt for GIMP 2.10"
+#define AppName "G'MIC-Qt for GIMP 3"
 
 [Setup]
 AppName={#AppName}
 AppVersion=XXX
 AppPublisherURL=https://gmic.eu/
-DefaultDirName={userappdata}\GIMP\2.10\plug-ins\gmic_gimp_qt\
+DefaultDirName={userappdata}\GIMP\3.0\plug-ins\gmic_gimp_qt\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_qt.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
@@ -29,7 +29,7 @@ DirExistsWarning=no
 WizardImageFile=gmic_instimg.bmp
 WizardSmallImageFile=gmic_instimg_small.bmp
 PrivilegesRequired=lowest
-OutputBaseFilename=gmic_XXX_gimp2.10_win64
+OutputBaseFilename=gmic_XXX_gimp3.0_win64
 
 [Files]
 Source: build64-gimp\platforms\qdirect2d.dll; DestDir: {app}\platforms
@@ -48,15 +48,13 @@ Source: build64-gimp\gmic_fonts.gmz; DestDir: {userappdata}\gmic; Flags: ignorev
 Source: build64-gimp\gmic_lightleaks.gmz; DestDir: {userappdata}\gmic; Flags: ignoreversion
 Source: build64-gimp\gmic_scale2x_cnn.gmz; DestDir: {userappdata}\gmic; Flags: ignoreversion
 
-Source: build64-gimp\libc++.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libdouble-conversion.dll; DestDir: {app}; Flags: ignoreversion
-Source: build64-gimp\libfftw3_threads-3.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libfftw3-3.dll; DestDir: {app}; Flags: ignoreversion
+Source: build64-gimp\libfftw3_threads-3.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libicudt75.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libicuin75.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libicuuc75.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libmd4c.dll; DestDir: {app}; Flags: ignoreversion
-Source: build64-gimp\libomp.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libpcre2-16-0.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\Qt5Core.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\Qt5Gui.dll; DestDir: {app}; Flags: ignoreversion
