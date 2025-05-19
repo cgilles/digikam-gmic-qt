@@ -237,7 +237,7 @@ void GmicQtPlugin::slotGmicQt()
 
         QStringList paths;
 
-        for (const QUrl& url : s_urlList)
+        for (const QUrl& url : std::as_const(s_urlList))
         {
             paths.append(url.toLocalFile());
         }
