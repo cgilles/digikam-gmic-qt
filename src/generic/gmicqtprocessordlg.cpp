@@ -17,7 +17,6 @@
 // Qt includes
 
 #include <QPushButton>
-#include <QProgressBar>
 #include <QLabel>
 #include <QImage>
 #include <QGridLayout>
@@ -29,6 +28,7 @@
 #include "digikam_debug.h"
 #include "dhistoryview.h"
 #include "dimgloaderobserver.h"
+#include "dprogresswdg.h"
 
 // Local includes
 
@@ -49,7 +49,7 @@ public:
     GmicQtProcessorThread* thread  = nullptr;
     DHistoryView*          history = nullptr;
     QDialogButtonBox*      buttons = nullptr;
-    QProgressBar*          pbar    = nullptr;
+    DProgressWdg*          pbar    = nullptr;
 };
 
 GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const parent)
@@ -77,10 +77,11 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
     // --------------------------------------------------------
 
     d->history              = new DHistoryView(page);
-    d->pbar                 = new QProgressBar(page);
+    d->pbar                 = new DProgressWdg(page);
     d->pbar->setMinimum(0);
-    d->pbar->setMaximum(0);
     d->pbar->setValue(0);
+    d->pbar->progressScheduled(tr("G'MIC-Qt (layer)"), true, true);
+    d->pbar->progressThumbnailChanged(s_gmicQtPluginIcon().pixmap(22, 22));
 
     // --------------------------------------------------------
 
@@ -110,6 +111,9 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
 
     connect(d->buttons->button(QDialogButtonBox::Help), SIGNAL(clicked()),
             this, SLOT(slotHelp()));
+
+    connect(d->pbar, SIGNAL(signalProgressCanceled()),
+            this, SLOT(slotCancel()));
 
     d->thread = new GmicQtProcessorThread(this);
 
@@ -146,6 +150,7 @@ void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
                                      const QString& outputPath,
                                      const QString& outputFormat)
 {
+    d->pbar->setMaximum(inputPaths.size() + 2);
     d->thread->setSettings(inputPaths, command, outputPath, outputFormat);
     d->thread->start();
 }
@@ -153,6 +158,7 @@ void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
 void GmicQtProcessorDlg::slotProgressInfo(const QString& info)
 {
     d->history->addEntry(info, DHistoryView::ProgressEntry);
+    d->pbar->setValue(d->pbar->value() + 1);
 }
 
 void GmicQtProcessorDlg::slotComplete(const QString& error)
@@ -164,8 +170,8 @@ void GmicQtProcessorDlg::slotComplete(const QString& error)
     connect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
             this, SLOT(accept()));
 
-    d->pbar->setMaximum(1);
-    d->pbar->setValue(1);
+    d->pbar->setValue(d->pbar->maximum());
+    d->pbar->progressCompleted();
 
     if (error.isEmpty())
     {
