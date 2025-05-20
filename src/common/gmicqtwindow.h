@@ -65,6 +65,8 @@ public:
     void setFilterSelectionMode();
     void setHostType(HostType type);
 
+public:
+
     static QString execWindow(DPlugin* const tool,
                               HostType type,
                               const QString& command = QString());
