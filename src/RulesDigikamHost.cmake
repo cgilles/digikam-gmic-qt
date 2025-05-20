@@ -104,15 +104,6 @@ if(NOT QT_PLUGINS_DIR)
 
 endif()
 
-# This is dirty: even if gmic-qt code use CMake to compile, the translation rules
-# are hard-coded with Makefiles running in source dir as well.
-# This is not compatible with bundle constrution on non-linux.
-
-message(STATUS "Copy pre-compiled translation files into gmicqt source dir...")
-
-file(COPY        ${CMAKE_SOURCE_DIR}/src/translations/
-     DESTINATION ${CMAKE_SOURCE_DIR}/gmicqt/translations/)
-
 # --- digiKam dependencies.
 
 find_package(DigikamCore CONFIG REQUIRED)

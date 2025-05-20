@@ -8,42 +8,44 @@ Note: desired release tag must be the same for CImg, G'MIC, and C'MIC-Qt.
 4/  Fix dependencies to complete the configuration of G'MIC-Qt source code.
     Use the bootstrap-none script to configure G'MIC-Qt directory with the "none" host.
     Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before.
-5/  When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
-6/  Copy the G'MIC-Qt contents to the DK::gmicqt.
+5/  Remove the DK::gmicqt directory.
+6/  When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
+7/  Copy the G'MIC-Qt contents to the DK::gmicqt.
+8/  Remove the .gitignore files from DK::gmicqt/gmic and DK::gmicqt.
+9/  Add DK::gmicqt directory to git.
 
-7/  Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
+10/ Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
 
     patch -p1 < ./src/patches/01_digikam_root_cmakelists.patch
 
-8/  Patch gmicqt/ codes to disable theming (redondant with digiKam one and crash host):
+11/ Patch gmicqt/ codes to disable theming (redondant with digiKam one and crash host):
 
     patch -p1 < ./src/patches/02_digikam_disable_theming.patch
 
-9/  Patch gmicqt/ codes to disable HDPI settings (redondant with digiKam one):
+12/ Patch gmicqt/ codes to disable HDPI settings (redondant with digiKam one):
 
     patch -p1 < ./src/patches/03_digikam_disable_hdpi.patch
 
-10/ Patch gmicqt/ codes to disable logo settings and optimize space (logo moves in settings dialog):
+13/ Patch gmicqt/ codes to disable logo settings and optimize space (logo moves in settings dialog):
 
     patch -p1 < ./src/patches/04_digikam_disable_logo.patch
 
-11/ Patch gmicqt/ codes to improve plugin integration:
+14/ Patch gmicqt/ codes to improve plugin integration:
 
     patch -p1 < ./src/patches/05_digikam_plugin_integration.patch
 
-12/ Patch gmicqt/ codes to fix crash when Cancel button is pressed while computing:
+15/ Patch gmicqt/ codes to fix crash when Cancel button is pressed while computing:
 
     patch -p1 < ./src/patches/06_digikam_fix_cancel_crash.patch
 
-13/ Patch gmicqt/ codes to fix macOS targets:
+16/ Patch gmicqt/ codes to fix macOS targets:
 
     patch -p1 < ./src/patches/07_digikam_macos_target.patch
 
-14/ Patch gmicqt/ codes to fix crash when filters tree-view context menu is actived:
+17/ Patch gmicqt/ codes to fix crash when filters tree-view context menu is actived:
 
     patch -p1 < ./src/patches/08_digikam_fix_crash_495810.patch
 
-15/ Check if new files need to be appended with "git status". Add files to git repository if necessary.
-16/ Update all .qm files in src/translations.
-17/ Check compilation with "digikam" host.
+18/ Check if new files need to be appended with "git status". Add files to git repository if necessary.
+19/ Check compilation with "digikam" host.
 

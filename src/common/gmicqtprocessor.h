@@ -34,6 +34,10 @@ class GmicQtProcessor : public QObject
 
 public:
 
+    /**
+     * @brief A class to run the G'MIC filter command and process files (Generic) or one image instance (BQM).
+     * Implementation inspired from G'MIC-Qt HeadlessProcessor.
+     */
     explicit GmicQtProcessor(QObject* const parent = nullptr);
     ~GmicQtProcessor()                   override;
 
@@ -85,11 +89,14 @@ Q_SIGNALS:
 
     /**
      * @brief Emit a progress value during G'MIC processing.
-     * This depend of the filter implementation.
-     * If no feedback is suported in the filter, -1 is always sent.
+     * This depend of the selected G'MIC filter implementation.
+     * If no feedback is suported in the G'MIC filter, -1 is always sent and this feature is not suitable.
      */
     void signalProgress(float progress);
 
+    /**
+     * @brief Emit @param info as a detailled literal progress information.
+     */
     void signalProgressInfo(const QString& info);
 
 private Q_SLOTS:

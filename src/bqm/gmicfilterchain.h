@@ -39,16 +39,16 @@ public:
                                      int index,
                                      const QString& title,
                                      const QString& command);
-    ~GmicFilterChainViewItem()            override;
+    ~GmicFilterChainViewItem()                         override;
 
     void setCommand(const QString& command);
-    QString command()               const;
+    QString command()                            const;
 
     void setTitle(const QString& title);
-    QString title()                 const;
+    QString title()                              const;
 
     void setIndex(int index);
-    int index()                     const;
+    int index()                                  const;
 
 private:
 
