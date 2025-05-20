@@ -104,10 +104,10 @@ void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
                                         const QString& outputPath,
                                         const QString& outputFormat)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC command      :" << command;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process  :" << inputPaths;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image file   :" << outputPath;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Ouput image format :" << outputFormat;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC command       :" << command;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process   :" << inputPaths;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image file   :" << outputPath;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image format :" << outputFormat;
 
     d->inputPaths   = inputPaths;
     d->command      = command;

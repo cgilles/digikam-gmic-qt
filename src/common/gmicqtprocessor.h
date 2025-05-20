@@ -44,7 +44,7 @@ public:
     QString processingCommand()     const;
 
     /**
-     * @return a litteral name of the G'MIC command.
+     * @return a literal name of the G'MIC command.
      */
     QString filterName()            const;
 
@@ -79,7 +79,7 @@ Q_SIGNALS:
 
     /**
      * @brief Emitted when the G'MIC processing is complete.
-     * @param errorMessage contains a litteral string of the error occured during Gmic processing, if any.
+     * @param errorMessage contains a literal string of the error occurred during Gmic processing, if any.
      */
     void signalDone(const QString& errorMessage);
 
