@@ -80,7 +80,7 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
     d->pbar                 = new DProgressWdg(page);
     d->pbar->setMinimum(0);
     d->pbar->setValue(0);
-    d->pbar->progressScheduled(tr("G'MIC-Qt (layer)"), true, true);
+    d->pbar->progressScheduled(tr("G'MIC-Qt (layers)"), true, true);
     d->pbar->progressThumbnailChanged(s_gmicQtPluginIcon().pixmap(22, 22));
 
     // --------------------------------------------------------
