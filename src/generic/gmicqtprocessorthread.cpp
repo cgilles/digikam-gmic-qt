@@ -17,11 +17,13 @@
 // Qt includes
 
 #include <QEventLoop>
-#include <QImage>
+#include <QFileInfo>
+#include <QScopedPointer>
 
 // digiKam includes
 
 #include "dimg.h"
+#include "dmetadata.h"
 #include "digikam_debug.h"
 #include "dimgloaderobserver.h"
 
@@ -152,6 +154,60 @@ void GmicQtProcessorThread::run()
             if (d->proc->outputImage().save(d->outputPath, d->outputFormat, d->observer))
             {
                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
+
+                // Restoring matadata
+
+                qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Copying GPS info...";
+
+                // Find first src image which contain geolocation and save it to target file.
+
+                double lat, lng, alt;
+                QScopedPointer<DMetadata> meta(new DMetadata);
+
+                for (const QString& inpath : d->inputPaths)
+                {
+                    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << inpath;
+
+                    meta->load(inpath);
+
+                    if (meta->getGPSInfo(alt, lat, lng))
+                    {
+                        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found and saved in " << d->outputPath;
+                        meta->load(d->outputPath);
+                        meta->setGPSInfo(alt, lat, lng);
+                        meta->applyChanges(true);
+                        break;
+                    }
+                }
+
+                // Restore usual and common metadata from first item.
+
+                meta->load(d->inputPaths.constFirst());
+                QByteArray iptc = meta->getIptc();
+                QByteArray xmp  = meta->getXmp();
+                QString make    = meta->getExifTagString("Exif.Image.Make");
+                QString model   = meta->getExifTagString("Exif.Image.Model");
+                QDateTime dt    = meta->getItemDateTime();
+
+                meta->load(d->outputPath);
+                meta->setIptc(iptc);
+                meta->setXmp(xmp);
+                meta->setXmpTagString("Xmp.tiff.Make",   make);
+                meta->setXmpTagString("Xmp.tiff.Model", model);
+                meta->setImageDateTime(dt);
+
+                QString filesList;
+
+                for (const QString& inpath : d->inputPaths)
+                {
+                    filesList.append(QFileInfo(inpath).fileName() + QLatin1String(" ; "));
+                }
+
+                filesList.truncate(filesList.length() - 3);
+
+                meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
+                meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
+                meta->applyChanges(true);
             }
             else
             {

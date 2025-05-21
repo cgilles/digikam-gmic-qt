@@ -17,7 +17,6 @@
 // digiKam includes
 
 #include "digikam_debug.h"
-#include "ditemtooltip.h"
 
 // Local includes
 
@@ -194,7 +193,7 @@ void GmicQtProcessor::startProcessingFiles()
         }
     }
 
-    Q_EMIT signalProgressInfo(tr("Running G'MIC filter %1").arg(DToolTipStyleSheet().elidedText(d->command, Qt::ElideRight)));
+    Q_EMIT signalProgressInfo(tr("Running G'MIC filter %1").arg(d->command));
 
     QString env = QString::fromLatin1("_input_layers=%1").arg((int)DefaultInputMode);
     env        += QString::fromLatin1(" _output_mode=%1").arg((int)DefaultOutputMode);
