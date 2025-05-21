@@ -244,6 +244,9 @@ void GmicQtPlugin::slotGmicQt()
 
         GmicQtProcessorDlg* const dlg = new GmicQtProcessorDlg(this);
 
+        connect(dlg, SIGNAL(signalUpdateHostApp(QUrl)),
+                s_infoIface, SLOT(slotMetadataChangedForUrl(QUrl)));
+
         dlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
         dlg->exec();
 

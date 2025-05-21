@@ -17,6 +17,7 @@
 // Qt includes
 
 #include <QThread>
+#include <QUrl>
 #include <QString>
 #include <QStringList>
 
@@ -49,6 +50,7 @@ Q_SIGNALS:
 
     void signalComplete(const QString& error);
     void signalProgressInfo(const QString& info);
+    void signalUpdateHostApp(const QUrl& url);
 
 private:
 

@@ -208,6 +208,8 @@ void GmicQtProcessorThread::run()
                 meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
                 meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
                 meta->applyChanges(true);
+
+                Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(d->outputPath));
             }
             else
             {

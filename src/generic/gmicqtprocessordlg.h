@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QUrl>
 #include <QDialog>
 #include <QCloseEvent>
 
@@ -43,6 +44,10 @@ public:
                      const QString& command,
                      const QString& outputPath,
                      const QString& outputFormat);
+
+Q_SIGNALS:
+
+    void signalUpdateHostApp(const QUrl& url);
 
 private Q_SLOTS:
 

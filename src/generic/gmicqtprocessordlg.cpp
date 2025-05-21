@@ -116,6 +116,9 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
 
     connect(d->thread, SIGNAL(signalProgressInfo(QString)),
             this, SLOT(slotProgressInfo(QString)));
+
+    connect(d->thread, SIGNAL(signalUpdateHostApp(QUrl)),
+            this, SIGNAL(signalUpdateHostApp(QUrl)));
 }
 
 GmicQtProcessorDlg::~GmicQtProcessorDlg()
