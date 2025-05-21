@@ -65,11 +65,9 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
 
     // --------------------------------------------------------
 
-    QLabel* const header    = new QLabel(page);
-    header->setWordWrap(true);
-    header->setText(tr("<p>This view list all stacked items processed by the G'MIC filter as layers.</p>"
-                       "<p>The first one is on top of the list, the last one</p>"
-                       "<p>on the bottom. You can adjust the order of each item.</p>"));
+    QLabel* const inHeader  = new QLabel(page);
+    inHeader->setWordWrap(true);
+    inHeader->setText(tr("Set in the list below all stacked items processed by the G'MIC filter as layers."));
 
     // --------------------------------------------------------
 
@@ -83,7 +81,7 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
     // --------------------------------------------------------
 
     grid->addWidget(logo,          0, 0, 1, 1);
-    grid->addWidget(header,        0, 1, 1, 1);
+    grid->addWidget(inHeader,      0, 1, 1, 1);
     grid->addWidget(d->imageList,  1, 0, 1, 2);
     grid->setColumnStretch(1, 10);
     grid->setRowStretch(1, 10);
@@ -95,7 +93,7 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
     vbx->addWidget(d->buttons);
     setLayout(vbx);
 
-    resize(600, 400);
+    adjustSize();
 
     // --------------------------------------------------------
 
