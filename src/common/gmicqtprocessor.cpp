@@ -256,6 +256,8 @@ void GmicQtProcessor::slotProcessingFinished()
     {
         gmic_list<gmic_pixel_type> images = d->filterThread->images();
 
+        qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter generated output images:" << images.size();
+
         if (!d->filterThread->aborted())
         {
             GMicQtImageConverter::convertCImgtoDImg(

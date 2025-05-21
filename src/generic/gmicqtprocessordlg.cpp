@@ -109,9 +109,6 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
     connect(d->buttons->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
             this, SLOT(slotCancel()));
 
-    connect(d->buttons->button(QDialogButtonBox::Help), SIGNAL(clicked()),
-            this, SLOT(slotHelp()));
-
     connect(d->pbar, SIGNAL(signalProgressCanceled()),
             this, SLOT(slotCancel()));
 
