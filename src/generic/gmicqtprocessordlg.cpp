@@ -56,6 +56,8 @@ GmicQtProcessorDlg::GmicQtProcessorDlg(DPlugin* const tool, QWidget* const paren
     : QDialog(parent),
       d      (new Private)
 {
+    setWindowTitle(tr("G'MIC-Qt (layers)"));
+
     d->buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Cancel, this);
     d->buttons->button(QDialogButtonBox::Cancel)->setVisible(true);
     s_gmicQtPluginPopulateHelpButton(this, tool, d->buttons->button(QDialogButtonBox::Help));

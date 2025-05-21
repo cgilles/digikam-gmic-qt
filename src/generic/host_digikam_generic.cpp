@@ -25,7 +25,6 @@
 // digiKam includes
 
 #include "digikam_debug.h"
-#include "dinfointerface.h"
 #include "previewloadthread.h"
 
 // Local includes
@@ -37,7 +36,6 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-extern DInfoInterface* s_infoIface;
 extern QUrl            s_currentAlbumUrl;
 extern QList<QUrl>     s_urlList;
 
@@ -62,14 +60,9 @@ void getLayersExtent(int* width,
                      int* height,
                      GmicQt::InputMode mode)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getLayersExtent(): InputMode="
-                                         << (int)mode;
-
-    QList<QUrl> list = s_infoIface->currentSelectedItems();
-
-    if (!list.isEmpty())
+    if (!s_urlList.isEmpty())
     {
-        DImg img = PreviewLoadThread::loadFastSynchronously(list.first().toLocalFile(), 1024);
+        DImg img = PreviewLoadThread::loadFastSynchronously(s_urlList.first().toLocalFile(), 1024);
         *width   = img.width();
         *height  = img.height();
     }
@@ -92,13 +85,6 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
                       GmicQt::InputMode mode)
 {
     qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Calling GmicQt getCroppedImages()";
-
-    s_urlList = s_infoIface->currentSelectedItems();
-
-    if (s_urlList.isEmpty())
-    {
-        s_urlList = s_infoIface->currentAlbumItems();
-    }
 
     if ((mode == GmicQt::InputMode::NoInput) || s_urlList.isEmpty())
     {

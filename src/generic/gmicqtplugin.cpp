@@ -45,6 +45,7 @@
 
 #include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
+#include "gmicqtgenericdlg.h"
 #include "gmicqtprocessordlg.h"
 #include "gmic.h"
 
@@ -124,9 +125,19 @@ void GmicQtPlugin::setup(QObject* const parent)
 
 void GmicQtPlugin::slotGmicQt()
 {
-    s_infoIface = infoIface(sender());
+    GmicQtGenericDlg* const gdlg = new GmicQtGenericDlg(this, infoIface(sender()));
 
-    QClipboard* const clipboard = QGuiApplication::clipboard();
+    if (gdlg->exec() != QDialog::Accepted)
+    {
+        delete gdlg;
+        return;
+    }
+
+    s_urlList = gdlg->imageUrls();
+
+    delete gdlg;
+
+    QClipboard* const clipboard  = QGuiApplication::clipboard();
     clipboard->clear();
 
     QString fname = GmicQtWindow::execWindow(
@@ -242,15 +253,15 @@ void GmicQtPlugin::slotGmicQt()
             paths.append(url.toLocalFile());
         }
 
-        GmicQtProcessorDlg* const dlg = new GmicQtProcessorDlg(this);
+        GmicQtProcessorDlg* const pdlg = new GmicQtProcessorDlg(this);
 
-        connect(dlg, SIGNAL(signalUpdateHostApp(QUrl)),
-                s_infoIface, SLOT(slotMetadataChangedForUrl(QUrl)));
+        connect(pdlg, SIGNAL(signalUpdateHostApp(QUrl)),
+                infoIface(sender()), SLOT(slotMetadataChangedForUrl(QUrl)));
 
-        dlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
-        dlg->exec();
+        pdlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
+        pdlg->exec();
 
-        delete dlg;
+        delete pdlg;
     }
     else
     {
