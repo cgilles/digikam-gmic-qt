@@ -45,13 +45,14 @@ public:
 
 public:
 
-    bool                            cancel      = false;
-    GmicQtProcessor*                proc        = nullptr;
-    GmicQtProcessorThreadObserver*  observer    = nullptr;
+    bool                            cancel       = false;
+    GmicQtProcessor*                proc         = nullptr;
+    GmicQtProcessorThreadObserver*  observer     = nullptr;
     QStringList                     inputPaths;
     QString                         command;
     QString                         outputPath;
-    QString                         outputFormat;
+    QString                         fileName;
+    int                             outputFormat = DImg::JPEG;
 };
 
 // ---
@@ -104,16 +105,19 @@ void GmicQtProcessorThread::cancel()
 void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
                                         const QString& command,
                                         const QString& outputPath,
-                                        const QString& outputFormat)
+                                        const QString& fileName,
+                                        int   outputFormat)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC command       :" << command;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process   :" << inputPaths;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image file   :" << outputPath;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image format :" << outputFormat;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC command        :" << command;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process    :" << inputPaths;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image path    :" << outputPath;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image filename:" << fileName;
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image format  :" << DImg::formatToMimeType((DImg::FORMAT)outputFormat);
 
     d->inputPaths   = inputPaths;
     d->command      = command;
     d->outputPath   = outputPath;
+    d->fileName     = fileName;
     d->outputFormat = outputFormat;
 }
 
@@ -149,9 +153,18 @@ void GmicQtProcessorThread::run()
         {
             qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(d->outputPath));
+            QString outFilePath = QString::fromUtf8("%1%2.%3")
+                                  .arg(d->outputPath)
+                                  .arg(d->fileName)
+                                  .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
 
-            if (d->proc->outputImage().save(d->outputPath, d->outputFormat, d->observer))
+            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(outFilePath));
+
+            if (
+                d->proc->outputImage().save(outFilePath,
+                                            (DImg::FORMAT)d->outputFormat,
+                                            d->observer)
+               )
             {
                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
 
@@ -172,8 +185,8 @@ void GmicQtProcessorThread::run()
 
                     if (meta->getGPSInfo(alt, lat, lng))
                     {
-                        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found and saved in " << d->outputPath;
-                        meta->load(d->outputPath);
+                        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found and saved in " << outFilePath;
+                        meta->load(outFilePath);
                         meta->setGPSInfo(alt, lat, lng);
                         meta->applyChanges(true);
                         break;
@@ -189,7 +202,7 @@ void GmicQtProcessorThread::run()
                 QString model   = meta->getExifTagString("Exif.Image.Model");
                 QDateTime dt    = meta->getItemDateTime();
 
-                meta->load(d->outputPath);
+                meta->load(outFilePath);
                 meta->setIptc(iptc);
                 meta->setXmp(xmp);
                 meta->setXmpTagString("Xmp.tiff.Make",   make);
@@ -209,7 +222,7 @@ void GmicQtProcessorThread::run()
                 meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
                 meta->applyChanges(true);
 
-                Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(d->outputPath));
+                Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(outFilePath));
             }
             else
             {

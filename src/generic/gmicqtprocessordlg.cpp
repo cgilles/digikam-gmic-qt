@@ -147,10 +147,11 @@ void GmicQtProcessorDlg::slotCancel()
 void GmicQtProcessorDlg::setSettings(const QStringList& inputPaths,
                                      const QString& command,
                                      const QString& outputPath,
-                                     const QString& outputFormat)
+                                     const QString& fileName,
+                                     int   outputFormat)
 {
     d->pbar->setMaximum(inputPaths.size() + 2);
-    d->thread->setSettings(inputPaths, command, outputPath, outputFormat);
+    d->thread->setSettings(inputPaths, command, outputPath, fileName, outputFormat);
     d->thread->start();
 }
 

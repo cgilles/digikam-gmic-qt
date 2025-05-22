@@ -36,8 +36,7 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-extern QUrl            s_currentAlbumUrl;
-extern QList<QUrl>     s_urlList;
+extern QList<QUrl> s_urlList;
 
 } // namespace DigikamBqmGmicQtPlugin
 
@@ -96,7 +95,6 @@ void getCroppedImages(cimg_library::CImgList<gmic_pixel_type>& images,
 
     images.assign(s_urlList.size());
     imageNames.assign(s_urlList.size());
-    s_currentAlbumUrl = s_urlList[0];
 
     for (int i = 0 ; i < s_urlList.size() ; ++i)
     {

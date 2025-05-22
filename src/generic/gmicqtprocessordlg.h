@@ -43,7 +43,8 @@ public:
     void setSettings(const QStringList& inputPaths,
                      const QString& command,
                      const QString& outputPath,
-                     const QString& outputFormat);
+                     const QString& fileName,
+                     int   outputFormat);
 
 Q_SIGNALS:
 

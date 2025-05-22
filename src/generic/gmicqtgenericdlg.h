@@ -37,12 +37,26 @@ class GmicQtGenericDlg : public QDialog
 
 public:
 
+    /**
+     * G'MIC filter output image format.
+     */
+    enum
+    {
+        GMIC_JPEG = 0,
+        GMIC_PNG,
+        GMIC_TIFF
+    };
+
+public:
+
     explicit GmicQtGenericDlg(DPlugin* const tool,
                               DInfoInterface* const iface,
                               QWidget* const parent = nullptr);
     ~GmicQtGenericDlg()           override;
 
-    QList<QUrl> imageUrls() const;
+    QList<QUrl> imageUrls()  const;
+    QString outputTemplate() const;
+    int     outputFormat()   const;
 
 private:
 

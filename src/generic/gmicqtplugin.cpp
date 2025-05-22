@@ -55,9 +55,7 @@ using namespace DigikamGmicQtPluginCommon;
 namespace DigikamGenericGmicQtPlugin
 {
 
-DInfoInterface* s_infoIface = nullptr;
-QUrl            s_currentAlbumUrl;
-QList<QUrl>     s_urlList;
+QList<QUrl> s_urlList;
 
 GmicQtPlugin::GmicQtPlugin(QObject* const parent)
     : DPluginGeneric(parent)
@@ -125,7 +123,9 @@ void GmicQtPlugin::setup(QObject* const parent)
 
 void GmicQtPlugin::slotGmicQt()
 {
-    GmicQtGenericDlg* const gdlg = new GmicQtGenericDlg(this, infoIface(sender()));
+    DInfoInterface* const iface  = infoIface(sender());
+
+    GmicQtGenericDlg* const gdlg = new GmicQtGenericDlg(this, iface);
 
     if (gdlg->exec() != QDialog::Accepted)
     {
@@ -133,7 +133,10 @@ void GmicQtPlugin::slotGmicQt()
         return;
     }
 
-    s_urlList = gdlg->imageUrls();
+    s_urlList        = gdlg->imageUrls();
+    QUrl newURL      = iface->uploadUrl();
+    QString fileName = gdlg->outputTemplate();
+    int     format   = gdlg->outputFormat();
 
     delete gdlg;
 
@@ -147,105 +150,6 @@ void GmicQtPlugin::slotGmicQt()
 
     if (!clipboard->text().isEmpty() && !fname.isEmpty())
     {
-        QStringList writableMimetypes;
-        QList<QByteArray> supported = QImageWriter::supportedMimeTypes();
-
-        for (const QByteArray& mimeType : std::as_const(supported))
-        {
-            writableMimetypes.append(QLatin1String(mimeType));
-        }
-
-        // Put first class citizens at first place
-
-        writableMimetypes.removeAll(QLatin1String("image/jpeg"));
-        writableMimetypes.removeAll(QLatin1String("image/tiff"));
-        writableMimetypes.removeAll(QLatin1String("image/png"));
-        writableMimetypes.insert(0, QLatin1String("image/png"));
-        writableMimetypes.insert(1, QLatin1String("image/jpeg"));
-        writableMimetypes.insert(2, QLatin1String("image/tiff"));
-
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "outputImages: Offered mimetypes: " << writableMimetypes;
-
-        QLatin1String defaultMimeType("image/png");
-        QLatin1String defaultFileName("image.png");
-
-        QPointer<DFileDialog> imageFileSaveDialog = new DFileDialog(nullptr,
-                                                                    QObject::tr("New Image File Name"),
-                                                                    QFileInfo(s_currentAlbumUrl.toLocalFile()).filePath());
-        imageFileSaveDialog->setAcceptMode(QFileDialog::AcceptSave);
-        imageFileSaveDialog->setMimeTypeFilters(writableMimetypes);
-        imageFileSaveDialog->selectMimeTypeFilter(defaultMimeType);
-        imageFileSaveDialog->selectFile(defaultFileName);
-
-        // Start dialog and check if canceled.
-
-        imageFileSaveDialog->exec();
-
-        if (!imageFileSaveDialog->hasAcceptedUrls())
-        {
-            delete imageFileSaveDialog;
-
-            return;
-        }
-
-        QUrl newURL                  = imageFileSaveDialog->selectedUrls().first();
-        QFileInfo fi(newURL.toLocalFile());
-
-        // Parse name filter and extract file extension
-
-        QString selectedFilterString = imageFileSaveDialog->selectedNameFilter();
-        QLatin1String triggerString("*.");
-        int triggerPos               = selectedFilterString.lastIndexOf(triggerString);
-        QString format;
-
-        if (triggerPos != -1)
-        {
-            format = selectedFilterString.mid(triggerPos + triggerString.size());
-            format = format.left(format.size() - 1);
-            format = format.toUpper();
-        }
-
-        // If name filter was selected, we guess image type using file extension.
-
-        if (format.isEmpty())
-        {
-            format = fi.suffix().toUpper();
-
-            QList<QByteArray> imgExtList = QImageWriter::supportedImageFormats();
-            imgExtList << "TIF";
-            imgExtList << "TIFF";
-            imgExtList << "JPG";
-            imgExtList << "JPE";
-
-            if (!imgExtList.contains(format.toLatin1()) && !imgExtList.contains(format.toLower().toLatin1()))
-            {
-                QMessageBox::critical(nullptr, QObject::tr("Unsupported Format"),
-                                      QObject::tr("The target image file format \"%1\" is not supported.").arg(format));
-
-                qCWarning(DIGIKAM_DPLUGIN_GENERIC_LOG) << "target image file format " << format << " is not supported!";
-
-                delete imageFileSaveDialog;
-
-                return;
-            }
-        }
-
-        if (!newURL.isValid())
-        {
-            QMessageBox::critical(nullptr, QObject::tr("Cannot Create File"),
-                                  QObject::tr("Failed to create file\n\"%1\" to\n\"%2\".")
-                                  .arg(newURL.fileName())
-                                  .arg(QDir::toNativeSeparators(newURL.toLocalFile().section(QLatin1Char('/'), -2, -2))));
-
-            qCWarning(DIGIKAM_DPLUGIN_GENERIC_LOG) << "target URL is not valid !";
-
-            delete imageFileSaveDialog;
-
-            return;
-        }
-
-        delete imageFileSaveDialog;
-
         QStringList paths;
 
         for (const QUrl& url : std::as_const(s_urlList))
@@ -256,9 +160,9 @@ void GmicQtPlugin::slotGmicQt()
         GmicQtProcessorDlg* const pdlg = new GmicQtProcessorDlg(this);
 
         connect(pdlg, SIGNAL(signalUpdateHostApp(QUrl)),
-                infoIface(sender()), SLOT(slotMetadataChangedForUrl(QUrl)));
+                iface, SLOT(slotMetadataChangedForUrl(QUrl)));
 
-        pdlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), format);
+        pdlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), fileName, format);
         pdlg->exec();
 
         delete pdlg;

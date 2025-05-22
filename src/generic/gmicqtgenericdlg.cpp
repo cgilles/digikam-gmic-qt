@@ -18,6 +18,8 @@
 
 #include <QPushButton>
 #include <QLabel>
+#include <QComboBox>
+#include <QLineEdit>
 #include <QGridLayout>
 #include <QDialogButtonBox>
 
@@ -25,6 +27,7 @@
 
 #include "digikam_debug.h"
 #include "ditemslist.h"
+#include "dimg.h"
 
 // Local includes
 
@@ -42,8 +45,11 @@ public:
 
 public:
 
-    QDialogButtonBox* buttons   = nullptr;
-    DItemsList*       imageList = nullptr;
+    QDialogButtonBox* buttons              = nullptr;
+    DItemsList*       imageList            = nullptr;
+    QWidget*          uploadWidget         = nullptr;
+    QLineEdit*        fileTemplateLineEdit = nullptr;
+    QComboBox*        imageFormat          = nullptr;
 };
 
 GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const iface, QWidget* const parent)
@@ -60,18 +66,11 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
 
     // --------------------------------------------------------
 
-    QLabel* const logo      = new QLabel(page);
-    logo->setPixmap(s_gmicQtPluginIcon().pixmap(48, 48));
-
-    // --------------------------------------------------------
-
     QLabel* const inHeader  = new QLabel(page);
     inHeader->setWordWrap(true);
-    inHeader->setText(tr("Set in the list below all stacked items processed by the G'MIC filter as layers."));
+    inHeader->setText(tr("Set the list below with all stacked items processed by the G'MIC filter as layers."));
 
-    // --------------------------------------------------------
-
-    d->imageList       = new DItemsList(page);
+    d->imageList            = new DItemsList(page);
     d->imageList->setObjectName(QLatin1String("GmicGeneric ImagesList"));
     d->imageList->setControlButtonsPlacement(DItemsList::ControlButtonsRight);
     d->imageList->setIface(iface);
@@ -80,11 +79,49 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
 
     // --------------------------------------------------------
 
-    grid->addWidget(logo,          0, 0, 1, 1);
-    grid->addWidget(inHeader,      0, 1, 1, 1);
-    grid->addWidget(d->imageList,  1, 0, 1, 2);
+    QLabel* const outHeader        = new QLabel(page);
+    outHeader->setWordWrap(true);
+    outHeader->setText(tr("Set how the G'MIC filter output images must be stored."));
+
+    d->uploadWidget                = iface->uploadWidget(page);
+
+    QLabel* const templateLbl      = new QLabel(tr("File Name Template:"), page);
+    templateLbl->setWordWrap(false);
+
+    d->fileTemplateLineEdit        = new QLineEdit(QLatin1String("gmic_output"), page);
+    templateLbl->setBuddy(d->fileTemplateLineEdit);
+    d->fileTemplateLineEdit->setToolTip(tr("Name of the G'MIC filter output files (without its extension)."));
+    d->fileTemplateLineEdit->setWhatsThis(tr("\"File Name Template\": Set here the base name of the files that "
+                                             "will be saved by the G'MIC filter. For example, if your template "
+                                             "is \"gmic_output\" and if you chose a JPEG format, then the generated "
+                                             "files will be saved with the name \"gmic_output_01.jpg\", "
+                                             "\"gmic_output_02.jpg\", etc."));
+
+    QLabel* const labelImageFormat = new QLabel(page);
+    labelImageFormat->setWordWrap(false);
+    labelImageFormat->setText(tr("Image Format:"));
+
+    d->imageFormat                 = new QComboBox(page);
+    d->imageFormat->setEditable(false);
+    d->imageFormat->setWhatsThis(tr("Select your preferred G'MIC filter output image format."));
+    d->imageFormat->addItem(QLatin1String("JPEG"), DImg::JPEG);
+    d->imageFormat->addItem(QLatin1String("PNG"),  DImg::PNG);
+    d->imageFormat->addItem(QLatin1String("TIFF"), DImg::TIFF);
+    labelImageFormat->setBuddy(d->imageFormat);
+
+    // --------------------------------------------------------
+
+    grid->addWidget(inHeader,                0, 0, 1, 2);
+    grid->addWidget(d->imageList,            1, 0, 1, 2);
+    grid->addWidget(outHeader,               2, 0, 1, 2);
+    grid->addWidget(d->uploadWidget,         3, 0, 1, 2);
+    grid->addWidget(templateLbl,             4, 0, 1, 1);
+    grid->addWidget(d->fileTemplateLineEdit, 4, 1, 1, 1);
+    grid->addWidget(labelImageFormat,        5, 0, 1, 1);
+    grid->addWidget(d->imageFormat,          5, 1, 1, 1);
     grid->setColumnStretch(1, 10);
-    grid->setRowStretch(1, 10);
+    grid->setRowStretch(1, 5);
+    grid->setRowStretch(3, 5);
     grid->setContentsMargins(QMargins());
     grid->setSpacing(layoutSpacing());
 
@@ -112,6 +149,16 @@ GmicQtGenericDlg::~GmicQtGenericDlg()
 QList<QUrl> GmicQtGenericDlg::imageUrls() const
 {
     return d->imageList->imageUrls();
+}
+
+QString GmicQtGenericDlg::outputTemplate() const
+{
+    return d->fileTemplateLineEdit->text();
+}
+
+int GmicQtGenericDlg::outputFormat() const
+{
+    return d->imageFormat->currentData().toInt();
 }
 
 } // namespace DigikamGenericGmicQtPlugin
