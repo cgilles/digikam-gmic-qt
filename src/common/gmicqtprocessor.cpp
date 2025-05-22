@@ -20,18 +20,11 @@
 
 // Local includes
 
-#include "GmicQt.h"
 #include "Common.h"
 #include "FilterThread.h"
-#include "GmicStdlib.h"
 #include "Misc.h"
 #include "Updater.h"
 #include "gmicqtimageconverter.h"
-
-namespace gmic_library
-{
-template <typename T> struct gmic_list;
-}
 
 using namespace GmicQt;
 
@@ -49,19 +42,19 @@ public:
 
 public:
 
-    FilterThread*                   filterThread = nullptr;
-    gmic_library::gmic_list<float>* gmicImages   = nullptr;
+    FilterThread*                             filterThread = nullptr;
+    gmic_library::gmic_list<gmic_pixel_type>* gmicImages   = nullptr;
 
-    QTimer                          timer;
-    QString                         filterName;
+    QTimer                                    timer;
+    QString                                   filterName;
 
-    QString                         command;
-    bool                            completed    = false;
-    bool                            cancel       = false;
+    QString                                   command;
+    bool                                      completed    = false;
+    bool                                      cancel       = false;
 
-    DImg                            inImage;
-    QStringList                     inFiles;
-    DImg                            outImage;
+    DImg                                      inImage;
+    QStringList                               inFiles;
+    gmic_library::gmic_list<gmic_pixel_type>  outImages;
 };
 
 GmicQtProcessor::GmicQtProcessor(QObject* const parent)
@@ -253,18 +246,12 @@ void GmicQtProcessor::slotProcessingFinished()
     }
     else
     {
-        gmic_list<gmic_pixel_type> images = d->filterThread->images();
+        d->outImages = d->filterThread->images();
 
-        qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter generated output images:" << images.size();
+        qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter generated output images:" << d->outImages.size();
 
         if (!d->filterThread->aborted())
         {
-            GMicQtImageConverter::convertCImgtoDImg(
-                                                    images[0],
-                                                    d->outImage,
-                                                    d->inImage.sixteenBit()
-                                                   );
-
             qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution completed!";
 
             d->completed = true;
@@ -293,7 +280,23 @@ void GmicQtProcessor::cancel()
 
 DImg GmicQtProcessor::outputImage() const
 {
-    return d->outImage;
+    DImg outImage;
+
+    if (d->completed)
+    {
+        GMicQtImageConverter::convertCImgtoDImg(
+                                                d->outImages[0],
+                                                outImage,
+                                                d->inImage.sixteenBit()
+                                               );
+    }
+
+    return outImage;
+}
+
+gmic_library::gmic_list<gmic_pixel_type> GmicQtProcessor::outputImages() const
+{
+    return d->outImages;
 }
 
 QString GmicQtProcessor::processingCommand() const

@@ -23,6 +23,16 @@
 
 #include "dimg.h"
 
+// Local includes
+
+#include "GmicQt.h"
+#include "GmicStdlib.h"
+
+namespace gmic_library
+{
+template <typename T> struct gmic_list;
+}
+
 using namespace Digikam;
 
 namespace DigikamGmicQtPluginCommon
@@ -39,45 +49,42 @@ public:
      * Implementation inspired from G'MIC-Qt HeadlessProcessor.
      */
     explicit GmicQtProcessor(QObject* const parent = nullptr);
-    ~GmicQtProcessor()                   override;
+    ~GmicQtProcessor()                                            override;
 
     /**
      * @brief Set the G'MIC command to process. More than one command can be chained using space separator.
      */
     bool setProcessingCommand(const QString& command);
-    QString processingCommand()     const;
+    QString processingCommand()                             const;
 
     /**
      * @return a literal name of the G'MIC command.
      */
-    QString filterName()            const;
+    QString filterName()                                    const;
+
+    /**
+     * @return true if the G'MIC processing is completed.
+     */
+    bool processingComplete()                               const;
+
+    /**
+     * @brief Allow to cancel the current G'MIC command process.
+     */
+    void cancel();
 
     /**
      * @brief Process one single image. Used by the BQM plugin.
      */
     void setInputImage(const DImg& inImage);
     void startProcessingImage();
+    DImg outputImage()                                      const;
 
     /**
      * @brief Process multiple files as layer. Used by the Generic plugin.
      */
     void setInputFiles(const QStringList& inFiles);
     void startProcessingFiles();
-
-    /**
-     * @return true if the G'MIC processing is completed.
-     */
-    bool processingComplete()       const;
-
-    /**
-     * @return the result image processed by the G'MIC command.
-     */
-    DImg outputImage()              const;
-
-    /**
-     * @brief Allow to cancel the current G'MIC command process.
-     */
-    void cancel();
+    gmic_library::gmic_list<gmic_pixel_type> outputImages() const;
 
 Q_SIGNALS:
 
