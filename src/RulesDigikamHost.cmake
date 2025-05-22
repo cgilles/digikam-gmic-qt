@@ -171,6 +171,8 @@ set(modern_qt_definitions QT_DEPRECATED_WARNINGS
 set(digikam_common_SRCS ${CMAKE_SOURCE_DIR}/src/common/gmicqtimageconverter.cpp
                         ${CMAKE_SOURCE_DIR}/src/common/gmicqtwindow.cpp
                         ${CMAKE_SOURCE_DIR}/src/common/gmicqtprocessor.cpp
+                        ${CMAKE_SOURCE_DIR}/src/common/gmicqtprocessor_bqm.cpp
+                        ${CMAKE_SOURCE_DIR}/src/common/gmicqtprocessor_generic.cpp
                         ${CMAKE_SOURCE_DIR}/src/common/gmicqtcommon.cpp
 )
 
