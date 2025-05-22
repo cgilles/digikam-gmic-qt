@@ -30,6 +30,7 @@
 // Local includes
 
 #include "gmicqtcommon.h"
+#include "gmicqtimageconverter.h"
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -153,80 +154,92 @@ void GmicQtProcessorThread::run()
         {
             qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-            QString outFilePath = QString::fromUtf8("%1%2.%3")
-                                  .arg(d->outputPath)
-                                  .arg(d->fileName)
-                                  .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
+            DImg outImage;
+            QString filesList;
 
-            Q_EMIT signalProgressInfo(tr("Save data into %1").arg(outFilePath));
-
-            if (
-                d->proc->outputImage().save(outFilePath,
-                                            (DImg::FORMAT)d->outputFormat,
-                                            d->observer)
-               )
+            for (const QString& inpath : d->inputPaths)
             {
-                qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
-
-                // Restoring matadata
-
-                qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Copying GPS info...";
-
-                // Find first src image which contain geolocation and save it to target file.
-
-                double lat, lng, alt;
-                QScopedPointer<DMetadata> meta(new DMetadata);
-
-                for (const QString& inpath : d->inputPaths)
-                {
-                    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << inpath;
-
-                    meta->load(inpath);
-
-                    if (meta->getGPSInfo(alt, lat, lng))
-                    {
-                        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found and saved in " << outFilePath;
-                        meta->load(outFilePath);
-                        meta->setGPSInfo(alt, lat, lng);
-                        meta->applyChanges(true);
-                        break;
-                    }
-                }
-
-                // Restore usual and common metadata from first item.
-
-                meta->load(d->inputPaths.constFirst());
-                QByteArray iptc = meta->getIptc();
-                QByteArray xmp  = meta->getXmp();
-                QString make    = meta->getExifTagString("Exif.Image.Make");
-                QString model   = meta->getExifTagString("Exif.Image.Model");
-                QDateTime dt    = meta->getItemDateTime();
-
-                meta->load(outFilePath);
-                meta->setIptc(iptc);
-                meta->setXmp(xmp);
-                meta->setXmpTagString("Xmp.tiff.Make",   make);
-                meta->setXmpTagString("Xmp.tiff.Model", model);
-                meta->setImageDateTime(dt);
-
-                QString filesList;
-
-                for (const QString& inpath : d->inputPaths)
-                {
-                    filesList.append(QFileInfo(inpath).fileName() + QLatin1String(" ; "));
-                }
-
-                filesList.truncate(filesList.length() - 3);
-
-                meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
-                meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
-                meta->applyChanges(true);
-
-                Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(outFilePath));
+                filesList.append(QFileInfo(inpath).fileName() + QLatin1String(" ; "));
             }
-            else
+
+            filesList.truncate(filesList.length() - 3);
+
+            gmic_library::gmic_list<gmic_pixel_type> outImages = d->proc->outputImages();
+
+            for (int i = 0 ; i < outImages.size() ; i++)
             {
-                error = tr("Cannot save G'MIC filter data!");
+                QString outFilePath = QString::fromUtf8("%1%2_%3.%4")
+                                      .arg(d->outputPath)
+                                      .arg(d->fileName)
+                                      .arg(i, 2, 10, QLatin1Char('0'))
+                                      .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
+
+                Q_EMIT signalProgressInfo(tr("Save data into %1").arg(outFilePath));
+
+                GMicQtImageConverter::convertCImgtoDImg(
+                                                        outImages[i],
+                                                        outImage,
+                                                        (d->outputFormat != DImg::JPEG)
+                                                       );
+
+                if (
+                    outImage.save(outFilePath,
+                                  (DImg::FORMAT)d->outputFormat,
+                                  d->observer)
+                   )
+                {
+                    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
+
+                    // Restoring matadata
+
+                    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Copying GPS info...";
+
+                    // Find first src image which contain geolocation and save it to target file.
+
+                    double lat, lng, alt;
+                    QScopedPointer<DMetadata> meta(new DMetadata);
+
+                    for (const QString& inpath : d->inputPaths)
+                    {
+                        meta->load(inpath);
+
+                        if (meta->getGPSInfo(alt, lat, lng))
+                        {
+                            qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found from"
+                                                                 << inpath << "and saved in"
+                                                                 << outFilePath;
+                            meta->load(outFilePath);
+                            meta->setGPSInfo(alt, lat, lng);
+                            meta->applyChanges(true);
+                            break;
+                        }
+                    }
+
+                    // Restore usual and common metadata from first item.
+
+                    meta->load(d->inputPaths.constFirst());
+                    QByteArray iptc = meta->getIptc();
+                    QByteArray xmp  = meta->getXmp();
+                    QString make    = meta->getExifTagString("Exif.Image.Make");
+                    QString model   = meta->getExifTagString("Exif.Image.Model");
+                    QDateTime dt    = meta->getItemDateTime();
+
+                    meta->load(outFilePath);
+                    meta->setIptc(iptc);
+                    meta->setXmp(xmp);
+                    meta->setXmpTagString("Xmp.tiff.Make",   make);
+                    meta->setXmpTagString("Xmp.tiff.Model", model);
+                    meta->setImageDateTime(dt);
+                    meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
+                    meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
+                    meta->applyChanges(true);
+
+                    Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(outFilePath));
+                }
+                else
+                {
+                    error = tr("Cannot save G'MIC filter data!");
+                }
             }
         }
         else
