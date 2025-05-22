@@ -12,7 +12,7 @@
  *
  * ============================================================ */
 
-#include "gmicqtgenericdlg.h"
+#include "gmicqtsettingsdlg.h"
 
 // Qt includes
 
@@ -38,7 +38,7 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-class Q_DECL_HIDDEN GmicQtGenericDlg::Private
+class Q_DECL_HIDDEN GmicQtSettingsDlg::Private
 {
 public:
 
@@ -53,7 +53,7 @@ public:
     QComboBox*        imageFormat          = nullptr;
 };
 
-GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const iface, QWidget* const parent)
+GmicQtSettingsDlg::GmicQtSettingsDlg(DPlugin* const tool, DInfoInterface* const iface, QWidget* const parent)
     : QDialog(parent),
       d      (new Private)
 {
@@ -69,7 +69,8 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
     QWidget* const inPage    = new QWidget(tab);
     QLabel* const inHeader   = new QLabel(inPage);
     inHeader->setWordWrap(true);
-    inHeader->setText(tr("Set the list below with all stacked items to process by the G'MIC filter as layers."));
+    inHeader->setText(tr("Set the list below with all stacked items to process by the G'MIC filter "
+                         "as layers (first on the top)."));
 
     d->imageList             = new DItemsList(inPage);
     d->imageList->setObjectName(QLatin1String("GmicGeneric ImagesList"));
@@ -154,26 +155,26 @@ GmicQtGenericDlg::GmicQtGenericDlg(DPlugin* const tool, DInfoInterface* const if
             this, SLOT(reject()));
 }
 
-GmicQtGenericDlg::~GmicQtGenericDlg()
+GmicQtSettingsDlg::~GmicQtSettingsDlg()
 {
     delete d;
 }
 
-QList<QUrl> GmicQtGenericDlg::imageUrls() const
+QList<QUrl> GmicQtSettingsDlg::imageUrls() const
 {
     return d->imageList->imageUrls();
 }
 
-QString GmicQtGenericDlg::outputTemplate() const
+QString GmicQtSettingsDlg::outputTemplate() const
 {
     return d->fileTemplateLineEdit->text();
 }
 
-int GmicQtGenericDlg::outputFormat() const
+int GmicQtSettingsDlg::outputFormat() const
 {
     return d->imageFormat->currentData().toInt();
 }
 
 } // namespace DigikamGenericGmicQtPlugin
 
-#include "moc_gmicqtgenericdlg.cpp"
+#include "moc_gmicqtsettingsdlg.cpp"

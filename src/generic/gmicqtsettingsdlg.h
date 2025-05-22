@@ -4,7 +4,7 @@
  * https://www.digikam.org
  *
  * Date        : 2025-05-17
- * Description : a G'MIC Generic plugin dialog
+ * Description : a G'MIC Generic plugin settings dialog
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -31,7 +31,7 @@ using namespace Digikam;
 namespace DigikamGenericGmicQtPlugin
 {
 
-class GmicQtGenericDlg : public QDialog
+class GmicQtSettingsDlg : public QDialog
 {
     Q_OBJECT
 
@@ -49,10 +49,10 @@ public:
 
 public:
 
-    explicit GmicQtGenericDlg(DPlugin* const tool,
+    explicit GmicQtSettingsDlg(DPlugin* const tool,
                               DInfoInterface* const iface,
                               QWidget* const parent = nullptr);
-    ~GmicQtGenericDlg()           override;
+    ~GmicQtSettingsDlg()           override;
 
     QList<QUrl> imageUrls()  const;
     QString outputTemplate() const;

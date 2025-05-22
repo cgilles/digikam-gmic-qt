@@ -45,7 +45,7 @@
 
 #include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
-#include "gmicqtgenericdlg.h"
+#include "gmicqtsettingsdlg.h"
 #include "gmicqtprocessordlg.h"
 #include "gmic.h"
 
@@ -125,7 +125,7 @@ void GmicQtPlugin::slotGmicQt()
 {
     DInfoInterface* const iface  = infoIface(sender());
 
-    GmicQtGenericDlg* const gdlg = new GmicQtGenericDlg(this, iface);
+    GmicQtSettingsDlg* const gdlg = new GmicQtSettingsDlg(this, iface);
 
     if (gdlg->exec() != QDialog::Accepted)
     {
