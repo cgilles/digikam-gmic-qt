@@ -44,6 +44,12 @@ void GmicQtProcessor::startProcessingImage()
                                                            ),
                                             images[0]
                                            );
+    if (d->cancel)
+    {
+        d->completed = false;
+        Q_EMIT signalDone(tr("G'MIC Filter execution aborted!"));
+        return;
+    }
 
     qCDebug(DIGIKAM_DPLUGIN_LOG) << QString::fromUtf8("G'MIC: %1").arg(d->command);
 
@@ -77,7 +83,7 @@ DImg GmicQtProcessor::outputImage() const
 {
     DImg outImage;
 
-    if (d->completed)
+    if (d->completed && !d->cancel)
     {
         GMicQtImageConverter::convertCImgtoDImg(
                                                 d->outImages[0],

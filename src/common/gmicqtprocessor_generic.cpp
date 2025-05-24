@@ -40,7 +40,7 @@ void GmicQtProcessor::startProcessingFiles()
 
         Q_EMIT signalProgressInfo(tr("Converting image %1").arg(QFileInfo(d->inFiles[i]).fileName()));
 
-        bool b = d->inImage.load(d->inFiles[i]);
+        bool b = d->inImage.load(d->inFiles[i], d->observer);
 
         if (b)
         {
@@ -55,8 +55,26 @@ void GmicQtProcessor::startProcessingFiles()
         }
         else
         {
-            qCCritical(DIGIKAM_DPLUGIN_LOG) << "Error while loading" << d->inFiles[i];
+            d->completed = false;
+
+            if (d->cancel)
+            {
+                Q_EMIT signalDone(tr("G'MIC Filter execution aborted!"));
+            }
+            else
+            {
+                Q_EMIT signalDone(tr("Error while loading %1").arg(d->inFiles[i]));
+            }
+
+            return;
         }
+    }
+
+    if (d->cancel)
+    {
+        d->completed = false;
+        Q_EMIT signalDone(tr("G'MIC Filter execution aborted!"));
+        return;
     }
 
     Q_EMIT signalProgressInfo(tr("Running G'MIC filter %1").arg(d->command));

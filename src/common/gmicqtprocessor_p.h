@@ -19,6 +19,7 @@
 // digiKam includes
 
 #include "digikam_debug.h"
+#include "dimgloaderobserver.h"
 
 // Local includes
 
@@ -29,9 +30,12 @@
 #include "gmicqtimageconverter.h"
 
 using namespace GmicQt;
+using namespace Digikam;
 
 namespace DigikamGmicQtPluginCommon
 {
+
+class GmicQtProcessorObserver;
 
 class Q_DECL_HIDDEN GmicQtProcessor::Private
 {
@@ -46,6 +50,7 @@ public:
 
     FilterThread*                             filterThread = nullptr;
     gmic_library::gmic_list<gmic_pixel_type>* gmicImages   = nullptr;
+    GmicQtProcessorObserver*                  observer     = nullptr;
 
     QTimer                                    timer;
     QString                                   filterName;
@@ -57,6 +62,30 @@ public:
     DImg                                      inImage;
     QStringList                               inFiles;
     gmic_library::gmic_list<gmic_pixel_type>  outImages;
+};
+
+// ---
+
+class Q_DECL_HIDDEN GmicQtProcessorObserver : public DImgLoaderObserver
+{
+public:
+
+    explicit GmicQtProcessorObserver(GmicQtProcessor::Private* const priv)
+        : DImgLoaderObserver(),
+          d                 (priv)
+    {
+    }
+
+    ~GmicQtProcessorObserver() override = default;
+
+    bool continueQuery() override
+    {
+        return (!d->cancel);
+    }
+
+private:
+
+    GmicQtProcessor::Private* const d = nullptr;
 };
 
 } // namespace DigikamGmicQtPluginCommon

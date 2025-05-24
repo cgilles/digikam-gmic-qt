@@ -111,9 +111,13 @@ private Q_SLOTS:
     void slotSendProgressInformation();
     void slotProcessingFinished();
 
+public:
+
+    // Declared as public due to GmicQtProcessorObserver class.
+    class Private;
+
 private:
 
-    class Private;
     Private* const d = nullptr;
 };
 

@@ -23,11 +23,13 @@ GmicQtProcessor::GmicQtProcessor(QObject* const parent)
 {
     GmicStdLib::Array = Updater::getInstance()->buildFullStdlib();
     d->gmicImages->assign();
+    d->observer       = new GmicQtProcessorObserver(d);
 }
 
 GmicQtProcessor::~GmicQtProcessor()
 {
     delete d->gmicImages;
+    delete d->observer;
     delete d;
 }
 
@@ -72,7 +74,7 @@ void GmicQtProcessor::slotProcessingFinished()
 
         if (errorMessage.isEmpty())
         {
-            errorMessage = QLatin1String("G'MIC Filter execution failed without error message.");
+            errorMessage = tr("G'MIC Filter execution failed without error message.");
         }
 
         qCDebug(DIGIKAM_DPLUGIN_LOG) << errorMessage;
@@ -86,13 +88,15 @@ void GmicQtProcessor::slotProcessingFinished()
 
         if (!d->filterThread->aborted())
         {
-            qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution completed!";
+            qCDebug(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution completed.";
 
             d->completed = true;
         }
         else
         {
-            qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC Filter execution aborted...";
+            errorMessage = tr("G'MIC Filter execution aborted!");
+            qCDebug(DIGIKAM_DPLUGIN_LOG) << errorMessage;
+            d->completed = false;
         }
     }
 
