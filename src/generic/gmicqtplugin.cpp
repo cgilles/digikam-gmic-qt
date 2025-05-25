@@ -94,12 +94,17 @@ QString GmicQtPlugin::details() const
 
 QString GmicQtPlugin::handbookSection() const
 {
-    return QLatin1String("post_processing");
+    return QLatin1String("image_editor");
 }
 
 QString GmicQtPlugin::handbookChapter() const
 {
-    return QLatin1String("gmicqt");
+    return QLatin1String("enhancement_tools");
+}
+
+QString GmicQtPlugin::handbookReference() const
+{
+    return QLatin1String("enhance-gmicqt");
 }
 
 QList<DPluginAuthor> GmicQtPlugin::authors() const
