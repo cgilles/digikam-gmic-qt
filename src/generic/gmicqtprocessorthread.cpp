@@ -173,10 +173,10 @@ void GmicQtProcessorThread::run()
                 for (int i = 0 ; (i < outImages.size()) && !d->cancel ; i++)
                 {
                     QString outFilePath = QString::fromUtf8("%1%2_%3.%4")
-                                        .arg(d->outputPath)
-                                        .arg(d->fileName)
-                                        .arg(i, 2, 10, QLatin1Char('0'))
-                                        .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
+                                              .arg(d->outputPath)
+                                              .arg(d->fileName)
+                                              .arg(i, 2, 10, QLatin1Char('0'))
+                                              .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
 
                     Q_EMIT signalProgressInfo(tr("Save data into %1").arg(outFilePath));
 
@@ -184,13 +184,13 @@ void GmicQtProcessorThread::run()
                                                             outImages[i],
                                                             outImage,
                                                             (d->outputFormat != DImg::JPEG)
-                                                        );
+                                                           );
 
                     if (
                         outImage.save(outFilePath,
-                                    (DImg::FORMAT)d->outputFormat,
-                                    d->observer)
-                    )
+                                      (DImg::FORMAT)d->outputFormat,
+                                      d->observer)
+                       )
                     {
                         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
 
