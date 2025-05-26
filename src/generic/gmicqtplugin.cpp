@@ -104,7 +104,7 @@ QString GmicQtPlugin::handbookChapter() const
 
 QString GmicQtPlugin::handbookReference() const
 {
-    return QLatin1String("enhance-gmicqt");
+    return QLatin1String("enhance-gmicqt-layers");
 }
 
 QList<DPluginAuthor> GmicQtPlugin::authors() const
@@ -128,15 +128,27 @@ void GmicQtPlugin::setup(QObject* const parent)
 
 void GmicQtPlugin::slotGmicQt()
 {
-    DInfoInterface* const iface  = infoIface(sender());
+    DInfoInterface* const iface   = infoIface(sender());
 
     GmicQtSettingsDlg* const gdlg = new GmicQtSettingsDlg(this, iface);
+    gdlg->show();
 
-    if (gdlg->exec() != QDialog::Accepted)
-    {
-        delete gdlg;
-        return;
-    }
+    QEventLoop loop;
+
+    connect(gdlg, &QDialog::finished,
+            [&loop, gdlg](int result)
+        {
+            loop.quit();
+
+            if (result != QDialog::Accepted)
+            {
+                delete gdlg;
+                return;
+            }
+        }
+    );
+
+    loop.exec();
 
     s_urlList        = gdlg->imageUrls();
     QUrl newURL      = iface->uploadUrl();
@@ -168,7 +180,14 @@ void GmicQtPlugin::slotGmicQt()
                 iface, SLOT(slotMetadataChangedForUrl(QUrl)));
 
         pdlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), fileName, format);
-        pdlg->exec();
+        pdlg->show();
+
+        QEventLoop loop2;
+
+        connect(pdlg, &QDialog::finished,
+                &loop2, &QEventLoop::quit);
+
+        loop2.exec();
 
         delete pdlg;
     }
