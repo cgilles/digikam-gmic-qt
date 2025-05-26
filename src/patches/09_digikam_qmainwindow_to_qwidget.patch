@@ -1,0 +1,101 @@
+diff --git a/gmicqt/src/Host/None/host_none.cpp b/gmicqt/src/Host/None/host_none.cpp
+index 8246dc3..3832947 100644
+--- a/gmicqt/src/Host/None/host_none.cpp
++++ b/gmicqt/src/Host/None/host_none.cpp
+@@ -29,7 +29,7 @@
+ #include <QFileInfo>
+ #include <QFont>
+ #include <QGuiApplication>
+-#include <QMainWindow>
++#include <QWidget>
+ #include <QMessageBox>
+ #include <QPainter>
+ #include <QRegularExpression>
+@@ -58,7 +58,7 @@ int jpeg_quality = ImageDialog::UNSPECIFIED_JPEG_QUALITY;
+ QWidget * visibleMainWindow()
+ {
+   for (QWidget * w : QApplication::topLevelWidgets()) {
+-    if ((dynamic_cast<QMainWindow *>(w) != nullptr) && (w->isVisible())) {
++    if ((dynamic_cast<QWidget *>(w) != nullptr) && (w->isVisible())) {
+       return w;
+     }
+   }
+diff --git a/gmicqt/src/MainWindow.cpp b/gmicqt/src/MainWindow.cpp
+index cb164ef..3f4de7b 100644
+--- a/gmicqt/src/MainWindow.cpp
++++ b/gmicqt/src/MainWindow.cpp
+@@ -84,7 +84,7 @@ bool MainWindow::_isAccepted = false;
+ // TODO : Handle window maximization properly (Windows as well as some Linux desktops)
+ //
+ 
+-MainWindow::MainWindow(QWidget * parent) : QMainWindow(parent), ui(new Ui::MainWindow)
++MainWindow::MainWindow(QWidget * parent) : QWidget(parent), ui(new Ui::MainWindow)
+ {
+   TIMING;
+   ui->setupUi(this);
+diff --git a/gmicqt/src/MainWindow.h b/gmicqt/src/MainWindow.h
+index 5802865..9e41b30 100644
+--- a/gmicqt/src/MainWindow.h
++++ b/gmicqt/src/MainWindow.h
+@@ -27,7 +27,6 @@
+ 
+ #include <QIcon>
+ #include <QList>
+-#include <QMainWindow>
+ #include <QString>
+ #include <QTimer>
+ #include <QWidget>
+@@ -58,7 +57,7 @@ class FilterThread;
+ class FiltersPresenter;
+ class VisibleTagSelector;
+ 
+-class MainWindow : public QMainWindow {
++class MainWindow : public QWidget {
+   Q_OBJECT
+ 
+ public:
+diff --git a/gmicqt/ui/mainwindow.ui b/gmicqt/ui/mainwindow.ui
+index 5519fe5..56a9ea8 100644
+--- a/gmicqt/ui/mainwindow.ui
++++ b/gmicqt/ui/mainwindow.ui
+@@ -1,21 +1,17 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <ui version="4.0">
+- <class>MainWindow</class>
+- <widget class="QMainWindow" name="MainWindow">
+-  <property name="geometry">
+-   <rect>
+-    <x>0</x>
+-    <y>0</y>
+-    <width>1143</width>
+-    <height>639</height>
+-   </rect>
+-  </property>
+-  <property name="windowTitle">
+-   <string>MainWindow</string>
+-  </property>
+-  <widget class="QWidget" name="centralwidget">
++  <class>MainWindow</class>
++  <widget class="QWidget" name="MainWindow">
++   <property name="geometry">
++    <rect>
++     <x>0</x>
++     <y>0</y>
++     <width>1143</width>
++     <height>639</height>
++    </rect>
++   </property>
+    <property name="windowTitle">
+-    <string>Form</string>
++    <string>MainWindow</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0">
+     <item>
+@@ -602,7 +598,6 @@
+     </item>
+    </layout>
+   </widget>
+- </widget>
+  <customwidgets>
+   <customwidget>
+    <class>GmicQt::ProgressInfoWidget</class>

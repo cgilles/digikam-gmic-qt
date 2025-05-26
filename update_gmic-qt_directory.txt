@@ -46,6 +46,10 @@ Note: desired release tag must be the same for CImg, G'MIC, and C'MIC-Qt.
 
     patch -p1 < ./src/patches/08_digikam_fix_crash_495810.patch
 
-18/ Check if new files need to be appended with "git status". Add files to git repository if necessary.
-19/ Check compilation with "digikam" host.
+18/ Patch gmicqt/ codes to change lead dialog from QMainWindow to QWidget to be included in QWizad as page:
+
+    patch -p1 < ./src/patches/09_digikam_qmainwindow_to_qwidget.patch
+
+19/ Check if new files need to be appended with "git status". Add files to git repository if necessary.
+20/ Check compilation with "digikam" host.
 

@@ -29,7 +29,7 @@
 #include <QFileInfo>
 #include <QFont>
 #include <QGuiApplication>
-#include <QMainWindow>
+#include <QWidget>
 #include <QMessageBox>
 #include <QPainter>
 #include <QRegularExpression>
@@ -58,7 +58,7 @@ int jpeg_quality = ImageDialog::UNSPECIFIED_JPEG_QUALITY;
 QWidget * visibleMainWindow()
 {
   for (QWidget * w : QApplication::topLevelWidgets()) {
-    if ((dynamic_cast<QMainWindow *>(w) != nullptr) && (w->isVisible())) {
+    if ((dynamic_cast<QWidget *>(w) != nullptr) && (w->isVisible())) {
       return w;
     }
   }

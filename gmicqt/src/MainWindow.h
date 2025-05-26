@@ -27,7 +27,6 @@
 
 #include <QIcon>
 #include <QList>
-#include <QMainWindow>
 #include <QString>
 #include <QTimer>
 #include <QWidget>
@@ -58,7 +57,7 @@ class FilterThread;
 class FiltersPresenter;
 class VisibleTagSelector;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QWidget {
   Q_OBJECT
 
 public:
