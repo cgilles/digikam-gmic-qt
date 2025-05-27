@@ -3,27 +3,21 @@
  * This file is a part of digiKam project
  * https://www.digikam.org
  *
- * Date        : 2007-11-07
- * Description : mail settings container.
+ * Date        : 2025-05-17
+ * Description : a G'MIC settings container
  *
- * SPDX-FileCopyrightText: 2007-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
- * SPDX-FileCopyrightText: 2010      by Andi Clemens <andi dot clemens at googlemail dot com>
+ * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
  * ============================================================ */
 
-#include "mailsettings.h"
+#include "gmicqtsettings.h"
 
-// KDE includes
-
-#include <klocalizedstring.h>
-#include <kconfiggroup.h>
-
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-void MailSettings::readSettings(const KConfigGroup& group)
+void GmicQtSettings::readSettings(const KConfigGroup& group)
 {
     selMode           = (Selection)group.readEntry("SelMode",
                         (int)IMAGES);
@@ -45,7 +39,7 @@ void MailSettings::readSettings(const KConfigGroup& group)
                         (int)JPEG);
 }
 
-void MailSettings::writeSettings(KConfigGroup& group)
+void GmicQtSettings::writeSettings(KConfigGroup& group)
 {
     group.writeEntry("SelMode",            (int)selMode);
     group.writeEntry("AddCommentsAndTags", addFileProperties);
@@ -58,7 +52,7 @@ void MailSettings::writeSettings(KConfigGroup& group)
     group.writeEntry("ImageFormat",        (int)imageFormat);
 }
 
-QString MailSettings::format() const
+QString GmicQtSettings::format() const
 {
     if (imageFormat == JPEG)
     {
@@ -68,12 +62,12 @@ QString MailSettings::format() const
     return QLatin1String("PNG");
 }
 
-void MailSettings::setMailUrl(const QUrl& orgUrl, const QUrl& emailUrl)
+void GmicQtSettings::setMailUrl(const QUrl& orgUrl, const QUrl& emailUrl)
 {
     itemsList.insert(orgUrl, emailUrl);
 }
 
-QUrl MailSettings::mailUrl(const QUrl& orgUrl) const
+QUrl GmicQtSettings::mailUrl(const QUrl& orgUrl) const
 {
     if (itemsList.contains(orgUrl))
     {
@@ -83,14 +77,14 @@ QUrl MailSettings::mailUrl(const QUrl& orgUrl) const
     return QUrl();
 }
 
-qint64 MailSettings::attachementLimit() const
+qint64 GmicQtSettings::attachementLimit() const
 {
     qint64 val = attLimitInMbytes * 1024 * 1024;
 
     return val;
 }
 
-QMap<MailSettings::MailClient, QString> MailSettings::mailClientNames()
+QMap<GmicQtSettings::MailClient, QString> GmicQtSettings::mailClientNames()
 {
     QMap<MailClient, QString> clients;
 
@@ -106,7 +100,7 @@ QMap<MailSettings::MailClient, QString> MailSettings::mailClientNames()
     return clients;
 }
 
-QMap<MailSettings::ImageFormat, QString> MailSettings::imageFormatNames()
+QMap<GmicQtSettings::ImageFormat, QString> GmicQtSettings::imageFormatNames()
 {
     QMap<ImageFormat, QString> frms;
 
@@ -116,4 +110,4 @@ QMap<MailSettings::ImageFormat, QString> MailSettings::imageFormatNames()
     return frms;
 }
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin

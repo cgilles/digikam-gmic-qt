@@ -3,11 +3,10 @@
  * This file is a part of digiKam project
  * https://www.digikam.org
  *
- * Date        : 2007-11-07
- * Description : mail settings container.
+ * Date        : 2025-05-17
+ * Description : a G'MIC settings container
  *
- * SPDX-FileCopyrightText: 2007-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
- * SPDX-FileCopyrightText: 2010      by Andi Clemens <andi dot clemens at googlemail dot com>
+ * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
@@ -26,10 +25,10 @@
 
 class KConfigGroup;
 
-namespace DigikamGenericSendByMailPlugin
+namespace DigikamGenericGmicQtPlugin
 {
 
-class MailSettings
+class GmicQtSettings
 {
 
 public:
@@ -63,8 +62,8 @@ public:
 
 public:
 
-    MailSettings()  = default;
-    ~MailSettings() = default;
+    GmicQtSettings()  = default;
+    ~GmicQtSettings() = default;
 
     /**
      * Read and write settings in config file between sessions.
@@ -116,4 +115,4 @@ public:
     QMap<MailClient, QString> binPaths;         ///< Map of paths for all mail clients.
 };
 
-} // namespace DigikamGenericSendByMailPlugin
+} // namespace DigikamGenericGmicQtPlugin
