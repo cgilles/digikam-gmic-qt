@@ -275,11 +275,11 @@ void GmicQtWindow::closeEvent(QCloseEvent* event)
     MainWindow::closeEvent(event);
 }
 
-// --- Static method ---
+// --- Static methods ---
 
-QString GmicQtWindow::execWindow(DPlugin* const tool,
-                                 HostType type,
-                                 const QString& command)
+GmicQtWindow* GmicQtWindow::createWindow(DPlugin* const tool,
+                                         HostType type,
+                                         const QString& command)
 {
     // Code inspired from GmicQt.cpp::run() and host_none.cpp::main()
 
@@ -365,6 +365,15 @@ QString GmicQtWindow::execWindow(DPlugin* const tool,
 #endif
 
     s_mainWindow->setWindowModality(Qt::ApplicationModal);
+
+    return s_mainWindow;
+}
+
+QString GmicQtWindow::execWindow(DPlugin* const tool,
+                                 HostType type,
+                                 const QString& command)
+{
+    createWindow(tool, type, command);
 
     if (QSettings().value(QLatin1String("Config/MainWindowMaximized"), false).toBool())
     {

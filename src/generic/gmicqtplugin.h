@@ -25,6 +25,8 @@ using namespace Digikam;
 namespace DigikamGenericGmicQtPlugin
 {
 
+class GmicQtWizard;
+
 class GmicQtPlugin : public DPluginGeneric
 {
     Q_OBJECT
@@ -52,6 +54,11 @@ public:
 private Q_SLOTS:
 
     void slotGmicQt();
+    void slotGmicQtWizard();
+
+private:
+
+    QPointer<GmicQtWizard> m_toolDlg;
 };
 
 } // namespace DigikamGenericGmicQtPlugin

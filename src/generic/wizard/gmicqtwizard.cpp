@@ -1,0 +1,118 @@
+/* ============================================================
+ *
+ * This file is a part of digiKam project
+ * https://www.digikam.org
+ *
+ * Date        : 2025-04-21
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
+ *
+ * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ *
+ * ============================================================ */
+
+#include "gmicqtwizard.h"
+
+// Qt includes
+
+#include <QCheckBox>
+#include <QLabel>
+#include <QMenu>
+#include <QApplication>
+#include <QComboBox>
+#include <QListWidget>
+#include <QTextBrowser>
+
+// Local includes
+
+#include "dwizardpage.h"
+#include "digikam_debug.h"
+#include "gmicqtintropage.h"
+/*
+#include "mailalbumspage.h"
+#include "mailimagespage.h"
+#include "mailsettingspage.h"
+#include "mailfinalpage.h"
+*/
+namespace DigikamGenericGmicQtPlugin
+{
+
+class Q_DECL_HIDDEN GmicQtWizard::Private
+{
+public:
+
+    explicit Private() = default;
+
+public:
+
+    DInfoInterface*     iface           = nullptr;
+    GmicQtIntroPage*    introPage       = nullptr;
+/*
+    MailAlbumsPage*     albumsPage      = nullptr;
+    MailImagesPage*     imagesPage      = nullptr;
+    MailSettingsPage*   settingsPage    = nullptr;
+    MailFinalPage*      finalPage       = nullptr;
+    MailSettings*       settings        = nullptr;
+*/
+};
+
+GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
+    : DWizardDlg(parent, QLatin1String("GmicQtWizard Dialog")),
+      d         (new Private)
+{
+    setWindowTitle(tr("G'MIC-Qt (layers mode)"));
+    setOption(QWizard::NoCancelButtonOnLastPage);
+    setModal(true);
+
+    d->iface             = iface;
+/*
+    d->settings          = new MailSettings;
+
+    KSharedConfigPtr config = KSharedConfig::openConfig();
+    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
+    d->settings->readSettings(group);
+*/
+    d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
+
+/*
+    d->albumsPage        = new MailAlbumsPage(this,   i18n("Albums Selection"));
+    d->imagesPage        = new MailImagesPage(this,   i18n("Images List"));
+    d->settingsPage      = new MailSettingsPage(this, i18n("Email Settings"));
+    d->finalPage         = new MailFinalPage(this,    i18n("Export by Email"));
+*/
+}
+
+GmicQtWizard::~GmicQtWizard()
+{
+/*
+    KSharedConfigPtr config = KSharedConfig::openConfig();
+    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
+    d->settings->writeSettings(group);
+*/
+    delete d;
+}
+
+DInfoInterface* GmicQtWizard::iface() const
+{
+    return d->iface;
+}
+/*
+MailSettings* GmicQtWizard::settings() const
+{
+    return d->settings;
+}
+*/
+bool GmicQtWizard::validateCurrentPage()
+{
+    if (!DWizardDlg::validateCurrentPage())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+} // namespace DigikamGenericGmicQtPlugin
+
+#include "moc_gmicqtwizard.cpp"

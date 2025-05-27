@@ -45,6 +45,7 @@
 
 #include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
+#include "gmicqtwizard.h"
 #include "gmicqtsettingsdlg.h"
 #include "gmicqtprocessordlg.h"
 #include "gmic.h"
@@ -122,8 +123,20 @@ void GmicQtPlugin::setup(QObject* const parent)
 
     connect(ac, SIGNAL(triggered(bool)),
             this, SLOT(slotGmicQt()));
+//            this, SLOT(slotGmicQtWizard()));
 
     addAction(ac);
+}
+
+void GmicQtPlugin::slotGmicQtWizard()
+{
+    if (!reactivateToolDialog(m_toolDlg))
+    {
+        delete m_toolDlg;
+        m_toolDlg = new GmicQtWizard(nullptr, infoIface(sender()));
+        m_toolDlg->setPlugin(this);
+        m_toolDlg->show();
+    }
 }
 
 void GmicQtPlugin::slotGmicQt()

@@ -6,12 +6,21 @@
 # Generic Plugin Compilation Rules
 #
 
+include_directories(${CMAKE_SOURCE_DIR}/src/generic/wizard
+                    ${CMAKE_SOURCE_DIR}/src/generic/manager
+)
+
 set(gmicqt_generic_SRCS
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtplugin.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtwizard.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtintropage.cpp
+
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtsettingsdlg.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtprocessordlg.cpp
-    ${CMAKE_SOURCE_DIR}/src/generic/gmicqtprocessorthread.cpp
-    ${CMAKE_SOURCE_DIR}/src/generic/host_digikam_generic.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/generic/manager/gmicqtprocessorthread.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/manager/host_digikam_generic.cpp
 )
 
 foreach(_file ${gmicqt_generic_SRCS})

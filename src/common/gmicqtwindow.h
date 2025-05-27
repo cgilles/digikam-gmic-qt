@@ -67,6 +67,10 @@ public:
 
 public:
 
+    static GmicQtWindow* createWindow(DPlugin* const tool,
+                                      HostType type,
+                                      const QString& command = QString());
+
     static QString execWindow(DPlugin* const tool,
                               HostType type,
                               const QString& command = QString());
