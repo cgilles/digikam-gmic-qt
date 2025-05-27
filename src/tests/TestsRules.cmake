@@ -61,7 +61,7 @@ target_link_libraries(GmicQt_Processor_Bqm_test
 ###########################################################################################@@
 
 set(ProcessorGeneric_test_SRCS
-    ${CMAKE_SOURCE_DIR}/src/generic/host_digikam_generic.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/manager/host_digikam_generic.cpp
     ${CMAKE_SOURCE_DIR}/src/tests/main_processor_generic.cpp
 )
 
