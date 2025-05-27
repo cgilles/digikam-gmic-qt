@@ -16,13 +16,15 @@
 
 // Qt includes
 
-#include <QtGlobal>
 #include <QList>
-#include <QSettings>
 #include <QString>
-#include <QStringList>
 #include <QUrl>
-#include <QMap>
+
+// Digikam includes
+
+#include "dimg.h"
+
+using namespace Digikam;
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -37,15 +39,15 @@ public:
     /**
      * Read and write settings in config file between sessions.
      */
-    void  readSettings(const QSettings& cnf);
-    void  writeSettings(QSettings& cnf);
+    void  readSettings();
+    void  writeSettings();
 
 public:
 
-    QList<QUrl> inputImages;      ///< Selected items to process.
+    QList<QUrl> inputImages;    ///< Selected items to process.
     QUrl        targetUrl;
-    QString     templateFName;
-    int         format;
+    QString     templateFName   = QLatin1String("gmic_output");
+    int         format          = DImg::JPEG;
 };
 
 } // namespace DigikamGenericGmicQtPlugin

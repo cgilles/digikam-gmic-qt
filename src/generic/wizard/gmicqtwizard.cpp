@@ -65,11 +65,8 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
 
     d->iface             = iface;
     d->settings          = new GmicQtSettings;
-/*
-    KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
-    d->settings->readSettings(group);
-*/
+    d->settings->readSettings();
+
     d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
     d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
 
@@ -81,11 +78,8 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
 
 GmicQtWizard::~GmicQtWizard()
 {
-/*
-    KSharedConfigPtr config = KSharedConfig::openConfig();
-    KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
-    d->settings->writeSettings(group);
-*/
+    d->settings->writeSettings();
+
     delete d;
 }
 

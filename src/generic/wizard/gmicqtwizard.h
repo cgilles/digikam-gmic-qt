@@ -43,7 +43,7 @@ public:
 
     DInfoInterface* iface()      const;
 
-    GmicQtSettings*   settings() const;
+    GmicQtSettings* settings()   const;
 
 private:
 

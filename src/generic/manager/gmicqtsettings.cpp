@@ -14,46 +14,31 @@
 
 #include "gmicqtsettings.h"
 
+// Qt includes
+
+#include <QSettings>
+
 namespace DigikamGenericGmicQtPlugin
 {
 
-void GmicQtSettings::readSettings(const QSettings& cnf)
+void GmicQtSettings::readSettings()
 {
-/*
-    selMode           = (Selection)group.readEntry("SelMode",
-                        (int)IMAGES);
-    addFileProperties = group.readEntry("AddCommentsAndTags",
-                        false);
-    imagesChangeProp  = group.readEntry("ImagesChangeProp",
-                        false);
-    removeMetadata    = group.readEntry("RemoveMetadata",
-                        false);
-    attLimitInMbytes  = group.readEntry("AttLimitInMbytes",
-                        17);
-    imageCompression  = group.readEntry("ImageCompression",
-                        75);
-    mailProgram       = (MailClient)group.readEntry("MailProgram",
-                        (int)THUNDERBIRD);
-    imageSize         = group.readEntry("ImageSize",
-                        1024);
-    imageFormat       = (ImageFormat)group.readEntry("ImageFormat",
-                        (int)JPEG);
-*/
+    QSettings cnf;
+
+    inputImages   = cnf.value(QLatin1String("GmicQtGeneric_InputImages"),   QVariantList()).value<QList<QUrl> >();
+    targetUrl     = cnf.value(QLatin1String("GmicQtGeneric_TargetUrl"),     QUrl()).toUrl();
+    templateFName = cnf.value(QLatin1String("GmicQtGeneric_TemplateFName"), QLatin1String("gmic_output")).toString();
+    format        = cnf.value(QLatin1String("GmicQtGeneric_Format"),        DImg::JPEG).toInt();
 }
 
-void GmicQtSettings::writeSettings(QSettings& cnf)
+void GmicQtSettings::writeSettings()
 {
-/*
-    group.writeEntry("SelMode",            (int)selMode);
-    group.writeEntry("AddCommentsAndTags", addFileProperties);
-    group.writeEntry("ImagesChangeProp",   imagesChangeProp);
-    group.writeEntry("RemoveMetadata",     removeMetadata);
-    group.writeEntry("AttLimitInMbytes",   attLimitInMbytes);
-    group.writeEntry("ImageCompression",   imageCompression);
-    group.writeEntry("MailProgram",        (int)mailProgram);
-    group.writeEntry("ImageSize",          imageSize);
-    group.writeEntry("ImageFormat",        (int)imageFormat);
-*/
+    QSettings cnf;
+
+    cnf.setValue(QLatin1String("GmicQtGeneric_InputImages"),     QVariant::fromValue(inputImages));
+    cnf.setValue(QLatin1String("GmicQtGeneric_TargetUrl"),       targetUrl);
+    cnf.setValue(QLatin1String("GmicQtGeneric_TemplateFName"),   templateFName);
+    cnf.setValue(QLatin1String("GmicQtGeneric_Format"),          format);
 }
 
 } // namespace DigikamGenericGmicQtPlugin
