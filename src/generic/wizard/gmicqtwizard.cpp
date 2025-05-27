@@ -29,11 +29,10 @@
 #include "dwizardpage.h"
 #include "digikam_debug.h"
 #include "gmicqtintropage.h"
+#include "gmicqtimagespage.h"
 /*
-#include "mailalbumspage.h"
-#include "mailimagespage.h"
-#include "mailsettingspage.h"
-#include "mailfinalpage.h"
+#include "gmicqtsettingspage.h"
+#include "gmicqtfinalpage.h"
 */
 namespace DigikamGenericGmicQtPlugin
 {
@@ -47,13 +46,12 @@ public:
 public:
 
     DInfoInterface*     iface           = nullptr;
+    GmicQtSettings*     settings        = nullptr;
     GmicQtIntroPage*    introPage       = nullptr;
+    GmicQtImagesPage*   imagesPage      = nullptr;
 /*
-    MailAlbumsPage*     albumsPage      = nullptr;
-    MailImagesPage*     imagesPage      = nullptr;
-    MailSettingsPage*   settingsPage    = nullptr;
-    MailFinalPage*      finalPage       = nullptr;
-    MailSettings*       settings        = nullptr;
+    GmicQtSettingsPage* settingsPage    = nullptr;
+    GmicQtFinalPage*    finalPage       = nullptr;
 */
 };
 
@@ -66,20 +64,18 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
     setModal(true);
 
     d->iface             = iface;
+    d->settings          = new GmicQtSettings;
 /*
-    d->settings          = new MailSettings;
-
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup group      = config->group(QLatin1String("Email Dialog Settings"));
     d->settings->readSettings(group);
 */
     d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
+    d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
 
 /*
-    d->albumsPage        = new MailAlbumsPage(this,   i18n("Albums Selection"));
-    d->imagesPage        = new MailImagesPage(this,   i18n("Images List"));
-    d->settingsPage      = new MailSettingsPage(this, i18n("Email Settings"));
-    d->finalPage         = new MailFinalPage(this,    i18n("Export by Email"));
+    d->settingsPage      = new GmicQtSettingsPage(this, tr("G'MIC Settings"));
+    d->finalPage         = new GmicQtFinalPage(this,    tr("Processing G'MIC Filter"));
 */
 }
 
@@ -97,12 +93,12 @@ DInfoInterface* GmicQtWizard::iface() const
 {
     return d->iface;
 }
-/*
-MailSettings* GmicQtWizard::settings() const
+
+GmicQtSettings* GmicQtWizard::settings() const
 {
     return d->settings;
 }
-*/
+
 bool GmicQtWizard::validateCurrentPage()
 {
     if (!DWizardDlg::validateCurrentPage())

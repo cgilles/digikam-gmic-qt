@@ -34,7 +34,7 @@ public:
 
     explicit Private(QWizard* const dialog)
     {
-        wizard = dynamic_cast<MailWizard*>(dialog);
+        wizard = dynamic_cast<GmicQtWizard*>(dialog);
 
         if (wizard)
         {
@@ -53,10 +53,10 @@ GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)
 {
     QWidget* const vbox     = new QWidget(this);
     QLabel* const desc      = new QLabel(vbox);
-    desc->setText(i18n("<p>This view list all items to export by mail.</p>"));
+    desc->setText(tr("<p>This view list all stacked items to process with the G'MIC filter.</p>"));
 
     d->imageList            = new DItemsList(vbox);
-    d->imageList->setObjectName(QLatin1String("MailImages ImagesList"));
+    d->imageList->setObjectName(QLatin1String("Gmic-Qt ImagesList"));
     d->imageList->setControlButtonsPlacement(DItemsList::ControlButtonsBelow);
 
     QVBoxLayout* const vlay = new QVBoxLayout(vbox);
@@ -84,15 +84,7 @@ void GmicQtImagesPage::initializePage()
 {
     d->imageList->setIface(d->iface);
     d->imageList->listView()->clear();
-
-    if (d->wizard->settings()->selMode == MailSettings::IMAGES)
-    {
-        d->imageList->loadImagesFromCurrentSelection();
-    }
-    else
-    {
-        setItemsList(d->wizard->settings()->inputImages);
-    }
+    d->imageList->loadImagesFromCurrentSelection();
 }
 
 bool GmicQtImagesPage::validatePage()

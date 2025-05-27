@@ -17,8 +17,9 @@
 namespace DigikamGenericGmicQtPlugin
 {
 
-void GmicQtSettings::readSettings(const KConfigGroup& group)
+void GmicQtSettings::readSettings(const QSettings& cnf)
 {
+/*
     selMode           = (Selection)group.readEntry("SelMode",
                         (int)IMAGES);
     addFileProperties = group.readEntry("AddCommentsAndTags",
@@ -37,10 +38,12 @@ void GmicQtSettings::readSettings(const KConfigGroup& group)
                         1024);
     imageFormat       = (ImageFormat)group.readEntry("ImageFormat",
                         (int)JPEG);
+*/
 }
 
-void GmicQtSettings::writeSettings(KConfigGroup& group)
+void GmicQtSettings::writeSettings(QSettings& cnf)
 {
+/*
     group.writeEntry("SelMode",            (int)selMode);
     group.writeEntry("AddCommentsAndTags", addFileProperties);
     group.writeEntry("ImagesChangeProp",   imagesChangeProp);
@@ -50,64 +53,7 @@ void GmicQtSettings::writeSettings(KConfigGroup& group)
     group.writeEntry("MailProgram",        (int)mailProgram);
     group.writeEntry("ImageSize",          imageSize);
     group.writeEntry("ImageFormat",        (int)imageFormat);
-}
-
-QString GmicQtSettings::format() const
-{
-    if (imageFormat == JPEG)
-    {
-        return QLatin1String("JPEG");
-    }
-
-    return QLatin1String("PNG");
-}
-
-void GmicQtSettings::setMailUrl(const QUrl& orgUrl, const QUrl& emailUrl)
-{
-    itemsList.insert(orgUrl, emailUrl);
-}
-
-QUrl GmicQtSettings::mailUrl(const QUrl& orgUrl) const
-{
-    if (itemsList.contains(orgUrl))
-    {
-        return itemsList.find(orgUrl).value();
-    }
-
-    return QUrl();
-}
-
-qint64 GmicQtSettings::attachementLimit() const
-{
-    qint64 val = attLimitInMbytes * 1024 * 1024;
-
-    return val;
-}
-
-QMap<GmicQtSettings::MailClient, QString> GmicQtSettings::mailClientNames()
-{
-    QMap<MailClient, QString> clients;
-
-    clients[BALSA]         = i18nc("Mail client: BALSA",         "Balsa");
-    clients[CLAWSMAIL]     = i18nc("Mail client: CLAWSMAIL",     "Clawsmail");
-    clients[EVOLUTION]     = i18nc("Mail client: EVOLUTION",     "Evolution");
-    clients[KMAIL]         = i18nc("Mail client: KMAIL",         "Kmail");
-    clients[NETSCAPE]      = i18nc("Mail client: NETSCAPE",      "Netscape Messenger");
-    clients[OUTLOOK]       = i18nc("Mail client: OUTLOOK",       "Outlook");
-    clients[SYLPHEED]      = i18nc("Mail client: SYLPHEED",      "Sylpheed");
-    clients[THUNDERBIRD]   = i18nc("Mail client: THUNDERBIRD",   "Thunderbird");
-
-    return clients;
-}
-
-QMap<GmicQtSettings::ImageFormat, QString> GmicQtSettings::imageFormatNames()
-{
-    QMap<ImageFormat, QString> frms;
-
-    frms[JPEG] = i18nc("Image format: JPEG", "Jpeg");
-    frms[PNG]  = i18nc("Image format: PNG",  "Png");
-
-    return frms;
+*/
 }
 
 } // namespace DigikamGenericGmicQtPlugin

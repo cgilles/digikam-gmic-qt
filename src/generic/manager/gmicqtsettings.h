@@ -18,48 +18,17 @@
 
 #include <QtGlobal>
 #include <QList>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QUrl>
 #include <QMap>
-
-class KConfigGroup;
 
 namespace DigikamGenericGmicQtPlugin
 {
 
 class GmicQtSettings
 {
-
-public:
-
-    /**
-     * Images selection mode
-     */
-    enum Selection
-    {
-        IMAGES = 0,
-        ALBUMS
-    };
-
-    enum MailClient
-    {
-        BALSA = 0,
-        CLAWSMAIL,
-        EVOLUTION,
-        KMAIL,
-        NETSCAPE,       ///< Messenger (https://en.wikipedia.org/wiki/Netscape_Messenger_9)
-        OUTLOOK,
-        SYLPHEED,
-        THUNDERBIRD
-    };
-
-    enum ImageFormat
-    {
-        JPEG = 0,
-        PNG
-    };
-
 public:
 
     GmicQtSettings()  = default;
@@ -68,51 +37,15 @@ public:
     /**
      * Read and write settings in config file between sessions.
      */
-    void  readSettings(const KConfigGroup& group);
-    void  writeSettings(KConfigGroup& group);
-
-    QString format()           const;
-
-    /**
-     * Return the attachment limit in bytes
-     */
-    qint64  attachementLimit() const;
-
-    void setMailUrl(const QUrl& orgUrl, const QUrl& emailUrl);
-    QUrl mailUrl(const QUrl& orgUrl) const;
-
-    /**
-     * Helper methods to fill combobox from GUI.
-     */
-    static QMap<MailClient,  QString> mailClientNames();
-    static QMap<ImageFormat, QString> imageFormatNames();
+    void  readSettings(const QSettings& cnf);
+    void  writeSettings(QSettings& cnf);
 
 public:
 
-    Selection                 selMode           = IMAGES;    ///< Items selection mode
-
-    QList<QUrl>               inputImages;      ///< Selected items to send.
-
-    bool                      addFileProperties = false;
-    bool                      imagesChangeProp  = false;
-
-    bool                      removeMetadata    = false;
-
-    int                       imageCompression  = 75;
-
-    qint64                    attLimitInMbytes  = 17;
-
-    QString                   tempPath;
-
-    MailClient                mailProgram       = THUNDERBIRD;
-
-    int                       imageSize         = 1024;
-
-    ImageFormat               imageFormat       = JPEG;
-
-    QMap<QUrl, QUrl>          itemsList;        ///< Map of original item and attached item (can be resized).
-
-    QMap<MailClient, QString> binPaths;         ///< Map of paths for all mail clients.
+    QList<QUrl> inputImages;      ///< Selected items to process.
+    QUrl        targetUrl;
+    QString     templateFName;
+    int         format;
 };
 
 } // namespace DigikamGenericGmicQtPlugin

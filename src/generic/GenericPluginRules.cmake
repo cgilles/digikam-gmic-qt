@@ -15,10 +15,12 @@ set(gmicqt_generic_SRCS
 
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtwizard.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtintropage.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtimagespage.cpp
 
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtsettingsdlg.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtprocessordlg.cpp
 
+    ${CMAKE_SOURCE_DIR}/src/generic/manager/gmicqtsettings.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/manager/gmicqtprocessorthread.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/manager/host_digikam_generic.cpp
 )

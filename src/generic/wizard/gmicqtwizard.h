@@ -23,9 +23,8 @@
 
 #include "dwizarddlg.h"
 #include "dinfointerface.h"
-/*
-#include "mailsettings.h"
-*/
+#include "gmicqtsettings.h"
+
 using namespace Digikam;
 
 namespace DigikamGenericGmicQtPlugin
@@ -38,14 +37,13 @@ class GmicQtWizard : public DWizardDlg
 public:
 
     explicit GmicQtWizard(QWidget* const parent, DInfoInterface* const iface = nullptr);
-    ~GmicQtWizard()                  override;
+    ~GmicQtWizard()                    override;
 
-    bool validateCurrentPage()       override;
+    bool validateCurrentPage()         override;
 
-    DInfoInterface* iface()    const;
-/*
-    MailSettings*   settings() const;
-*/
+    DInfoInterface* iface()      const;
+
+    GmicQtSettings*   settings() const;
 
 private:
 
