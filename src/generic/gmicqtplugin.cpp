@@ -46,8 +46,6 @@
 #include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
 #include "gmicqtwizard.h"
-#include "gmicqtsettingsdlg.h"
-#include "gmicqtprocessordlg.h"
 #include "gmic.h"
 
 using namespace GmicQt;
@@ -122,7 +120,6 @@ void GmicQtPlugin::setup(QObject* const parent)
     ac->setActionCategory(DPluginAction::GenericTool);
 
     connect(ac, SIGNAL(triggered(bool)),
-//            this, SLOT(slotGmicQt()));
             this, SLOT(slotGmicQtWizard()));
 
     addAction(ac);
@@ -136,77 +133,6 @@ void GmicQtPlugin::slotGmicQtWizard()
         m_toolDlg = new GmicQtWizard(nullptr, infoIface(sender()));
         m_toolDlg->setPlugin(this);
         m_toolDlg->show();
-    }
-}
-
-void GmicQtPlugin::slotGmicQt()
-{
-    DInfoInterface* const iface   = infoIface(sender());
-
-    GmicQtSettingsDlg* const gdlg = new GmicQtSettingsDlg(this, iface);
-    gdlg->show();
-
-    QEventLoop loop;
-
-    connect(gdlg, &QDialog::finished,
-            [&loop, gdlg](int result)
-        {
-            loop.quit();
-
-            if (result != QDialog::Accepted)
-            {
-                delete gdlg;
-                return;
-            }
-        }
-    );
-
-    loop.exec();
-
-    s_urlList        = gdlg->imageUrls();
-    QUrl newURL      = iface->uploadUrl();
-    QString fileName = gdlg->outputTemplate();
-    int     format   = gdlg->outputFormat();
-
-    delete gdlg;
-
-    QClipboard* const clipboard  = QGuiApplication::clipboard();
-    clipboard->clear();
-
-    QString fname = GmicQtWindow::execWindow(
-                                             this,                      // Plugin instance.
-                                             GmicQtWindow::Generic      // Host type.
-                                            );
-
-    if (!clipboard->text().isEmpty() && !fname.isEmpty())
-    {
-        QStringList paths;
-
-        for (const QUrl& url : std::as_const(s_urlList))
-        {
-            paths.append(url.toLocalFile());
-        }
-
-        GmicQtProcessorDlg* const pdlg = new GmicQtProcessorDlg(this);
-
-        connect(pdlg, SIGNAL(signalUpdateHostApp(QUrl)),
-                iface, SLOT(slotMetadataChangedForUrl(QUrl)));
-
-        pdlg->setSettings(paths, clipboard->text(), newURL.toLocalFile(), fileName, format);
-        pdlg->show();
-
-        QEventLoop loop2;
-
-        connect(pdlg, &QDialog::finished,
-                &loop2, &QEventLoop::quit);
-
-        loop2.exec();
-
-        delete pdlg;
-    }
-    else
-    {
-        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC Generic tool aborted";
     }
 }
 
