@@ -83,7 +83,7 @@ GmicQtFinalPage::GmicQtFinalPage(QWizard* const dialog, const QString& title)
     vlay->setSpacing(layoutSpacing());
 
     setPageWidget(vbox);
-    setLeftBottomPix(QIcon::fromTheme(QLatin1String("mail_send")));
+    setLeftBottomPix(QIcon::fromTheme(QLatin1String("run-build")));
 
     connect(d->progressBar, SIGNAL(signalProgressCanceled()),
             this, SLOT(slotCancel()));
@@ -151,10 +151,10 @@ void GmicQtFinalPage::slotProcess()
     }
 
     d->processor->setSettings(paths,
-                           d->settings->gmicCommand,
-                           d->settings->targetUrl.toLocalFile(),
-                           d->settings->templateFName,
-                           d->settings->format);
+                              d->settings->gmicCommand,
+                              d->settings->targetUrl.toLocalFile(),
+                              d->settings->templateFName,
+                              d->settings->format);
     d->processor->start();
 }
 
