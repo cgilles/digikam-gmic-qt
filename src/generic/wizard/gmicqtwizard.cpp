@@ -30,8 +30,8 @@
 #include "digikam_debug.h"
 #include "gmicqtintropage.h"
 #include "gmicqtimagespage.h"
-/*
 #include "gmicqtsettingspage.h"
+/*
 #include "gmicqtfinalpage.h"
 */
 namespace DigikamGenericGmicQtPlugin
@@ -49,8 +49,8 @@ public:
     GmicQtSettings*     settings        = nullptr;
     GmicQtIntroPage*    introPage       = nullptr;
     GmicQtImagesPage*   imagesPage      = nullptr;
-/*
     GmicQtSettingsPage* settingsPage    = nullptr;
+/*
     GmicQtFinalPage*    finalPage       = nullptr;
 */
 };
@@ -69,9 +69,9 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
 
     d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
     d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
+    d->settingsPage      = new GmicQtSettingsPage(this, tr("Processing Settings"));
 
 /*
-    d->settingsPage      = new GmicQtSettingsPage(this, tr("G'MIC Settings"));
     d->finalPage         = new GmicQtFinalPage(this,    tr("Processing G'MIC Filter"));
 */
 }

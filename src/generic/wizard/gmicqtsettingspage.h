@@ -3,8 +3,8 @@
  * This file is a part of digiKam project
  * https://www.digikam.org
  *
- * Date        : 2025-05-17
- * Description : a G'MIC Generic plugin settings dialog
+ * Date        : 2025-04-21
+ * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
  * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
@@ -17,34 +17,27 @@
 // Qt includes
 
 #include <QString>
-#include <QList>
-#include <QDialog>
-#include <QUrl>
 
-// digiKam includes
+// Local includes
 
-#include "dplugin.h"
-#include "dinfointerface.h"
+#include "dwizardpage.h"
 
 using namespace Digikam;
 
 namespace DigikamGenericGmicQtPlugin
 {
 
-class GmicQtSettingsDlg : public QDialog
+class GmicQtSettingsPage : public DWizardPage
 {
     Q_OBJECT
 
 public:
 
-    explicit GmicQtSettingsDlg(DPlugin* const tool,
-                              DInfoInterface* const iface,
-                              QWidget* const parent = nullptr);
-    ~GmicQtSettingsDlg()           override;
+    explicit GmicQtSettingsPage(QWizard* const dialog, const QString& title);
+    ~GmicQtSettingsPage()     override;
 
-    QList<QUrl> imageUrls()  const;
-    QString outputTemplate() const;
-    int     outputFormat()   const;
+    void initializePage()     override;
+    bool validatePage()       override;
 
 private:
 

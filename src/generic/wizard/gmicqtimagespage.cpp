@@ -42,6 +42,8 @@ public:
         }
     }
 
+public:
+
     DItemsList*     imageList   = nullptr;
     GmicQtWizard*   wizard      = nullptr;
     DInfoInterface* iface       = nullptr;
