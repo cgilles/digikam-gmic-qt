@@ -85,7 +85,6 @@ protected:
 private Q_SLOTS:
 
     void slotOkClicked();
-    void slotLayersDialog();
 
 private:
 

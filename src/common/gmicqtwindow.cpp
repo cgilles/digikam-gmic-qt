@@ -90,19 +90,6 @@ GmicQtWindow::GmicQtWindow(
 
     if (hlay)
     {
-/*
-        QPushButton* const layers  = new QPushButton(this);
-        layers->setText(tr("Layers..."));
-        layers->setIcon(QIcon::fromTheme(QLatin1String("dialog-layers")));
-        layers->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-        connect(layers, SIGNAL(released()),
-                this, SLOT(slotLayersDialog()));
-
-        hlay->insertWidget(0, layers);
-*/
-        // ---
-
         d->helpBtn = new QPushButton(this);
         s_gmicQtPluginPopulateHelpButton(this, tool, d->helpBtn);
         hlay->insertWidget(0, d->helpBtn);
@@ -181,6 +168,18 @@ void GmicQtWindow::hideButtons()
     else
     {
         qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbOk\" "
+                                          "button from plugin dialog!";
+    }
+
+    QPushButton* const pbFullScreen = findChild<QPushButton*>(QLatin1String("pbFullscreen"));
+
+    if (pbFullScreen)
+    {
+        pbFullScreen->setVisible(false);
+    }
+    else
+    {
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbFullscreen\" "
                                           "button from plugin dialog!";
     }
 
@@ -295,11 +294,6 @@ void GmicQtWindow::slotOkClicked()
     copyGmicCommand();
 
     close();
-}
-
-void GmicQtWindow::slotLayersDialog()
-{
-    // TODO
 }
 
 void GmicQtWindow::saveParameters()
