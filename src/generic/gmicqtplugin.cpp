@@ -120,12 +120,12 @@ void GmicQtPlugin::setup(QObject* const parent)
     ac->setActionCategory(DPluginAction::GenericTool);
 
     connect(ac, SIGNAL(triggered(bool)),
-            this, SLOT(slotGmicQtWizard()));
+            this, SLOT(slotGmicQt()));
 
     addAction(ac);
 }
 
-void GmicQtPlugin::slotGmicQtWizard()
+void GmicQtPlugin::slotGmicQt()
 {
     if (!reactivateToolDialog(m_toolDlg))
     {

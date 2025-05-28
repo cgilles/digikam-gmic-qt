@@ -54,7 +54,6 @@ public:
 private Q_SLOTS:
 
     void slotGmicQt();
-    void slotGmicQtWizard();
 
 private:
 
