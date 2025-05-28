@@ -63,6 +63,7 @@ public:
 
     void saveParameters();
     void setFilterSelectionMode();
+    void hideButtons();
     void setHostType(HostType type);
 
 public:

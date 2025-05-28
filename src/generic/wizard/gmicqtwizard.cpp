@@ -31,6 +31,7 @@
 #include "gmicqtintropage.h"
 #include "gmicqtimagespage.h"
 #include "gmicqtsettingspage.h"
+#include "gmicqtfilterspage.h"
 /*
 #include "gmicqtfinalpage.h"
 */
@@ -50,6 +51,7 @@ public:
     GmicQtIntroPage*    introPage       = nullptr;
     GmicQtImagesPage*   imagesPage      = nullptr;
     GmicQtSettingsPage* settingsPage    = nullptr;
+    GmicQtFiltersPage*  filtersPage     = nullptr;
 /*
     GmicQtFinalPage*    finalPage       = nullptr;
 */
@@ -70,6 +72,7 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
     d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
     d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
     d->settingsPage      = new GmicQtSettingsPage(this, tr("Processing Settings"));
+    d->filtersPage       = new GmicQtFiltersPage(this);
 
 /*
     d->finalPage         = new GmicQtFinalPage(this,    tr("Processing G'MIC Filter"));

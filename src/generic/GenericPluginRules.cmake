@@ -17,6 +17,7 @@ set(gmicqt_generic_SRCS
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtintropage.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtimagespage.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtsettingspage.cpp
+    ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtfilterspage.cpp
 
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtsettingsdlg.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/gmicqtprocessordlg.cpp

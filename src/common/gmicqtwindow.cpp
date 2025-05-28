@@ -65,6 +65,8 @@ public:
     QString         dkModule;
     QLabel*         filterLbl   = nullptr;
     QString*        filterName  = nullptr;
+
+    QPushButton*    helpBtn     = nullptr;
 };
 
 GmicQtWindow::GmicQtWindow(
@@ -101,9 +103,9 @@ GmicQtWindow::GmicQtWindow(
 */
         // ---
 
-        QPushButton* const help = new QPushButton(this);
-        s_gmicQtPluginPopulateHelpButton(this, tool, help);
-        hlay->insertWidget(0, help);
+        d->helpBtn = new QPushButton(this);
+        s_gmicQtPluginPopulateHelpButton(this, tool, d->helpBtn);
+        hlay->insertWidget(0, d->helpBtn);
 
         QLabel* const lbl          = findChild<QLabel*>(QLatin1String("messageLabel"));
 
@@ -163,6 +165,63 @@ void GmicQtWindow::setHostType(HostType type)
         {
             break;
         }
+    }
+}
+
+void GmicQtWindow::hideButtons()
+{
+    d->helpBtn->setVisible(false);
+
+    QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
+
+    if (pbOk)
+    {
+        pbOk->setVisible(false);
+    }
+    else
+    {
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbOk\" "
+                                          "button from plugin dialog!";
+    }
+
+    QPushButton* const pbClose = findChild<QPushButton*>(QLatin1String("pbClose"));
+
+    if (pbClose)
+    {
+        pbClose->setVisible(false);
+    }
+    else
+    {
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbClose\" "
+                                          "button from plugin dialog!";
+    }
+
+    // ---
+
+    QPushButton* const pbApply  = findChild<QPushButton*>(QLatin1String("pbApply"));
+
+    if (pbApply)
+    {
+        pbApply->setVisible(false);
+    }
+    else
+    {
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbApply\" "
+                                          "button from plugin dialog!";
+    }
+
+    // ---
+
+    QPushButton* const pbCancel = findChild<QPushButton*>(QLatin1String("pbCancel"));
+
+    if (pbCancel)
+    {
+        pbCancel->setVisible(false);
+    }
+    else
+    {
+        qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"pbCancel\" "
+                                          "button from plugin dialog!";
     }
 }
 

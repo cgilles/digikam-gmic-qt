@@ -168,6 +168,7 @@ void s_gmicQtPluginPopulateHelpButton(QWidget* const parent,
     if (!tool)
     {
         help->setEnabled(false);
+        return;
     }
 
     QObject::connect(webAction, &QAction::triggered,
