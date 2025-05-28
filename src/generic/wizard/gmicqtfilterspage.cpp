@@ -17,6 +17,8 @@
 // Qt includes
 
 #include <QWidget>
+#include <QApplication>
+#include <QClipboard>
 
 // Digikam includes
 
@@ -61,6 +63,10 @@ GmicQtFiltersPage::GmicQtFiltersPage(QWizard* const dialog)
 {
     d->filtersView = GmicQtWindow::createWindow(nullptr, GmicQtWindow::Generic);
     d->filtersView->hideButtons();
+
+    connect(d->filtersView, &MainWindow::filterSelectionChanged,
+            this, &QWizardPage::completeChanged);
+
     setShowLeftView(false);
     setPageWidget(d->filtersView);
 }
@@ -72,12 +78,28 @@ GmicQtFiltersPage::~GmicQtFiltersPage()
 
 void GmicQtFiltersPage::initializePage()
 {
+    QGuiApplication::clipboard()->clear();
 }
 
 bool GmicQtFiltersPage::validatePage()
 {
+    d->filtersView->copyGmicCommand();
+
+    if (QGuiApplication::clipboard()->text().isEmpty())
+    {
+        return false;
+    }
+
+    d->wizard->settings()->gmicCommand = QGuiApplication::clipboard()->text();
 
     return true;
+}
+
+bool GmicQtFiltersPage::isComplete() const
+{
+    d->filtersView->copyGmicCommand();
+qDebug() << "GMIC command:" << QGuiApplication::clipboard()->text();
+    return (!QGuiApplication::clipboard()->text().isEmpty());
 }
 
 } // namespace DigikamGenericGmicQtPlugin

@@ -65,6 +65,7 @@ public:
     void setFilterSelectionMode();
     void hideButtons();
     void setHostType(HostType type);
+    void copyGmicCommand();
 
 public:
 

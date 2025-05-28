@@ -19,6 +19,8 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QLabel>
+#include <QList>
+#include <QUrl>
 
 // Local includes
 
@@ -27,6 +29,8 @@
 
 namespace DigikamGenericGmicQtPlugin
 {
+
+extern QList<QUrl> s_urlList;
 
 class Q_DECL_HIDDEN GmicQtImagesPage::Private
 {
@@ -96,7 +100,13 @@ bool GmicQtImagesPage::validatePage()
         return false;
     }
 
+    // To backup in the INI config file.
+
     d->wizard->settings()->inputImages = d->imageList->imageUrls();
+
+    // To pass the list to G'MIC-Qt infra.
+
+    s_urlList = d->wizard->settings()->inputImages;
 
     return true;
 }

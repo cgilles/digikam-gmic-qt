@@ -274,6 +274,13 @@ void GmicQtWindow::setFilterSelectionMode()
     }
 }
 
+void GmicQtWindow::copyGmicCommand()
+{
+    // Copy the current G'MIC command on the clipboard.
+
+    s_mainWindow->onCopyGMICCommand();
+}
+
 void GmicQtWindow::slotOkClicked()
 {
     // Return current filter name.
@@ -285,9 +292,8 @@ void GmicQtWindow::slotOkClicked()
                          .remove(QLatin1String("</b>"));
     }
 
-    // Copy the current G'MIC command on the clipboard.
+    copyGmicCommand();
 
-    s_mainWindow->onCopyGMICCommand();
     close();
 }
 

@@ -1,3 +1,29 @@
+diff --git a/gmicqt/src/MainWindow.cpp b/gmicqt/src/MainWindow.cpp
+index 3f4de7b..b155380 100644
+--- a/gmicqt/src/MainWindow.cpp
++++ b/gmicqt/src/MainWindow.cpp
+@@ -588,6 +588,7 @@ void MainWindow::onFilterSelectionChanged()
+ {
+   activateFilter(false);
+   ui->previewWidget->sendUpdateRequest();
++  emit filterSelectionChanged();
+ }
+ 
+ void MainWindow::onEscapeKeyPressed()
+diff --git a/gmicqt/src/MainWindow.h b/gmicqt/src/MainWindow.h
+index 9e41b30..3b00d34 100644
+--- a/gmicqt/src/MainWindow.h
++++ b/gmicqt/src/MainWindow.h
+@@ -75,6 +75,9 @@ public:
+ #endif
+   void setPluginParameters(const RunParameters & parameters);
+ 
++signals:
++  void filterSelectionChanged();
++
+ public slots:
+   void onUpdateDownloadsFinished(int status);
+   void onApplyClicked();
 diff --git a/gmicqt/src/Host/None/host_none.cpp b/gmicqt/src/Host/None/host_none.cpp
 index 8246dc3..3832947 100644
 --- a/gmicqt/src/Host/None/host_none.cpp

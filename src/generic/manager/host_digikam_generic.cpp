@@ -38,7 +38,7 @@ namespace DigikamGenericGmicQtPlugin
 
 extern QList<QUrl> s_urlList;
 
-} // namespace DigikamBqmGmicQtPlugin
+} // namespace DigikamGenericGmicQtPlugin
 
 using namespace DigikamGenericGmicQtPlugin;
 using namespace DigikamGmicQtPluginCommon;

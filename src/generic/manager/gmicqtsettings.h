@@ -44,10 +44,11 @@ public:
 
 public:
 
-    QList<QUrl> inputImages;    ///< Selected items to process.
-    QUrl        targetUrl;
+    QList<QUrl> inputImages;                                    ///< Selected items to process.
+    QUrl        targetUrl;                                      ///< Target url where to store generated files by G'MIC.
     QString     templateFName   = QLatin1String("gmic_output");
     int         format          = DImg::JPEG;
+    QString     gmicCommand;                                    ///< Filters command run by G'MIC processor.
 };
 
 } // namespace DigikamGenericGmicQtPlugin

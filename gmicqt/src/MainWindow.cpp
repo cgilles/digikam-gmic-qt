@@ -588,6 +588,7 @@ void MainWindow::onFilterSelectionChanged()
 {
   activateFilter(false);
   ui->previewWidget->sendUpdateRequest();
+  emit filterSelectionChanged();
 }
 
 void MainWindow::onEscapeKeyPressed()

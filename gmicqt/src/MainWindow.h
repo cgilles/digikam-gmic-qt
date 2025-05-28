@@ -75,6 +75,9 @@ public:
 #endif
   void setPluginParameters(const RunParameters & parameters);
 
+signals:
+  void filterSelectionChanged();
+
 public slots:
   void onUpdateDownloadsFinished(int status);
   void onApplyClicked();

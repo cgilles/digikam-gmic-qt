@@ -25,20 +25,22 @@ void GmicQtSettings::readSettings()
 {
     QSettings cnf;
 
-    inputImages   = cnf.value(QLatin1String("GmicQtGeneric_InputImages"),   QVariantList()).value<QList<QUrl> >();
-    targetUrl     = cnf.value(QLatin1String("GmicQtGeneric_TargetUrl"),     QUrl()).toUrl();
-    templateFName = cnf.value(QLatin1String("GmicQtGeneric_TemplateFName"), QLatin1String("gmic_output")).toString();
-    format        = cnf.value(QLatin1String("GmicQtGeneric_Format"),        DImg::JPEG).toInt();
+    inputImages   = cnf.value(QLatin1String("DigikamGmicQtGeneric_InputImages"),   QVariantList()).value<QList<QUrl> >();
+    targetUrl     = cnf.value(QLatin1String("DigikamGmicQtGeneric_TargetUrl"),     QUrl()).toUrl();
+    templateFName = cnf.value(QLatin1String("DigikamGmicQtGeneric_TemplateFName"), QLatin1String("gmic_output")).toString();
+    format        = cnf.value(QLatin1String("DigikamGmicQtGeneric_Format"),        DImg::JPEG).toInt();
+    gmicCommand   = cnf.value(QLatin1String("DigikamGmicQtGeneric_GmicCommand"),   QString()).toString();
 }
 
 void GmicQtSettings::writeSettings()
 {
     QSettings cnf;
 
-    cnf.setValue(QLatin1String("GmicQtGeneric_InputImages"),     QVariant::fromValue(inputImages));
-    cnf.setValue(QLatin1String("GmicQtGeneric_TargetUrl"),       targetUrl);
-    cnf.setValue(QLatin1String("GmicQtGeneric_TemplateFName"),   templateFName);
-    cnf.setValue(QLatin1String("GmicQtGeneric_Format"),          format);
+    cnf.setValue(QLatin1String("DigikamGmicQtGeneric_InputImages"),     QVariant::fromValue(inputImages));
+    cnf.setValue(QLatin1String("DigikamGmicQtGeneric_TargetUrl"),       targetUrl);
+    cnf.setValue(QLatin1String("DigikamGmicQtGeneric_TemplateFName"),   templateFName);
+    cnf.setValue(QLatin1String("DigikamGmicQtGeneric_Format"),          format);
+    cnf.setValue(QLatin1String("DigikamGmicQtGeneric_GmicCommand"),     gmicCommand);
 }
 
 } // namespace DigikamGenericGmicQtPlugin

@@ -36,8 +36,9 @@ public:
     explicit GmicQtFiltersPage(QWizard* const dialog);
     ~GmicQtFiltersPage()     override;
 
-    void initializePage()     override;
-    bool validatePage()       override;
+    void initializePage()    override;
+    bool validatePage()      override;
+    bool isComplete() const  override;
 
 private:
 
