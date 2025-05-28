@@ -90,7 +90,7 @@ bool GmicQtFiltersPage::validatePage()
         return false;
     }
 
-    d->wizard->settings()->gmicCommand = QGuiApplication::clipboard()->text();
+    d->settings->gmicCommand = QGuiApplication::clipboard()->text();
 
     return true;
 }
@@ -98,7 +98,7 @@ bool GmicQtFiltersPage::validatePage()
 bool GmicQtFiltersPage::isComplete() const
 {
     d->filtersView->copyGmicCommand();
-qDebug() << "GMIC command:" << QGuiApplication::clipboard()->text();
+
     return (!QGuiApplication::clipboard()->text().isEmpty());
 }
 

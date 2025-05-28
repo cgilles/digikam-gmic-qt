@@ -122,8 +122,8 @@ void GmicQtPlugin::setup(QObject* const parent)
     ac->setActionCategory(DPluginAction::GenericTool);
 
     connect(ac, SIGNAL(triggered(bool)),
-            this, SLOT(slotGmicQt()));
-//            this, SLOT(slotGmicQtWizard()));
+//            this, SLOT(slotGmicQt()));
+            this, SLOT(slotGmicQtWizard()));
 
     addAction(ac);
 }

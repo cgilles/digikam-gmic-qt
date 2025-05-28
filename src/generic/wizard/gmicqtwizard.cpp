@@ -32,9 +32,8 @@
 #include "gmicqtimagespage.h"
 #include "gmicqtsettingspage.h"
 #include "gmicqtfilterspage.h"
-/*
 #include "gmicqtfinalpage.h"
-*/
+
 namespace DigikamGenericGmicQtPlugin
 {
 
@@ -52,9 +51,7 @@ public:
     GmicQtImagesPage*   imagesPage      = nullptr;
     GmicQtSettingsPage* settingsPage    = nullptr;
     GmicQtFiltersPage*  filtersPage     = nullptr;
-/*
     GmicQtFinalPage*    finalPage       = nullptr;
-*/
 };
 
 GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
@@ -73,10 +70,7 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
     d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
     d->settingsPage      = new GmicQtSettingsPage(this, tr("Processing Settings"));
     d->filtersPage       = new GmicQtFiltersPage(this);
-
-/*
     d->finalPage         = new GmicQtFinalPage(this,    tr("Processing G'MIC Filter"));
-*/
 }
 
 GmicQtWizard::~GmicQtWizard()
