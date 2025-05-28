@@ -70,7 +70,7 @@ GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)
     vlay->addWidget(d->imageList);
 
     setPageWidget(vbox);
-    setLeftBottomPix(QIcon::fromTheme(QLatin1String("image-stack")));
+    setLeftBottomPix(QIcon::fromTheme(QLatin1String("view-list-details")));
 
     connect(d->imageList, SIGNAL(signalImageListChanged()),
             this, SIGNAL(completeChanged()));
