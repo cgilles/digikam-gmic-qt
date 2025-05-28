@@ -59,7 +59,8 @@ GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)
 {
     QWidget* const vbox     = new QWidget(this);
     QLabel* const desc      = new QLabel(vbox);
-    desc->setText(tr("<p>This view list all stacked items to process with the G'MIC filter.</p>"));
+    desc->setText(tr("This view list all stacked items to process with the G'MIC filter.\n"
+                     "Press the \"Next\" button to setup the G'MIC output files."));
 
     d->imageList            = new DItemsList(vbox);
     d->imageList->setObjectName(QLatin1String("Gmic-Qt ImagesList"));

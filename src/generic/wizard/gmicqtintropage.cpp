@@ -48,9 +48,8 @@ GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
                   "to a selection of images taken from your collection.</p>"));
 
     str.append(tr("<p><a href='https://gmic.eu/'>G'MIC</a> is a full-featured open-source framework for image processing. "
-                  "It provides several user interfaces to convert / manipulate / filter / "
-                  "visualize generic image datasets, ranging from 1D scalar signals to 3D+t sequences "
-                  "of multi-spectral volumetric images, hence including 2D color images.</p>"));
+                  "It provides filters for changing colors, creating patterns, adding artistic touches, "
+                  "repairing inconsistencies in pictures, rendering shapes, and much more.</p>"));
 
     str.append(QLatin1String("</qt>"));
 

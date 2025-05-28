@@ -34,10 +34,11 @@ class GmicQtSettingsPage : public DWizardPage
 public:
 
     explicit GmicQtSettingsPage(QWizard* const dialog, const QString& title);
-    ~GmicQtSettingsPage()     override;
+    ~GmicQtSettingsPage()    override;
 
-    void initializePage()     override;
-    bool validatePage()       override;
+    void initializePage()    override;
+    bool validatePage()      override;
+    bool isComplete() const  override;
 
 private:
 
