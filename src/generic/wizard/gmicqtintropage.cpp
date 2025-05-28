@@ -44,15 +44,24 @@ GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
 
     QString str            = QLatin1String("<qt>");
     str.append(tr("<p><h1><b>Welcome to G'MIC Layers Tool</b></h1></p>"
-                    "<p>This assistant will guide you to select and apply G'MIC filter "
-                    "to a selection of images taken from your collection.</p>"));
+                  "<p>This assistant will guide you to select and apply G'MIC filter "
+                  "to a selection of images taken from your collection.</p>"));
+
+    str.append(tr("<p><a href='https://gmic.eu/'>G'MIC</a> is a full-featured open-source framework for image processing. "
+                  "It provides several user interfaces to convert / manipulate / filter / "
+                  "visualize generic image datasets, ranging from 1D scalar signals to 3D+t sequences "
+                  "of multi-spectral volumetric images, hence including 2D color images.</p>"));
 
     str.append(QLatin1String("</qt>"));
 
     desc->setText(str);
 
+    QLabel* const logo = new QLabel(vbox);
+    logo->setPixmap(QPixmap(QLatin1String(":resources/logos.png")));
+
     QVBoxLayout* const vlay = new QVBoxLayout(vbox);
     vlay->addWidget(desc);
+    vlay->addWidget(logo);
 
     setPageWidget(vbox);
     setLeftBottomPix(s_gmicQtPluginIcon().pixmap(128).scaledToWidth(128));
