@@ -93,6 +93,7 @@ bool GmicQtFiltersPage::validatePage()
     }
 
     d->settings->gmicCommand = QGuiApplication::clipboard()->text();
+    d->settings->writeSettings();
 
     d->filtersView->restoreApplicationProperties();
 

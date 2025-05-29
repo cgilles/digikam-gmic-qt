@@ -42,7 +42,8 @@ public:
 
         if (wizard)
         {
-            iface = wizard->iface();
+            iface    = wizard->iface();
+            settings = wizard->settings();
         }
     }
 
@@ -51,6 +52,7 @@ public:
     DItemsList*     imageList   = nullptr;
     GmicQtWizard*   wizard      = nullptr;
     DInfoInterface* iface       = nullptr;
+    GmicQtSettings* settings    = nullptr;
 };
 
 GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)
@@ -89,6 +91,8 @@ void GmicQtImagesPage::setItemsList(const QList<QUrl>& urls)
 
 void GmicQtImagesPage::initializePage()
 {
+    d->settings->readSettings();
+
     d->imageList->setIface(d->iface);
     d->imageList->listView()->clear();
     d->imageList->loadImagesFromCurrentSelection();
