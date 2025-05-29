@@ -55,7 +55,7 @@ Q_SIGNALS:
 
 private:
 
-    void run() override;
+    void run()               override;
 
 public:
 

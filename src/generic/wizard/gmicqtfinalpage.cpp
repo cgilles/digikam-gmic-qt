@@ -71,9 +71,9 @@ GmicQtFinalPage::GmicQtFinalPage(QWizard* const dialog, const QString& title)
     : DWizardPage(dialog, title),
       d          (new Private(dialog))
 {
-    QWidget* const vbox = new QWidget(this);
-    d->progressView     = new DHistoryView(vbox);
-    d->progressBar      = new DProgressWdg(vbox);
+    QWidget* const vbox     = new QWidget(this);
+    d->progressView         = new DHistoryView(vbox);
+    d->progressBar          = new DProgressWdg(vbox);
 
     QVBoxLayout* const vlay = new QVBoxLayout(vbox);
     vlay->addWidget(d->progressView);

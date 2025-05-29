@@ -51,10 +51,10 @@ public:
 
 public:
 
-    GmicQtWidget*   filtersView          = nullptr;
-    GmicQtWizard*   wizard               = nullptr;
-    DInfoInterface* iface                = nullptr;
-    GmicQtSettings* settings             = nullptr;
+    GmicQtWidget*   filtersView = nullptr;
+    GmicQtWizard*   wizard      = nullptr;
+    DInfoInterface* iface       = nullptr;
+    GmicQtSettings* settings    = nullptr;
 };
 
 GmicQtFiltersPage::GmicQtFiltersPage(QWizard* const dialog)

@@ -49,10 +49,10 @@ public:
 
 public:
 
-    DItemsList*     imageList   = nullptr;
-    GmicQtWizard*   wizard      = nullptr;
-    DInfoInterface* iface       = nullptr;
-    GmicQtSettings* settings    = nullptr;
+    DItemsList*     imageList = nullptr;
+    GmicQtWizard*   wizard    = nullptr;
+    DInfoInterface* iface     = nullptr;
+    GmicQtSettings* settings  = nullptr;
 };
 
 GmicQtImagesPage::GmicQtImagesPage(QWizard* const dialog, const QString& title)

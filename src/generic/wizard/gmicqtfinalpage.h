@@ -34,7 +34,7 @@ class GmicQtFinalPage : public DWizardPage
 public:
 
     explicit GmicQtFinalPage(QWizard* const dialog, const QString& title);
-    ~GmicQtFinalPage()        override;
+    ~GmicQtFinalPage()      override;
 
     void initializePage()   override;
     bool isComplete() const override;

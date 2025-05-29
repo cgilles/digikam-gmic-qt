@@ -45,20 +45,29 @@ GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
     QString str            = QLatin1String("<qt>");
     str.append(tr("<p><h1><b>Welcome to G'MIC Layers Tool</b></h1></p>"
                   "<p>This assistant will guide you to select and apply G'MIC filter "
-                  "to a selection of images taken from your collection.</p>"));
+                  "to a selection of images taken from your collection.</p>"
+                  "<p>The items will be interpreted as separated as input layers "
+                  "and to be composed or assembled together or as new output layers.</p>"));
 
     str.append(tr("<p><a href='https://gmic.eu/'>G'MIC</a> is a full-featured open-source framework for image processing. "
-                  "It provides filters for changing colors, creating patterns, adding artistic touches, "
-                  "repairing inconsistencies in pictures, rendering shapes, and much more.</p>"));
+                  "It provides filters for:</p>"
+                  "<p><ul>"
+                  "<li>Changing colors.</li>"
+                  "<li>Creating patterns.</li>"
+                  "<li>Adding artistic touches.</li>"
+                  "<li>Repairing inconsistencies in pictures.</li>"
+                  "<li>Rendering shapes.</li>"
+                  "<li>And much more...</li>"
+                  "</ul></p>"));
 
-    str.append(tr("<p>This tool do not process items one by one in batch. Please use the Batch Queue Manager G'MIC Processor instead. "
+    str.append(tr("<p><u>Note:</u> this tool do not process items one by one in batch. Please use the Batch Queue Manager G'MIC Processor instead. "
                   "See the <a href='https://docs.digikam.org/en/batch_queue/base_tools.html#g-mic-processor'>online documentation</a> for much details.</p>"));
 
     str.append(QLatin1String("</qt>"));
 
     desc->setText(str);
 
-    QLabel* const logo = new QLabel(vbox);
+    QLabel* const logo      = new QLabel(vbox);
     logo->setPixmap(QPixmap(QLatin1String(":resources/logos.png")));
 
     QVBoxLayout* const vlay = new QVBoxLayout(vbox);

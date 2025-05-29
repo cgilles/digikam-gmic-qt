@@ -162,10 +162,10 @@ void GmicQtProcessorThread::run()
             {
                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC filter completed";
 
-                DImg outImage;
+                DImg    outImage;
                 QString filesList;
 
-                for (const QString& inpath : d->inputPaths)
+                for (const QString& inpath : std::as_const(d->inputPaths))
                 {
                     filesList.append(QFileInfo(inpath).fileName() + QLatin1String(" ; "));
                 }
@@ -191,9 +191,11 @@ void GmicQtProcessorThread::run()
                                                            );
 
                     if (
-                        outImage.save(outFilePath,
+                        outImage.save(
+                                      outFilePath,
                                       (DImg::FORMAT)d->outputFormat,
-                                      d->observer)
+                                      d->observer
+                                     )
                        )
                     {
                         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
@@ -207,15 +209,15 @@ void GmicQtProcessorThread::run()
                         double lat, lng, alt;
                         QScopedPointer<DMetadata> meta(new DMetadata);
 
-                        for (const QString& inpath : d->inputPaths)
+                        for (const QString& inpath : std::as_const(d->inputPaths))
                         {
                             meta->load(inpath);
 
                             if (meta->getGPSInfo(alt, lat, lng))
                             {
                                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found from"
-                                                                    << inpath << "and saved in"
-                                                                    << outFilePath;
+                                                                     << inpath << "and saved in"
+                                                                     << outFilePath;
                                 meta->load(outFilePath);
                                 meta->setGPSInfo(alt, lat, lng);
                                 meta->applyChanges(true);
