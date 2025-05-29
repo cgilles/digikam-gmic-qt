@@ -51,6 +51,9 @@ GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
                   "It provides filters for changing colors, creating patterns, adding artistic touches, "
                   "repairing inconsistencies in pictures, rendering shapes, and much more.</p>"));
 
+    str.append(tr("<p>This tool do not process items one by one in batch. Please use the Batch Queue Manager G'MIC Processor instead. "
+                  "See the <a href='https://docs.digikam.org/en/batch_queue/base_tools.html#g-mic-processor'>online documentation</a> for much details.</p>"));
+
     str.append(QLatin1String("</qt>"));
 
     desc->setText(str);
