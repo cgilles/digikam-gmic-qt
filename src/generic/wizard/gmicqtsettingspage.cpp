@@ -155,7 +155,6 @@ bool GmicQtSettingsPage::isComplete() const
                 !d->fileTemplateLineEdit->text().isEmpty()
              );
 
-qDebug() << "GmicQtSettingsPage::isComplete() return:" << b;
     return b;
 }
 
