@@ -37,7 +37,7 @@ using namespace Digikam;
 namespace DigikamGmicQtPluginCommon
 {
 
-class GmicQtWindow : public MainWindow
+class GmicQtWidget : public MainWindow
 {
     Q_OBJECT
 
@@ -54,12 +54,12 @@ public:
 
 public:
 
-    explicit GmicQtWindow(
+    explicit GmicQtWidget(
                           DPlugin* const tool,
                           QWidget* const parent,
                           QString* const filterName
                          );
-    ~GmicQtWindow()                     override;
+    ~GmicQtWidget()                     override;
 
     void saveParameters();
     void setFilterSelectionMode();
@@ -69,18 +69,12 @@ public:
 
 public:
 
-    static GmicQtWindow* createWindow(DPlugin* const tool,
+    static GmicQtWidget* createWidget(DPlugin* const tool,
                                       HostType type,
                                       const QString& command = QString());
 
-    static QString execWindow(DPlugin* const tool,
-                              HostType type,
-                              const QString& command = QString());
-
-protected:
-
-    void showEvent(QShowEvent* event)   override;
-    void closeEvent(QCloseEvent* event) override;
+    static void backupApplicationProperties();
+    static void restoreApplicationProperties();
 
 private Q_SLOTS:
 
@@ -90,6 +84,33 @@ private:
 
     class Private;
     Private* const d = nullptr;
+};
+
+// -------------------------------------------------------------------------
+
+class GmicQtWindow : public GmicQtWidget
+{
+    Q_OBJECT
+
+public:
+
+    explicit GmicQtWindow(
+                          DPlugin* const tool,
+                          QWidget* const parent,
+                          QString* const filterName
+                         );
+    ~GmicQtWindow()                     override = default;
+
+public:
+
+    static QString execWindow(DPlugin* const tool,
+                              HostType type,
+                              const QString& command = QString());
+
+protected:
+
+    void showEvent(QShowEvent* event)   override;
+    void closeEvent(QCloseEvent* event) override;
 };
 
 } // namespace DigikamGmicQtPluginCommon

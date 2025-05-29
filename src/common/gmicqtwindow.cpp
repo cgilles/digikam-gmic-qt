@@ -43,10 +43,22 @@ using namespace GmicQt;
 namespace DigikamGmicQtPluginCommon
 {
 
-GmicQtWindow* s_mainWindow = nullptr;
-QString       s_filterName;
+QString         s_hostOrg     = QCoreApplication::organizationName();
+QString         s_hostDom     = QCoreApplication::organizationDomain();
+QString         s_hostName    = QCoreApplication::applicationName();
 
-class Q_DECL_HIDDEN GmicQtWindow::Private
+QString         s_plugName;
+QString         s_plugOrg;
+QString         s_plugDom;
+
+QString         s_dkModule;
+
+GmicQtWidget*   s_mainWindow  = nullptr;
+QString         s_filterName;
+
+// --------------------------------------------------------------------------------------
+
+class Q_DECL_HIDDEN GmicQtWidget::Private
 {
 public:
 
@@ -54,22 +66,13 @@ public:
 
 public:
 
-    QString         hostOrg     = QCoreApplication::organizationName();
-    QString         hostDom     = QCoreApplication::organizationDomain();
-    QString         hostName    = QCoreApplication::applicationName();
-
-    QString         plugName;
-    QString         plugOrg;
-    QString         plugDom;
-
-    QString         dkModule;
     QLabel*         filterLbl   = nullptr;
     QString*        filterName  = nullptr;
 
     QPushButton*    helpBtn     = nullptr;
 };
 
-GmicQtWindow::GmicQtWindow(
+GmicQtWidget::GmicQtWidget(
                            DPlugin* const tool,
                            QWidget* const parent,
                            QString* const filterName
@@ -113,12 +116,12 @@ GmicQtWindow::GmicQtWindow(
     }
 }
 
-GmicQtWindow::~GmicQtWindow()
+GmicQtWidget::~GmicQtWidget()
 {
     delete d;
 }
 
-void GmicQtWindow::setHostType(HostType type)
+void GmicQtWidget::setHostType(HostType type)
 {
     // Customize the rc settings file-name depending of the host application running Gmic-Qt.
 
@@ -126,25 +129,25 @@ void GmicQtWindow::setHostType(HostType type)
     {
         case BQM:
         {
-            d->dkModule = QLatin1String("digikam-bqm-");
+            s_dkModule = QLatin1String("digikam-bqm-");
             break;
         }
 
         case ImageEditor:
         {
-            d->dkModule = QLatin1String("digikam-editor-");
+            s_dkModule = QLatin1String("digikam-editor-");
             break;
         }
 
         case Showfoto:
         {
-            d->dkModule = QLatin1String("showfoto-");
+            s_dkModule = QLatin1String("showfoto-");
             break;
         }
 
         case Generic:
         {
-            d->dkModule = QLatin1String("digikam-generic-");
+            s_dkModule = QLatin1String("digikam-generic-");
             break;
         }
 
@@ -155,7 +158,7 @@ void GmicQtWindow::setHostType(HostType type)
     }
 }
 
-void GmicQtWindow::hideButtons()
+void GmicQtWidget::hideButtons()
 {
     d->helpBtn->setVisible(false);
 
@@ -224,7 +227,7 @@ void GmicQtWindow::hideButtons()
     }
 }
 
-void GmicQtWindow::setFilterSelectionMode()
+void GmicQtWidget::setFilterSelectionMode()
 {
     QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
 
@@ -236,7 +239,7 @@ void GmicQtWindow::setFilterSelectionMode()
                    static_cast<MainWindow*>(this), &MainWindow::onOkClicked);
 
         connect(pbOk, &QPushButton::clicked,
-                this, &GmicQtWindow::slotOkClicked);
+                this, &GmicQtWidget::slotOkClicked);
     }
     else
     {
@@ -273,14 +276,14 @@ void GmicQtWindow::setFilterSelectionMode()
     }
 }
 
-void GmicQtWindow::copyGmicCommand()
+void GmicQtWidget::copyGmicCommand()
 {
     // Copy the current G'MIC command on the clipboard.
 
     s_mainWindow->onCopyGMICCommand();
 }
 
-void GmicQtWindow::slotOkClicked()
+void GmicQtWidget::slotOkClicked()
 {
     // Return current filter name.
 
@@ -296,47 +299,14 @@ void GmicQtWindow::slotOkClicked()
     close();
 }
 
-void GmicQtWindow::saveParameters()
+void GmicQtWidget::saveParameters()
 {
     saveSettings();
 }
 
-void GmicQtWindow::showEvent(QShowEvent* event)
-{
-    if (d->plugOrg.isEmpty())
-    {
-        d->plugOrg  = QCoreApplication::organizationName();
-    }
-
-    if (d->plugDom.isEmpty())
-    {
-        d->plugDom  = QCoreApplication::organizationDomain();
-    }
-
-    if (d->plugName.isEmpty())
-    {
-        d->plugName = d->dkModule + QCoreApplication::applicationName();
-    }
-
-    QCoreApplication::setOrganizationName(d->plugOrg);
-    QCoreApplication::setOrganizationDomain(d->plugDom);
-    QCoreApplication::setApplicationName(d->plugName);
-
-    MainWindow::showEvent(event);
-}
-
-void GmicQtWindow::closeEvent(QCloseEvent* event)
-{
-    QCoreApplication::setOrganizationName(d->hostOrg);
-    QCoreApplication::setOrganizationDomain(d->hostDom);
-    QCoreApplication::setApplicationName(d->hostName);
-
-    MainWindow::closeEvent(event);
-}
-
 // --- Static methods ---
 
-GmicQtWindow* GmicQtWindow::createWindow(DPlugin* const tool,
+GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
                                          HostType type,
                                          const QString& command)
 {
@@ -379,11 +349,11 @@ GmicQtWindow* GmicQtWindow::createWindow(DPlugin* const tool,
      * seen side effects, for example with the settings to host in RC file.
      */
 
-    s_mainWindow = new GmicQtWindow(tool, qApp->activeWindow(), &s_filterName);
+    s_mainWindow = new GmicQtWidget(tool, qApp->activeWindow(), &s_filterName);
 
     if (
-        (type == GmicQtWindow::BQM) ||
-        (type == GmicQtWindow::Generic)
+        (type == GmicQtWidget::BQM) ||
+        (type == GmicQtWidget::Generic)
        )
     {
         s_mainWindow->setFilterSelectionMode();
@@ -428,11 +398,51 @@ GmicQtWindow* GmicQtWindow::createWindow(DPlugin* const tool,
     return s_mainWindow;
 }
 
+void GmicQtWidget::backupApplicationProperties()
+{
+    if (s_plugOrg.isEmpty())
+    {
+        s_plugOrg  = QCoreApplication::organizationName();
+    }
+
+    if (s_plugDom.isEmpty())
+    {
+        s_plugDom  = QCoreApplication::organizationDomain();
+    }
+
+    if (s_plugName.isEmpty())
+    {
+        s_plugName = s_dkModule + QCoreApplication::applicationName();
+    }
+
+    QCoreApplication::setOrganizationName(s_plugOrg);
+    QCoreApplication::setOrganizationDomain(s_plugDom);
+    QCoreApplication::setApplicationName(s_plugName);
+}
+
+void GmicQtWidget::restoreApplicationProperties()
+{
+    QCoreApplication::setOrganizationName(s_hostOrg);
+    QCoreApplication::setOrganizationDomain(s_hostDom);
+    QCoreApplication::setApplicationName(s_hostName);
+}
+
+// --------------------------------------------------------------------------------------
+
+GmicQtWindow::GmicQtWindow(
+                           DPlugin* const tool,
+                           QWidget* const parent,
+                           QString* const filterName
+                          )
+    : GmicQtWidget(tool, parent, filterName)
+{
+}
+
 QString GmicQtWindow::execWindow(DPlugin* const tool,
                                  HostType type,
                                  const QString& command)
 {
-    createWindow(tool, type, command);
+    GmicQtWidget::createWidget(tool, type, command);
 
     if (QSettings().value(QLatin1String("Config/MainWindowMaximized"), false).toBool())
     {
@@ -457,6 +467,20 @@ QString GmicQtWindow::execWindow(DPlugin* const tool,
     loop.exec();
 
     return s_filterName;
+}
+
+void GmicQtWindow::showEvent(QShowEvent* event)
+{
+    GmicQtWidget::backupApplicationProperties();
+
+    GmicQtWidget::showEvent(event);
+}
+
+void GmicQtWindow::closeEvent(QCloseEvent* event)
+{
+    GmicQtWidget::restoreApplicationProperties();
+
+    GmicQtWidget::closeEvent(event);
 }
 
 } // namespace DigikamGmicQtPluginCommon

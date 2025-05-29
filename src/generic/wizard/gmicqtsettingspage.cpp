@@ -120,6 +120,12 @@ GmicQtSettingsPage::GmicQtSettingsPage(QWizard* const dialog, const QString& tit
 
     setPageWidget(outPage);
     setLeftBottomPix(QIcon::fromTheme(QLatin1String("settings-configure")));
+
+    connect(d->iface, SIGNAL(signalUploadUrlChanged()),
+            this, SIGNAL(completeChanged()));
+
+    connect(d->fileTemplateLineEdit, SIGNAL(textChanged(QString)),
+            this, SIGNAL(completeChanged()));
 }
 
 GmicQtSettingsPage::~GmicQtSettingsPage()
@@ -149,6 +155,7 @@ bool GmicQtSettingsPage::isComplete() const
                 !d->fileTemplateLineEdit->text().isEmpty()
              );
 
+qDebug() << "GmicQtSettingsPage::isComplete() return:" << b;
     return b;
 }
 

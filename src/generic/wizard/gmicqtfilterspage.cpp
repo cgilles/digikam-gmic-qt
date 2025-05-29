@@ -51,7 +51,7 @@ public:
 
 public:
 
-    GmicQtWindow*   filtersView          = nullptr;
+    GmicQtWidget*   filtersView          = nullptr;
     GmicQtWizard*   wizard               = nullptr;
     DInfoInterface* iface                = nullptr;
     GmicQtSettings* settings             = nullptr;
@@ -61,7 +61,7 @@ GmicQtFiltersPage::GmicQtFiltersPage(QWizard* const dialog)
     : DWizardPage(dialog, QString()),
       d          (new Private(dialog))
 {
-    d->filtersView = GmicQtWindow::createWindow(nullptr, GmicQtWindow::Generic);
+    d->filtersView = GmicQtWidget::createWidget(nullptr, GmicQtWidget::Generic);
     d->filtersView->hideButtons();
 
     connect(d->filtersView, &MainWindow::filterSelectionChanged,
@@ -79,6 +79,8 @@ GmicQtFiltersPage::~GmicQtFiltersPage()
 void GmicQtFiltersPage::initializePage()
 {
     QGuiApplication::clipboard()->clear();
+
+    d->filtersView->backupApplicationProperties();
 }
 
 bool GmicQtFiltersPage::validatePage()
@@ -91,6 +93,8 @@ bool GmicQtFiltersPage::validatePage()
     }
 
     d->settings->gmicCommand = QGuiApplication::clipboard()->text();
+
+    d->filtersView->restoreApplicationProperties();
 
     return true;
 }
