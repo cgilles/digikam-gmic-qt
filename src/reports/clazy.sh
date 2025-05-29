@@ -9,9 +9,6 @@
 # Dependencies : Python BeautifulSoup and SoupSieve at run-time.
 #
 
-alias clang=/usr/bin/clang-19
-alias clang=/usr/bin/clang++-19
-
 # Halt and catch errors
 set -eE
 trap 'PREVIOUS_COMMAND=$THIS_COMMAND; THIS_COMMAND=$BASH_COMMAND' DEBUG
