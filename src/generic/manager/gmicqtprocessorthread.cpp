@@ -99,7 +99,11 @@ GmicQtProcessorThread::~GmicQtProcessorThread()
 
 void GmicQtProcessorThread::cancel()
 {
-    d->proc->cancel();
+    if (d->proc)
+    {
+        d->proc->cancel();
+    }
+
     d->cancel = true;
 }
 
@@ -261,6 +265,7 @@ void GmicQtProcessorThread::run()
     }
 
     delete d->proc;
+    d->proc = nullptr;
 
     Q_EMIT signalComplete(error);
 }
