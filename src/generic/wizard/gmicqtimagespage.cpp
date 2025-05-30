@@ -84,11 +84,6 @@ GmicQtImagesPage::~GmicQtImagesPage()
     delete d;
 }
 
-void GmicQtImagesPage::setItemsList(const QList<QUrl>& urls)
-{
-    d->imageList->slotAddImages(urls);
-}
-
 void GmicQtImagesPage::initializePage()
 {
     d->settings->readSettings();

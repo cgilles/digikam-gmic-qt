@@ -42,8 +42,6 @@ public:
     bool validatePage()     override;
     bool isComplete() const override;
 
-    void setItemsList(const QList<QUrl>& urls);
-
 private:
 
     class Private;
