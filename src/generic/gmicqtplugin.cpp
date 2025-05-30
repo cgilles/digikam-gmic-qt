@@ -14,41 +14,16 @@
 
 #include "gmicqtplugin.h"
 
-// Qt includes
-
-#include <QApplication>
-#include <QTranslator>
-#include <QPointer>
-#include <QImage>
-#include <QBuffer>
-#include <QByteArray>
-#include <QClipboard>
-#include <QDir>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QImageWriter>
-
-// Libfftw includes
-
-#ifdef cimg_use_fftw3
-#   include <fftw3.h>
-#endif
-
 // digiKam includes
 
 #include "dinfointerface.h"
 #include "digikam_debug.h"
-#include "dfiledialog.h"
-#include "dimg.h"
 
 // Local includes
 
-#include "gmicqtwindow.h"
 #include "gmicqtcommon.h"
 #include "gmicqtwizard.h"
-#include "gmic.h"
 
-using namespace GmicQt;
 using namespace DigikamGmicQtPluginCommon;
 
 namespace DigikamGenericGmicQtPlugin
