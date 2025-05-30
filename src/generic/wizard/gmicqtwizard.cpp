@@ -14,16 +14,6 @@
 
 #include "gmicqtwizard.h"
 
-// Qt includes
-
-#include <QCheckBox>
-#include <QLabel>
-#include <QMenu>
-#include <QApplication>
-#include <QComboBox>
-#include <QListWidget>
-#include <QTextBrowser>
-
 // Local includes
 
 #include "dwizardpage.h"
@@ -45,13 +35,13 @@ public:
 
 public:
 
-    DInfoInterface*     iface           = nullptr;
-    GmicQtSettings*     settings        = nullptr;
-    GmicQtIntroPage*    introPage       = nullptr;
-    GmicQtImagesPage*   imagesPage      = nullptr;
-    GmicQtSettingsPage* settingsPage    = nullptr;
-    GmicQtFiltersPage*  filtersPage     = nullptr;
-    GmicQtFinalPage*    finalPage       = nullptr;
+    DInfoInterface*     iface        = nullptr;
+    GmicQtSettings*     settings     = nullptr;
+    GmicQtIntroPage*    introPage    = nullptr;
+    GmicQtImagesPage*   imagesPage   = nullptr;
+    GmicQtSettingsPage* settingsPage = nullptr;
+    GmicQtFiltersPage*  filtersPage  = nullptr;
+    GmicQtFinalPage*    finalPage    = nullptr;
 };
 
 GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
@@ -69,7 +59,7 @@ GmicQtWizard::GmicQtWizard(QWidget* const parent, DInfoInterface* const iface)
     d->introPage         = new GmicQtIntroPage(this,    tr("Welcome to G'MIC-Qt Layers Mode Tool"));
     d->imagesPage        = new GmicQtImagesPage(this,   tr("Stacked Images List"));
     d->settingsPage      = new GmicQtSettingsPage(this, tr("Processing Settings"));
-    d->filtersPage       = new GmicQtFiltersPage(this);
+    d->filtersPage       = new GmicQtFiltersPage(this); // NOTE: no title here.
     d->finalPage         = new GmicQtFinalPage(this,    tr("Processing G'MIC Filter"));
 }
 
