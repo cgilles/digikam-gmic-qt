@@ -43,4 +43,26 @@ void GmicQtSettings::writeSettings()
     cnf.setValue(QLatin1String("DigikamGmicQtGeneric_GmicCommand"),     gmicCommand);
 }
 
+QDebug operator<<(QDebug dbg, const GmicQtSettings& t)
+{
+    QString temp;
+    QTextStream stream(&temp);
+
+    stream << "Images to Process    :" << Qt::endl;
+
+    for (const QUrl& url : std::as_const(t.inputImages))
+    {
+        stream << "    " << url.toLocalFile() << Qt::endl;
+    }
+
+    stream << "Output image path    :" << t.targetUrl.toLocalFile()                      << Qt::endl;
+    stream << "Output image filename:" << t.templateFName                                << Qt::endl;
+    stream << "Output image format  :" << DImg::formatToMimeType((DImg::FORMAT)t.format) << Qt::endl;
+    stream << "G'MIC command        :" << t.gmicCommand                                  << Qt::endl;
+
+    dbg.nospace().noquote() << stream.readAll();
+
+    return dbg.space();
+}
+
 } // namespace DigikamGenericGmicQtPlugin

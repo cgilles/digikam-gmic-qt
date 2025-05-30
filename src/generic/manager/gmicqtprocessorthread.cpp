@@ -31,6 +31,7 @@
 
 #include "gmicqtcommon.h"
 #include "gmicqtimageconverter.h"
+#include "gmicqtsettings.h"
 
 namespace DigikamGenericGmicQtPlugin
 {
@@ -49,11 +50,7 @@ public:
     bool                            cancel       = false;
     GmicQtProcessor*                proc         = nullptr;
     GmicQtProcessorThreadObserver*  observer     = nullptr;
-    QStringList                     inputPaths;
-    QString                         command;
-    QString                         outputPath;
-    QString                         fileName;
-    int                             outputFormat = DImg::JPEG;
+    GmicQtSettings*                 settings     = nullptr;
 };
 
 // ---
@@ -107,27 +104,15 @@ void GmicQtProcessorThread::cancel()
     d->cancel = true;
 }
 
-void GmicQtProcessorThread::setSettings(const QStringList& inputPaths,
-                                        const QString& command,
-                                        const QString& outputPath,
-                                        const QString& fileName,
-                                        int   outputFormat)
+void GmicQtProcessorThread::setSettings(GmicQtSettings* const settings)
 {
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "G'MIC command        :" << command;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Images to Process    :" << inputPaths;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image path    :" << outputPath;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image filename:" << fileName;
-    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Output image format  :" << DImg::formatToMimeType((DImg::FORMAT)outputFormat);
-
-    d->inputPaths   = inputPaths;
-    d->command      = command;
-    d->outputPath   = outputPath;
-    d->fileName     = fileName;
-    d->outputFormat = outputFormat;
+    d->settings = settings;
 }
 
 void GmicQtProcessorThread::run()
 {
+    qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << d->settings;
+
     QString error;
 
     d->proc = new GmicQtProcessor();
@@ -135,9 +120,16 @@ void GmicQtProcessorThread::run()
     connect(d->proc, SIGNAL(signalProgressInfo(QString)),
             this, SIGNAL(signalProgressInfo(QString)));
 
-    d->proc->setInputFiles(d->inputPaths);
+    QStringList paths;
 
-    if (!d->proc->setProcessingCommand(d->command))
+    for (const QUrl& url : std::as_const(d->settings->inputImages))
+    {
+        paths.append(url.toLocalFile());
+    }
+
+    d->proc->setInputFiles(paths);
+
+    if (!d->proc->setProcessingCommand(d->settings->gmicCommand))
     {
         error = tr("Cannot setup G'MIC filter!");
     }
@@ -165,7 +157,7 @@ void GmicQtProcessorThread::run()
                 DImg    outImage;
                 QString filesList;
 
-                for (const QString& inpath : std::as_const(d->inputPaths))
+                for (const QString& inpath : std::as_const(paths))
                 {
                     filesList.append(QFileInfo(inpath).fileName() + QLatin1String(" ; "));
                 }
@@ -177,23 +169,23 @@ void GmicQtProcessorThread::run()
                 for (int i = 0 ; (i < outImages.size()) && !d->cancel ; i++)
                 {
                     QString outFilePath = QString::fromUtf8("%1%2_%3.%4")
-                                              .arg(d->outputPath)
-                                              .arg(d->fileName)
+                                              .arg(d->settings->targetUrl.toLocalFile())
+                                              .arg(d->settings->templateFName)
                                               .arg(i, 2, 10, QLatin1Char('0'))
-                                              .arg(DImg::formatToMimeType((DImg::FORMAT)d->outputFormat));
+                                              .arg(DImg::formatToMimeType((DImg::FORMAT)d->settings->format));
 
                     Q_EMIT signalProgressInfo(tr("Save data into %1").arg(outFilePath));
 
                     GMicQtImageConverter::convertCImgtoDImg(
                                                             outImages[i],
                                                             outImage,
-                                                            (d->outputFormat != DImg::JPEG)
+                                                            (d->settings->format != DImg::JPEG)
                                                            );
 
                     if (
                         outImage.save(
                                       outFilePath,
-                                      (DImg::FORMAT)d->outputFormat,
+                                      (DImg::FORMAT)d->settings->format,
                                       d->observer
                                      )
                        )
@@ -209,7 +201,7 @@ void GmicQtProcessorThread::run()
                         double lat, lng, alt;
                         QScopedPointer<DMetadata> meta(new DMetadata);
 
-                        for (const QString& inpath : std::as_const(d->inputPaths))
+                        for (const QString& inpath : std::as_const(paths))
                         {
                             meta->load(inpath);
 
@@ -227,7 +219,7 @@ void GmicQtProcessorThread::run()
 
                         // Restore usual and common metadata from first item.
 
-                        meta->load(d->inputPaths.constFirst());
+                        meta->load(paths.constFirst());
                         QByteArray iptc = meta->getIptc();
                         QByteArray xmp  = meta->getXmp();
                         QString make    = meta->getExifTagString("Exif.Image.Make");
@@ -241,7 +233,7 @@ void GmicQtProcessorThread::run()
                         meta->setXmpTagString("Xmp.tiff.Model", model);
                         meta->setImageDateTime(dt);
                         meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
-                        meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->command);
+                        meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->settings->gmicCommand);
                         meta->applyChanges(true);
 
                         Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(outFilePath));

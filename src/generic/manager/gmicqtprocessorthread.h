@@ -24,6 +24,7 @@
 // Local includes
 
 #include "gmicqtprocessor.h"
+#include "gmicqtsettings.h"
 
 using namespace DigikamGmicQtPluginCommon;
 
@@ -39,11 +40,7 @@ public:
     explicit GmicQtProcessorThread(QObject* const parent);
     ~GmicQtProcessorThread() override;
 
-    void setSettings(const QStringList& inputPaths,
-                     const QString& command,
-                     const QString& outputPath,
-                     const QString& fileName,
-                     int   outputFormat);
+    void setSettings(GmicQtSettings* const settings);
 
     void cancel();
 

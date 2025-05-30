@@ -143,18 +143,7 @@ void GmicQtFinalPage::slotProcess()
     connect(d->processor, SIGNAL(signalUpdateHostApp(QUrl)),
             d->iface, SLOT(slotMetadataChangedForUrl(QUrl)));
 
-    QStringList paths;
-
-    for (const QUrl& url : std::as_const(d->settings->inputImages))
-    {
-        paths.append(url.toLocalFile());
-    }
-
-    d->processor->setSettings(paths,
-                              d->settings->gmicCommand,
-                              d->settings->targetUrl.toLocalFile(),
-                              d->settings->templateFName,
-                              d->settings->format);
+    d->processor->setSettings(d->settings);
     d->processor->start();
 }
 
