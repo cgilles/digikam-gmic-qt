@@ -86,7 +86,6 @@ GmicFilterWidget::GmicFilterWidget(QWidget* const parent)
     d->manager         = new GmicFilterManager(db, this);
     d->manager->load();
 
-
     d->tree            = new QTreeView(this);
     d->tree->setUniformRowHeights(true);
     d->tree->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -512,7 +511,7 @@ QString GmicFilterWidget::currentGmicChainedCommands() const
     {
         const QList<QVariant> lst = filters.values();    // clazy:exclude=qt6-deprecated-api-fixes
 
-        for (const QVariant& v : qAsConst(lst))
+        for (const QVariant& v : std::as_const(lst))
         {
             chained.append(QLatin1Char(' '));
             chained.append(v.toString());
@@ -596,12 +595,12 @@ void GmicFilterWidget::setCurrentPath(const QString& path)
 
     qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "Hierarchy:" << hierarchy;
 
-    for (const QString& title : qAsConst(hierarchy))
+    for (const QString& title : std::as_const(hierarchy))
     {
         children = node->children();
         qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "Title:" << title;
 
-        for (GmicFilterNode* const child : qAsConst(children))
+        for (GmicFilterNode* const child : std::as_const(children))
         {
             qCDebug(DIGIKAM_DPLUGIN_BQM_LOG) << "Child node:" << child->title;
 
