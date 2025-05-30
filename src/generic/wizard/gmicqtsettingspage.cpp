@@ -69,12 +69,12 @@ GmicQtSettingsPage::GmicQtSettingsPage(QWizard* const dialog, const QString& tit
     : DWizardPage(dialog, title),
       d          (new Private(dialog))
 {
-    QWidget* const outPage = new QWidget(this);
-    const int spacing      = layoutSpacing();
+    QWidget* const outPage         = new QWidget(this);
+    const int spacing              = layoutSpacing();
 
     // --------------------
 
-    QLabel* const outHeader  = new QLabel(outPage);
+    QLabel* const outHeader        = new QLabel(outPage);
     outHeader->setWordWrap(true);
     outHeader->setText(tr("Configure the G'MIC filter settings below to store the output images.\n"
                           "Press the \"Next\" button to show the G'MIC-Qt tool and select the filters to apply on stack."));

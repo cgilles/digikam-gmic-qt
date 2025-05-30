@@ -17,14 +17,11 @@
 // Qt includes
 
 #include <QIcon>
-#include <QSpacerItem>
 #include <QVBoxLayout>
-#include <QDesktopServices>
 #include <QUrl>
 #include <QApplication>
 #include <QStyle>
 #include <QTimer>
-#include <QDir>
 
 // Digikam includes
 
