@@ -33,7 +33,7 @@
 namespace DigikamGmicQtPluginCommon
 {
 
-extern GmicQtWidget* s_mainWindow;
+extern GmicQtWidget* s_mainWidget;
 
 } // namespace DigikamGmicQtPluginCommon
 
@@ -189,9 +189,9 @@ void outputImages(cimg_library::CImgList<gmic_pixel_type>& images,
         // See bug #462137: force to save current filter applied
         // to the image to store settings in history.
 
-        if (DigikamGmicQtPluginCommon::s_mainWindow)
+        if (DigikamGmicQtPluginCommon::s_mainWidget)
         {
-            DigikamGmicQtPluginCommon::s_mainWindow->saveParameters();
+            DigikamGmicQtPluginCommon::s_mainWidget->saveParameters();
         }
 
         GmicQt::RunParameters parameters = lastAppliedFilterRunParameters(GmicQt::ReturnedRunParametersFlag::AfterFilterExecution);

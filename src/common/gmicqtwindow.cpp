@@ -53,7 +53,7 @@ QString         s_plugDom;
 
 QString         s_dkModule;
 
-GmicQtWidget*   s_mainWindow  = nullptr;
+GmicQtWidget*   s_mainWidget  = nullptr;
 QString         s_filterName;
 
 // --------------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ void GmicQtWidget::copyGmicCommand()
 {
     // Copy the current G'MIC command on the clipboard.
 
-    s_mainWindow->onCopyGMICCommand();
+    s_mainWidget->onCopyGMICCommand();
 }
 
 void GmicQtWidget::slotOkClicked()
@@ -349,17 +349,17 @@ GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
      * seen side effects, for example with the settings to host in RC file.
      */
 
-    s_mainWindow = new GmicQtWidget(tool, qApp->activeWindow(), &s_filterName);
+    s_mainWidget = new GmicQtWidget(tool, qApp->activeWindow(), &s_filterName);
 
     if (
         (type == GmicQtWidget::BQM) ||
         (type == GmicQtWidget::Generic)
        )
     {
-        s_mainWindow->setFilterSelectionMode();
+        s_mainWidget->setFilterSelectionMode();
     }
 
-    s_mainWindow->setHostType(type);
+    s_mainWidget->setHostType(type);
 
     RunParameters parameters;
 
@@ -379,23 +379,23 @@ GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
     qCDebug(DIGIKAM_DPLUGIN_LOG) << "Output Mode:" << (int)parameters.outputMode;
     qCDebug(DIGIKAM_DPLUGIN_LOG) << "Filter name:" << QString::fromStdString(parameters.filterName());
 
-    s_mainWindow->setPluginParameters(parameters);
+    s_mainWidget->setPluginParameters(parameters);
 
     // We want a non modal dialog here.
 
 #ifdef Q_OS_MACOS
 
-    s_mainWindow->setWindowFlags(Qt::Tool | Qt::Dialog);
+    s_mainWidget->setWindowFlags(Qt::Tool | Qt::Dialog);
 
 #else
 
-    s_mainWindow->setWindowFlags(Qt::Dialog);
+    s_mainWidget->setWindowFlags(Qt::Dialog);
 
 #endif
 
-    s_mainWindow->setWindowModality(Qt::ApplicationModal);
+    s_mainWidget->setWindowModality(Qt::ApplicationModal);
 
-    return s_mainWindow;
+    return s_mainWidget;
 }
 
 void GmicQtWidget::backupApplicationProperties()
@@ -446,22 +446,22 @@ QString GmicQtWindow::execWindow(DPlugin* const tool,
 
     if (QSettings().value(QLatin1String("Config/MainWindowMaximized"), false).toBool())
     {
-        s_mainWindow->showMaximized();  // krazy:exclude=qmethods
+        s_mainWidget->showMaximized();  // krazy:exclude=qmethods
     }
     else
     {
-        s_mainWindow->show();
+        s_mainWidget->show();
     }
 
     // Make it destroy itself on close (signaling the event loop)
 
-    s_mainWindow->setAttribute(Qt::WA_DeleteOnClose);
+    s_mainWidget->setAttribute(Qt::WA_DeleteOnClose);
 
     // Wait than main widget is closed.
 
     QEventLoop loop;
 
-    connect(s_mainWindow, SIGNAL(destroyed()),
+    connect(s_mainWidget, SIGNAL(destroyed()),
             &loop, SLOT(quit()));
 
     loop.exec();
