@@ -114,9 +114,17 @@ GmicQtSettingsPage::GmicQtSettingsPage(QWizard* const dialog, const QString& tit
     grid2->addWidget(labelImageFormat,        3, 0, 1, 1);
     grid2->addWidget(d->imageFormat,          3, 2, 1, 1);
     grid2->setColumnStretch(0, 10);
-    grid2->setRowStretch(1, 5);
     grid2->setContentsMargins(QMargins(spacing, spacing, spacing, spacing));
     grid2->setSpacing(spacing);
+
+    if (QApplication::applicationName() == QLatin1String("digikam"))
+    {
+        grid2->setRowStretch(1, 10);
+    }
+    else
+    {
+        grid2->setRowStretch(4, 10);
+    }
 
     setPageWidget(outPage);
     setLeftBottomPix(QIcon::fromTheme(QLatin1String("settings-configure")));
