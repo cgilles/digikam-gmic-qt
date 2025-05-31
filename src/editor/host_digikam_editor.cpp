@@ -33,7 +33,7 @@
 namespace DigikamGmicQtPluginCommon
 {
 
-extern GmicQtWindow* s_mainWindow;
+extern GmicQtWidget* s_mainWindow;
 
 } // namespace DigikamGmicQtPluginCommon
 
