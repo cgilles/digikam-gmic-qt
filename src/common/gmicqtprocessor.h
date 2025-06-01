@@ -46,7 +46,7 @@ public:
 
     /**
      * @brief A class to run the G'MIC filter command and process files (Generic) or one image instance (BQM).
-     * Implementation inspired from G'MIC-Qt HeadlessProcessor.
+     * NOTE: implementation inspired from G'MIC-Qt HeadlessProcessor.
      */
     explicit GmicQtProcessor(QObject* const parent = nullptr);
     ~GmicQtProcessor()                                            override;

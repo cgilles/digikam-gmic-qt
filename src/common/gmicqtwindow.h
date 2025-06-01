@@ -34,18 +34,27 @@ class GmicQtWindow : public GmicQtWidget
 
 public:
 
+    /**
+     * @brief Standard contructor.
+     * @param tool the current digiKam plugin instance.
+     * @param filterName will host the name of the G'MIC filter selected in the widget.
+     * @param parent the current parent widget.
+     */
     explicit GmicQtWindow(
                           DPlugin* const tool,
-                          QWidget* const parent,
-                          QString* const filterName
+                          QString* const filterName,
+                          QWidget* const parent
                          );
     ~GmicQtWindow()                     override = default;
 
 public:
 
     /**
-     * Create and run an instance of the GmicQtWindow.
-     * Return the Gmic filter name selected in the GmicQtWidget.
+     * @brief Create and run an instance of the GmicQtWindow.
+     * @return the Gmic filter name selected in the GmicQtWidget.
+     * @param tool the current digiKam plugin instance.
+     * @param type See HostType enum for details.
+     * @param command the G'MIC filter command to pre-select in the G'MIC widget.
      */
     static QString execWindow(DPlugin* const tool,
                               HostType type,

@@ -74,8 +74,8 @@ public:
 
 GmicQtWidget::GmicQtWidget(
                            DPlugin* const tool,
-                           QWidget* const parent,
-                           QString* const filterName
+                           QString* const filterName,
+                           QWidget* const parent
                           )
     : MainWindow(parent),
       d         (new Private)
@@ -349,7 +349,7 @@ GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
      * seen side effects, for example with the settings to host in RC file.
      */
 
-    s_mainWidget = new GmicQtWidget(tool, qApp->activeWindow(), &s_filterName);
+    s_mainWidget = new GmicQtWidget(tool, &s_filterName, qApp->activeWindow());
 
     if (
         (type == GmicQtWidget::BQM) ||

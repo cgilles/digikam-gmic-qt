@@ -45,17 +45,23 @@ public:
     {
         ImageEditor = 0,    ///< Save the GmicQt settings in right configuration file for the digiKam Image Editor plugin.
         BQM,                ///< Save the GmicQt settings in right configuration file for the digiKam Batch Queue Manager plugin.
-        Showfoto,           ///< Save the GmicQt settings in right configuration file for Showfoto plugin.
+        Showfoto,           ///< Save the GmicQt settings in right configuration file for the Showfoto plugin.
         Generic,            ///< Save the GmicQt settings in right configuration file for the digiKam Generic plugin.
         Unknow
     };
 
 public:
 
+    /**
+     * @brief Standard contructor.
+     * @param tool the current digiKam plugin instance.
+     * @param filterName will host the name of the G'MIC filter selected in the widget.
+     * @param parent the current parent widget.
+     */
     explicit GmicQtWidget(
                           DPlugin* const tool,
-                          QWidget* const parent,
-                          QString* const filterName
+                          QString* const filterName,
+                          QWidget* const parent
                          );
     ~GmicQtWidget()                     override;
 
@@ -76,7 +82,7 @@ public:
 
     /**
      * @brief Set the host type to use with the GmicQt widget instance for the read/write settings.
-     * See HostType for details.
+     * @param type See HostType enum for details.
      */
     void setHostType(HostType type);
 
@@ -90,6 +96,9 @@ public:
     /**
      * @brief Call this method to create an instance of the GmicQt tool widget.
      * The widget deletion is delegate to the caller.
+     * @param tool the current digiKam plugin instance.
+     * @param type See HostType enum for details.
+     * @param command the G'MIC filter command to pre-select in the G'MIC widget.
      */
     static GmicQtWidget* createWidget(DPlugin* const tool,
                                       HostType type,

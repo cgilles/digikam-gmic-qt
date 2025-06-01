@@ -35,10 +35,10 @@ extern QString       s_filterName;
 
 GmicQtWindow::GmicQtWindow(
                            DPlugin* const tool,
-                           QWidget* const parent,
-                           QString* const filterName
+                           QString* const filterName,
+                           QWidget* const parent
                           )
-    : GmicQtWidget(tool, parent, filterName)
+    : GmicQtWidget(tool, filterName, parent)
 {
 }
 

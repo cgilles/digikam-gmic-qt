@@ -33,6 +33,7 @@ namespace DigikamGmicQtPluginCommon
 
 /**
  * @return the G'MIC plugin description and details.
+ * @param title is used as top level header title of the description.
  */
 QString              s_gmicQtPluginDetails(const QString& title);
 
@@ -48,6 +49,11 @@ QIcon                s_gmicQtPluginIcon();
 
 /**
  * @return the digiKam image versioning container populated with the G'MIC filter properties.
+ * @param gmicCommand the G'MIC filter command.
+ * @param filterPath the G'MIC filter path from the GmicQt filters hierarchie.
+ * @param inMode the G'MIC filter input mode.
+ * @param outMode the G'MIC filter output mode.
+ * @param filterName the G'MIC filter name.
  */
 FilterAction         s_gmicQtFilterAction(const QString& gmicCommand,
                                           const QString& filterPath,
@@ -57,6 +63,9 @@ FilterAction         s_gmicQtFilterAction(const QString& gmicCommand,
 
 /**
  * @brief Populate the dialog Help Button with about and documentation support.
+ * @param parent the parent widget instance.
+ * @param tool the digiKam plugin instance.
+ * @param help the Help push button instance.
  */
 void s_gmicQtPluginPopulateHelpButton(QWidget* const parent,
                                       DPlugin* const tool,
