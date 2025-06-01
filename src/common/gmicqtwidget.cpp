@@ -44,17 +44,33 @@ using namespace GmicQt;
 namespace DigikamGmicQtPluginCommon
 {
 
+/**
+ * Static strings used to backup the host application properties.
+ */
 QString         s_hostOrg     = QCoreApplication::organizationName();
 QString         s_hostDom     = QCoreApplication::organizationDomain();
 QString         s_hostName    = QCoreApplication::applicationName();
 
+/**
+ * Static strings used to store the plugin application properties.
+ */
 QString         s_plugName;
 QString         s_plugOrg;
 QString         s_plugDom;
 
+/**
+ * String to host the digiKam plugin module name used to store settings in RC file.
+ */
 QString         s_dkModule;
 
+/**
+ * The current GmicQt widget instance created.
+ */
 GmicQtWidget*   s_mainWidget  = nullptr;
+
+/**
+ * String used to pass the GmicQt widget filter name selected between the GmicQt widget and the GmiQt Window.
+ */
 QString         s_filterName;
 
 // --------------------------------------------------------------------------------------
@@ -67,9 +83,10 @@ public:
 
 public:
 
-    QLabel*         filterLbl   = nullptr;
-    QString*        filterName  = nullptr;
-    QPushButton*    helpBtn     = nullptr;
+    QString*        filterName  = nullptr;      // TODO: redondant with s_filterName?
+
+    QLabel*         filterLbl   = nullptr;      ///< The filter label instance from the GmicQt widget UI.
+    QPushButton*    helpBtn     = nullptr;      ///< Help button add to the GmicQt widget.
     QHBoxLayout*    hlay        = nullptr;      ///< Horizontal layout hosting buttons, labels, and progress bar on the bottom.
 };
 
