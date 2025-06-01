@@ -17,8 +17,6 @@
 // Qt includes
 
 #include <QString>
-#include <QCloseEvent>
-#include <QShowEvent>
 #include <QWidget>
 
 // digiKam includes

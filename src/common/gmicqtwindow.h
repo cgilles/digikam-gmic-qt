@@ -16,15 +16,8 @@
 
 // Qt includes
 
-#include <QString>
 #include <QCloseEvent>
 #include <QShowEvent>
-#include <QWidget>
-
-// digiKam includes
-
-#include "dplugin.h"
-#include "dinfointerface.h"
 
 // Local includes
 

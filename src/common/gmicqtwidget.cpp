@@ -319,7 +319,7 @@ GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
 
     std::list<GmicQt::InputMode> disabledInputModes;
     disabledInputModes.push_back(GmicQt::InputMode::NoInput);
-    // disabledInputModes.push_back(InputMode::Active);
+//  disabledInputModes.push_back(GmicQt::InputMode::Active);
     disabledInputModes.push_back(GmicQt::InputMode::All);
     disabledInputModes.push_back(GmicQt::InputMode::ActiveAndBelow);
     disabledInputModes.push_back(GmicQt::InputMode::ActiveAndAbove);
@@ -327,7 +327,7 @@ GmicQtWidget* GmicQtWidget::createWidget(DPlugin* const tool,
     disabledInputModes.push_back(GmicQt::InputMode::AllInvisible);
 
     std::list<GmicQt::OutputMode> disabledOutputModes;
-    // disabledOutputModes.push_back(GmicQt::OutputMode::InPlace);
+//  disabledOutputModes.push_back(GmicQt::OutputMode::InPlace);
     disabledOutputModes.push_back(GmicQt::OutputMode::NewImage);
     disabledOutputModes.push_back(GmicQt::OutputMode::NewLayers);
     disabledOutputModes.push_back(GmicQt::OutputMode::NewActiveLayers);
