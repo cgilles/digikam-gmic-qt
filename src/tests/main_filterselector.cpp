@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
         QString fname = GmicQtWindow::execWindow(
                                                  nullptr,
-                                                 GmicQtWindow::BQM,
+                                                 GmicQtWidget::BQM,
                                                  QLatin1String("samj_Barbouillage_Paint_Daub 2,2,100,0.2,1,4,1,0,8")
                                                 );
 

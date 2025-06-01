@@ -108,11 +108,11 @@ void GmicQtToolPlugin::setup(QObject* const parent)
 
 void GmicQtToolPlugin::slotGmicQt()
 {
-    GmicQtWindow::HostType type = GmicQtWindow::ImageEditor;
+    GmicQtWidget::HostType type = GmicQtWidget::ImageEditor;
 
     if (qApp->applicationName() == QLatin1String("showfoto"))
     {
-        type = GmicQtWindow::Showfoto;
+        type = GmicQtWidget::Showfoto;
     }
 
     GmicQtWindow::execWindow(this, type);

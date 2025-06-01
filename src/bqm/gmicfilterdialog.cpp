@@ -214,7 +214,7 @@ void GmicFilterDialog::slotGmicQt(const QString& command)
 
     QString fname = GmicQtWindow::execWindow(
                                              d->plugin,                       // BQM plugin instance.
-                                             GmicQtWindow::BQM,               // Host type.
+                                             GmicQtWidget::BQM,               // Host type.
                                              command                          // The G'MIC command in Edit mode, else empty in ADD mode.
                                             );
 
