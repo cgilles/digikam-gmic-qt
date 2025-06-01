@@ -65,6 +65,11 @@ GmicQtIntroPage::GmicQtIntroPage(QWizard* const dialog, const QString& title)
                   "See the <a href='https://docs.digikam.org/en/batch_queue/base_tools.html#g-mic-processor'>online documentation</a> for much details.</p>"));
 
     str.append(tr("<p><b>Credits:</b></p>"));
+    str.append(QString::fromUtf8("<a href='https://www.greyc.fr'>GREYC</a> | "
+                                 "<a href='https://www.cnrs.fr'>CNRS</a> | "
+                                 "<a href='https://www.unicaen.fr'>Normandy University</a> | "
+                                 "<a href='https://www.ensicaen.fr'>Ensicaen</a>"));
+
 
     str.append(QLatin1String("</qt>"));
 
