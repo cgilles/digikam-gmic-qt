@@ -66,7 +66,7 @@ public:
     ~GmicQtWidget()                     override;
 
     /**
-     * @brief Call MainWindow::saveSettings() method.
+     * @brief Call the protected MainWindow::saveSettings() method.
      */
     void saveParameters();
 
@@ -82,6 +82,7 @@ public:
 
     /**
      * @brief Set the host type to use with the GmicQt widget instance for the read/write settings.
+     * The rc settings file-name is customized depending of the host application running GmicQt.
      * @param type See HostType enum for details.
      */
     void setHostType(HostType type);

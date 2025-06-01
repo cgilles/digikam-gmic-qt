@@ -37,6 +37,7 @@
 #include "Settings.h"
 #include "GmicQt.h"
 #include "Widgets/InOutPanel.h"
+#include "Widgets/ProgressInfoWidget.h"
 
 using namespace GmicQt;
 
@@ -68,7 +69,6 @@ public:
 
     QLabel*         filterLbl   = nullptr;
     QString*        filterName  = nullptr;
-
     QPushButton*    helpBtn     = nullptr;
 };
 
@@ -97,17 +97,42 @@ GmicQtWidget::GmicQtWidget(
         s_gmicQtPluginPopulateHelpButton(this, tool, d->helpBtn);
         hlay->insertWidget(0, d->helpBtn);
 
-        QLabel* const lbl          = findChild<QLabel*>(QLatin1String("messageLabel"));
+        QLabel* const lbl = findChild<QLabel*>(QLatin1String("messageLabel"));
 
         if (lbl)
         {
-            hlay->setStretchFactor(lbl, 10);
+            hlay->setStretchFactor(lbl, 5);
         }
         else
         {
             qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"messageLabel\" "
                                               "label from plugin dialog!";
         }
+
+        QLabel* const lbl2 = findChild<QLabel*>(QLatin1String("rightMessageLabel"));
+
+        if (lbl2)
+        {
+            hlay->setStretchFactor(lbl2, 5);
+        }
+        else
+        {
+            qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"rightMessageLabel\" "
+                                              "label from plugin dialog!";
+        }
+
+        ProgressInfoWidget* const pbar = findChild<ProgressInfoWidget*>(QLatin1String("progressInfoWidget"));
+
+        if (pbar)
+        {
+            hlay->setStretchFactor(pbar, 10);
+        }
+        else
+        {
+            qCWarning(DIGIKAM_DPLUGIN_LOG) << "G'MIC-Qt: Cannot found \"progressInfoWidget\" "
+                                              "label from plugin dialog!";
+        }
+
     }
     else
     {
@@ -123,8 +148,6 @@ GmicQtWidget::~GmicQtWidget()
 
 void GmicQtWidget::setHostType(HostType type)
 {
-    // Customize the rc settings file-name depending of the host application running Gmic-Qt.
-
     switch (type)
     {
         case BQM:
