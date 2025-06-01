@@ -192,6 +192,7 @@ void GmicQtWidget::hideButtons()
     if (d->helpBtn)
     {
         d->helpBtn->setVisible(false);
+        d->hlay->removeWidget(d->helpBtn);
     }
 
     QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
@@ -199,7 +200,7 @@ void GmicQtWidget::hideButtons()
     if (pbOk)
     {
         pbOk->setVisible(false);
-        d->hlay->setStretchFactor(pbOk, 0);
+        d->hlay->removeWidget(pbOk);
     }
     else
     {
@@ -212,7 +213,7 @@ void GmicQtWidget::hideButtons()
     if (pbFullScreen)
     {
         pbFullScreen->setVisible(false);
-        d->hlay->setStretchFactor(pbFullScreen, 0);
+        d->hlay->removeWidget(pbFullScreen);
     }
     else
     {
@@ -225,7 +226,7 @@ void GmicQtWidget::hideButtons()
     if (pbClose)
     {
         pbClose->setVisible(false);
-        d->hlay->setStretchFactor(pbClose, 0);
+        d->hlay->removeWidget(pbClose);
     }
     else
     {
@@ -240,7 +241,7 @@ void GmicQtWidget::hideButtons()
     if (pbApply)
     {
         pbApply->setVisible(false);
-        d->hlay->setStretchFactor(pbApply, 0);
+        d->hlay->removeWidget(pbApply);
     }
     else
     {
@@ -255,7 +256,7 @@ void GmicQtWidget::hideButtons()
     if (pbCancel)
     {
         pbCancel->setVisible(false);
-        d->hlay->setStretchFactor(pbCancel, 0);
+        d->hlay->removeWidget(pbCancel);
     }
     else
     {
@@ -296,7 +297,7 @@ void GmicQtWidget::setFilterSelectionMode()
     if (pbApply)
     {
         pbApply->setVisible(false);
-        d->hlay->setStretchFactor(pbApply, 0);
+        d->hlay->removeWidget(pbApply);
     }
     else
     {
@@ -311,7 +312,7 @@ void GmicQtWidget::setFilterSelectionMode()
     if (pbCancel)
     {
         pbCancel->setVisible(false);
-        d->hlay->setStretchFactor(pbCancel, 0);
+        d->hlay->removeWidget(pbCancel);
     }
     else
     {
