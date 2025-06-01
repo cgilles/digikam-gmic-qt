@@ -70,6 +70,7 @@ public:
     QLabel*         filterLbl   = nullptr;
     QString*        filterName  = nullptr;
     QPushButton*    helpBtn     = nullptr;
+    QHBoxLayout*    hlay        = nullptr;      ///< Horizontal layout hosting buttons, labels, and progress bar on the bottom.
 };
 
 GmicQtWidget::GmicQtWidget(
@@ -89,19 +90,19 @@ GmicQtWidget::GmicQtWidget(
                                           "label from plugin dialog!";
     }
 
-    QHBoxLayout* const hlay = findChild<QHBoxLayout*>(QLatin1String("horizontalLayout"));
+    d->hlay = findChild<QHBoxLayout*>(QLatin1String("horizontalLayout"));
 
-    if (hlay)
+    if (d->hlay)
     {
         d->helpBtn = new QPushButton(this);
         s_gmicQtPluginPopulateHelpButton(this, tool, d->helpBtn);
-        hlay->insertWidget(0, d->helpBtn);
+        d->hlay->insertWidget(0, d->helpBtn);
 
         QLabel* const lbl = findChild<QLabel*>(QLatin1String("messageLabel"));
 
         if (lbl)
         {
-            hlay->setStretchFactor(lbl, 5);
+            d->hlay->setStretchFactor(lbl, 5);
         }
         else
         {
@@ -113,7 +114,7 @@ GmicQtWidget::GmicQtWidget(
 
         if (lbl2)
         {
-            hlay->setStretchFactor(lbl2, 5);
+            d->hlay->setStretchFactor(lbl2, 5);
         }
         else
         {
@@ -125,7 +126,7 @@ GmicQtWidget::GmicQtWidget(
 
         if (pbar)
         {
-            hlay->setStretchFactor(pbar, 10);
+            d->hlay->setStretchFactor(pbar, 10);
         }
         else
         {
@@ -183,13 +184,22 @@ void GmicQtWidget::setHostType(HostType type)
 
 void GmicQtWidget::hideButtons()
 {
-    d->helpBtn->setVisible(false);
+    if (!d->hlay)
+    {
+        return;
+    }
+
+    if (d->helpBtn)
+    {
+        d->helpBtn->setVisible(false);
+    }
 
     QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
 
     if (pbOk)
     {
         pbOk->setVisible(false);
+        d->hlay->setStretchFactor(pbOk, 0);
     }
     else
     {
@@ -202,6 +212,7 @@ void GmicQtWidget::hideButtons()
     if (pbFullScreen)
     {
         pbFullScreen->setVisible(false);
+        d->hlay->setStretchFactor(pbFullScreen, 0);
     }
     else
     {
@@ -214,6 +225,7 @@ void GmicQtWidget::hideButtons()
     if (pbClose)
     {
         pbClose->setVisible(false);
+        d->hlay->setStretchFactor(pbClose, 0);
     }
     else
     {
@@ -228,6 +240,7 @@ void GmicQtWidget::hideButtons()
     if (pbApply)
     {
         pbApply->setVisible(false);
+        d->hlay->setStretchFactor(pbApply, 0);
     }
     else
     {
@@ -242,6 +255,7 @@ void GmicQtWidget::hideButtons()
     if (pbCancel)
     {
         pbCancel->setVisible(false);
+        d->hlay->setStretchFactor(pbCancel, 0);
     }
     else
     {
@@ -252,6 +266,11 @@ void GmicQtWidget::hideButtons()
 
 void GmicQtWidget::setFilterSelectionMode()
 {
+    if (!d->hlay)
+    {
+        return;
+    }
+
     QPushButton* const pbOk     = findChild<QPushButton*>(QLatin1String("pbOk"));
 
     if (pbOk)
@@ -277,6 +296,7 @@ void GmicQtWidget::setFilterSelectionMode()
     if (pbApply)
     {
         pbApply->setVisible(false);
+        d->hlay->setStretchFactor(pbApply, 0);
     }
     else
     {
@@ -291,6 +311,7 @@ void GmicQtWidget::setFilterSelectionMode()
     if (pbCancel)
     {
         pbCancel->setVisible(false);
+        d->hlay->setStretchFactor(pbCancel, 0);
     }
     else
     {
