@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2008-2025 by Gilles Caulier, <caulier dot gilles at gmail dot com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Script to configure cmake build.
+
+export MAKEFILES_TYPE='Unix Makefiles'
+export Qt6_DIR=/opt/qt6
+
+ln -s ../gmic ./gmic
+
+if [ ! -d "build.none" ]; then
+    mkdir build.none
+fi
+
+cd build.none
+
+/opt/qt6/bin/cmake -G "$MAKEFILES_TYPE" . \
+      -DCMAKE_CXX_COMPILER=g++ \
+      -DCMAKE_C_COMPILER=gcc \
+      -DCMAKE_BUILD_TYPE=Debug \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DENABLE_ASAN=OFF \
+      -DENABLE_SYSTEM_GMIC=OFF \
+      -DGMIC_QT_HOST=none \
+      -DBUILD_WITH_QT6=ON \
+      -Wno-dev \
+      ..
+

@@ -21,6 +21,9 @@
 # Possible values are "on" or "off"
 !defined(LTO,var) { LTO=off }
 
+# Possible values are "on" or "off"
+!defined(SDL3,var) { SDL3=off }
+
 #
 #
 #
@@ -177,9 +180,15 @@ win32 {
 
 unix:!macx {
   DEFINES += _IS_UNIX_
-  DEFINES += cimg_display=1
-  PKGCONFIG += x11
-  message( Unix/X11 platform )
+  equals( SDL3, "on") { # SDL3
+    DEFINES += cimg_display=3
+    PKGCONFIG += sdl3
+    message( Unix/SDL3 platform )
+  } else { # (X11)
+    DEFINES += cimg_display=1
+    PKGCONFIG += x11
+    message( Unix/X11 platform )
+  }
 }
 
 macx {

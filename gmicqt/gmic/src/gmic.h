@@ -52,7 +52,7 @@
 */
 
 #ifndef gmic_version
-#define gmic_version 350
+#define gmic_version 360
 
 #ifndef gmic_pixel_type
 #define gmic_pixel_type float
@@ -73,7 +73,7 @@
 
 // Define some special character codes used for replacement in double quoted strings.
 const char gmic_dollar = 23, gmic_lbrace = 24, gmic_rbrace = 25, gmic_comma = 26, gmic_dquote = 28,
-  gmic_store = 29; // <- this one is only used in variable names.
+  gmic_store = 29; // <- this one is only used in variable names
 
 //---------------------------------------------------------
 // Public API for the 'gmic_image' and 'gmic_list' classes.
@@ -87,12 +87,12 @@ namespace gmic_library {
   // Class 'gmic_image<T>'.
   //-----------------------
   template<typename T> struct gmic_image {
-    unsigned int _width;       // Number of image columns (dimension along the X-axis)
-    unsigned int _height;      // Number of image lines (dimension along the Y-axis)
-    unsigned int _depth;       // Number of image slices (dimension along the Z-axis)
-    unsigned int _spectrum;    // Number of image channels (dimension along the C-axis)
-    bool _is_shared;           // Tells if the data buffer has been allocated by another object
-    T *_data;                  // Pointer to the first pixel value
+    unsigned int _width; // Number of image columns (dimension along the X-axis)
+    unsigned int _height; // Number of image lines (dimension along the Y-axis)
+    unsigned int _depth; // Number of image slices (dimension along the Z-axis)
+    unsigned int _spectrum; // Number of image channels (dimension along the C-axis)
+    bool _is_shared; // Tells if the data buffer has been allocated by another object
+    T *_data; // Pointer to the first pixel value
 
     // Destructor.
     ~gmic_image() {
@@ -135,9 +135,9 @@ namespace gmic_library {
   // Class 'gmic_list<T>'.
   //----------------------
   template<typename T> struct gmic_list {
-    unsigned int _width;           // Number of images in the list
+    unsigned int _width; // Number of images in the list
     unsigned int _allocated_width; // Allocated items in the list (must be 2^N and >size)
-    gmic_image<T> *_data;          // Pointer to the first image of the list
+    gmic_image<T> *_data; // Pointer to the first image of the list
 
     // Destructor.
     ~gmic_list() {
@@ -408,7 +408,7 @@ struct gmic {
                                     const bool _is_debug=false) const;
   gmic_image<char> callstack2string(const gmic_image<unsigned int>* callstack_selection,
                                     const bool _is_debug=false) const;
-  void pop_callstack(const unsigned int callstack_size);
+  void pop_callstack(const unsigned int min_callstack_size);
 
   gmic_image<unsigned int> selection2cimg(const char *const string, const unsigned int indice_max,
                                           const gmic_list<char>& names, const char *const command,
@@ -444,16 +444,6 @@ struct gmic {
   bool check_cond(const char *const expr, gmic_list<T>& images, const char *const command);
 
   template<typename T>
-  gmic& display_plots(gmic_list<T>& images, gmic_list<char>& image_names,
-                      const unsigned int *const variable_sizes,
-                      const gmic_image<unsigned int>& selection, const unsigned int plot_type,
-                      const unsigned int vertex_type, const double xmin, const double xmax,
-                      const double ymin, const double ymax, const bool exit_on_anykey);
-  template<typename T>
-  gmic& display_objects3d(const gmic_list<T>& images, const gmic_list<char>& image_names,
-                          const gmic_image<unsigned int>& selection, const gmic_image<unsigned char>& background3d,
-                          const bool exit_on_anykey);
-  template<typename T>
   gmic_image<T>& check_image(const gmic_list<T>& list, gmic_image<T>& img);
   template<typename T>
   const gmic_image<T>& check_image(const gmic_list<T>& list, const gmic_image<T>& img);
@@ -474,7 +464,8 @@ struct gmic {
 
   // Class attributes.
   static const char *builtin_command_names[];
-  static gmic_image<int> builtin_command_inds;
+  static const int builtin_command_ids[];
+  static gmic_image<int> builtin_commands_bounds;
   static gmic_image<char> stdlib;
   static bool is_display_available;
 
@@ -515,7 +506,7 @@ struct gmic_exception {
   }
 
   // Return error message.
-  const char *what() const { // Give the error message returned by the G'MIC interpreter.
+  const char *what() const { // Give the error message returned by the G'MIC interpreter
     return _message._data?_message._data:"";
   }
 
