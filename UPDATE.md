@@ -2,17 +2,17 @@ Under a Linux Ubuntu 22.04 or later:
 
 Note: desired release tag must be the same for CImg, G'MIC, and G'MIC-Qt.
 
-1/  Checkout CImg at the desired release tag (https://github.com/GreycLab/CImg.git).
-2/  Checkout G'MIC at the desired release tag (https://github.com/GreycLab/gmic).
-3/  Checkout G'MIC-Qt at the same desired release tag (https://github.com/GreycLab/gmic-qt).
-4/  Fix dependencies to complete the configuration of G'MIC-Qt source code.
-    Use the bootstrap-none script to configure G'MIC-Qt directory with the "none" host.
-    Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before.
-5/  Remove the DK::gmicqt directory.
-6/  When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
-7/  Copy the G'MIC-Qt contents to the DK::gmicqt.
-8/  Remove the .gitignore files from DK::gmicqt/gmic and DK::gmicqt.
-9/  Add DK::gmicqt directory to git.
+1 Checkout CImg at the desired release tag (https://github.com/GreycLab/CImg.git).
+2 Checkout G'MIC at the desired release tag (https://github.com/GreycLab/gmic).
+3 Checkout G'MIC-Qt at the same desired release tag (https://github.com/GreycLab/gmic-qt).
+4 Fix dependencies to complete the configuration of G'MIC-Qt source code.
+  Use the bootstrap-none script to configure G'MIC-Qt directory with the "none" host.
+  Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before.
+5 Remove the DK::gmicqt directory.
+6 When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
+7 Copy the G'MIC-Qt contents to the DK::gmicqt.
+8 Remove the .gitignore files from DK::gmicqt/gmic and DK::gmicqt.
+9 Add DK::gmicqt directory to git.
 
 10/ Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
 
