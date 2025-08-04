@@ -99,8 +99,8 @@ private:
 //---------------------------------------------------------------------------------
 
 /**
- *  Proxy model that filters out the Gmic Commands so only the folders
- *  are left behind.  Used in the add command dialog combobox.
+ * @brief Proxy model that filters out the Gmic Commands so only the folders
+ * are left behind. Used in the add command dialog combobox.
  */
 class AddGmicFilterProxyModel : public QSortFilterProxyModel
 {
@@ -145,7 +145,7 @@ private:
 //---------------------------------------------------------------------------------
 
 /**
- * Model-View delegate re-implemented to draw the separator node on the tree-view.
+ * @brief Model-View delegate re-implemented to draw the separator node on the tree-view.
  */
 class GmicFilterDelegate : public QStyledItemDelegate
 {
@@ -163,7 +163,7 @@ public:
 //---------------------------------------------------------------------------------
 
 /**
- *  Gmic Filter manager, owner of the commands, loads, saves and basic tasks
+ * @brief Gmic Filter manager, owner of the commands, loads, saves and basic tasks
  */
 class GmicFilterManager : public QObject
 {

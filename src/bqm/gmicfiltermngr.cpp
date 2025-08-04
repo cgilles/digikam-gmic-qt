@@ -31,7 +31,7 @@ GmicFilterManager::~GmicFilterManager()
     delete d;
 }
 
-void GmicFilterManager::changeExpanded()
+void GmicFilterManager::changeExpanded()   // cppcheck-suppress functionStatic
 {
 }
 

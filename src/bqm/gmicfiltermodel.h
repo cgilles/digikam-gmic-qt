@@ -29,7 +29,7 @@ class GmicFilterManager;
 class GmicFilterNode;
 
 /**
- * GmicFilterModel is a QAbstractItemModel wrapper around the GmicfilterManager
+ * @brief GmicFilterModel is a QAbstractItemModel wrapper around the GmicfilterManager
  */
 class GmicFilterModel : public QAbstractItemModel
 {
