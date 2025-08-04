@@ -2,54 +2,62 @@ Under a Linux Ubuntu 22.04 or later:
 
 Note: desired release tag must be the same for CImg, G'MIC, and G'MIC-Qt.
 
-1 Checkout CImg at the desired release tag (https://github.com/GreycLab/CImg.git).
-2 Checkout G'MIC at the desired release tag (https://github.com/GreycLab/gmic).
-3 Checkout G'MIC-Qt at the same desired release tag (https://github.com/GreycLab/gmic-qt).
-4 Fix dependencies to complete the configuration of G'MIC-Qt source code.
+* Checkout CImg at the desired release tag (https://github.com/GreycLab/CImg.git).
+
+* Checkout G'MIC at the desired release tag (https://github.com/GreycLab/gmic).
+
+* Checkout G'MIC-Qt at the same desired release tag (https://github.com/GreycLab/gmic-qt).
+
+* Fix dependencies to complete the configuration of G'MIC-Qt source code.
   Use the bootstrap-none script to configure G'MIC-Qt directory with the "none" host.
   Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before.
-5 Remove the DK::gmicqt directory.
-6 When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
-7 Copy the G'MIC-Qt contents to the DK::gmicqt.
-8 Remove the .gitignore files from DK::gmicqt/gmic and DK::gmicqt.
-9 Add DK::gmicqt directory to git.
 
-10/ Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
+* Remove the DK::gmicqt directory.
+
+* When configuration is done copy the G'MIC directory contents to the DK::gmicqt/gmic.
+
+* Copy the G'MIC-Qt contents to the DK::gmicqt.
+
+* Remove the .gitignore files from DK::gmicqt/gmic and DK::gmicqt.
+
+* Add DK::gmicqt directory to git.
+
+* Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
 
     patch -p1 < ./src/patches/01_digikam_root_cmakelists.patch
 
-11/ Patch gmicqt/ codes to disable theming (redondant with digiKam one and crash host):
+* Patch gmicqt/ codes to disable theming (redondant with digiKam one and crash host):
 
     patch -p1 < ./src/patches/02_digikam_disable_theming.patch
 
-12/ Patch gmicqt/ codes to disable HDPI settings (redondant with digiKam one):
+* Patch gmicqt/ codes to disable HDPI settings (redondant with digiKam one):
 
     patch -p1 < ./src/patches/03_digikam_disable_hdpi.patch
 
-13/ Patch gmicqt/ codes to disable logo settings and optimize space (logo moves in settings dialog):
+* Patch gmicqt/ codes to disable logo settings and optimize space (logo moves in settings dialog):
 
     patch -p1 < ./src/patches/04_digikam_disable_logo.patch
 
-14/ Patch gmicqt/ codes to improve plugin integration:
+* Patch gmicqt/ codes to improve plugin integration:
 
     patch -p1 < ./src/patches/05_digikam_plugin_integration.patch
 
-15/ Patch gmicqt/ codes to fix crash when Cancel button is pressed while computing:
+* Patch gmicqt/ codes to fix crash when Cancel button is pressed while computing:
 
     patch -p1 < ./src/patches/06_digikam_fix_cancel_crash.patch
 
-16/ Patch gmicqt/ codes to fix macOS targets:
+* Patch gmicqt/ codes to fix macOS targets:
 
     patch -p1 < ./src/patches/07_digikam_macos_target.patch
 
-17/ Patch gmicqt/ codes to fix crash when filters tree-view context menu is actived:
+* Patch gmicqt/ codes to fix crash when filters tree-view context menu is actived:
 
     patch -p1 < ./src/patches/08_digikam_fix_crash_495810.patch
 
-18/ Patch gmicqt/ codes to change lead dialog from QMainWindow to QWidget to be included in QWizad as page:
+* Patch gmicqt/ codes to change lead dialog from QMainWindow to QWidget to be included in QWizad as page:
 
     patch -p1 < ./src/patches/09_digikam_qmainwindow_to_qwidget.patch
 
-19/ Check if new files need to be appended with "git status". Add files to git repository if necessary.
-20/ Check compilation with "digikam" host.
+* Check if new files need to be appended with "git status". Add files to git repository if necessary.
+* Check compilation with "digikam" host.
 
