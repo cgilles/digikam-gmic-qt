@@ -50,7 +50,7 @@ QIcon                s_gmicQtPluginIcon();
 /**
  * @return the digiKam image versioning container populated with the G'MIC filter properties.
  * @param gmicCommand the G'MIC filter command.
- * @param filterPath the G'MIC filter path from the GmicQt filters hierarchie.
+ * @param filterPath the G'MIC filter path from the GmicQt filters hierarchy.
  * @param inMode the G'MIC filter input mode.
  * @param outMode the G'MIC filter output mode.
  * @param filterName the G'MIC filter name.

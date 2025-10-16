@@ -1,0 +1,29 @@
+#!/bin/bash
+
+################################################################################
+#
+# CodeSpell static analyzer configuration used by project/reports/codespell.sh
+#
+# 2013-2025 - Gilles Caulier <gilles.caulier@cea.fr>
+#
+# Licensed Material - Program Property of CEA
+# (c) CEA Cadarache - DER/CAD/SPESI/LP2E
+#
+################################################################################
+
+# --- Directories and files to exclude from CodeSpell static analysis.
+
+CODESPELL_IGNORE_PATTERN="*/gmicqt/*, "
+CODESPELL_IGNORE_PATTERN+="../../src/patches/*, "
+CODESPELL_IGNORE_PATTERN+="../../src/reports/report.*,"
+CODESPELL_IGNORE_PATTERN+="../../build*,"
+CODESPELL_IGNORE_PATTERN+="../../LICENSES/*,"
+CODESPELL_IGNORE_PATTERN+="*.html,"
+CODESPELL_IGNORE_PATTERN+="*.svg,"
+CODESPELL_IGNORE_PATTERN+="*.webp,"
+CODESPELL_IGNORE_PATTERN+="*-trace.txt,"
+
+# --- Defines to use with static analysis.
+
+# NOTE: words must be lower-case
+CODESPELL_IGNORE_WORDS="afile,ahd,asign,caf,childs,claus,cyphertext,defaut,destroi,fle,fo,foto,hist,indx,indexin,inout,ist,iten,lod,mata,mye,nam,nd,ned,oly,optio,parm,previousy,requestor,sav,shft,siz,smal,spred,tage,tempdate,tesselate,thet,toolsbox,tru,visiblestage,visibles,uptodate,wheight,manuel,readding,bloaded,wont,alllocations,abitrate,goup,alledges,allright,readded,pixelx,targetin,anwer,tung,fillin,lamda,optin,filessystem"

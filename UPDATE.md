@@ -64,7 +64,7 @@ patch -p1 < ./src/patches/06_digikam_fix_cancel_crash.patch
 patch -p1 < ./src/patches/07_digikam_macos_target.patch
 ```
 
-* Patch gmicqt/ codes to fix crash when filters tree-view context menu is actived:
+* Patch gmicqt/ codes to fix crash when filters tree-view context menu is activated:
 
 ```
 patch -p1 < ./src/patches/08_digikam_fix_crash_495810.patch

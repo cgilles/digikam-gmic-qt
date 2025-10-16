@@ -192,7 +192,7 @@ void GmicQtProcessorThread::run()
                     {
                         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: G'MIC save data completed";
 
-                        // Restoring matadata
+                        // Restoring metadata
 
                         qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "Copying GPS info...";
 

@@ -97,12 +97,12 @@ Q_SIGNALS:
     /**
      * @brief Emit a progress value during G'MIC processing.
      * This depend of the selected G'MIC filter implementation.
-     * If no feedback is suported in the G'MIC filter, -1 is always sent and this feature is not suitable.
+     * If no feedback is supported in the G'MIC filter, -1 is always sent and this feature is not suitable.
      */
     void signalProgress(float progress);
 
     /**
-     * @brief Emit @param info as a detailled literal progress information.
+     * @brief Emit @param info as a detailed literal progress information.
      */
     void signalProgressInfo(const QString& info);
 

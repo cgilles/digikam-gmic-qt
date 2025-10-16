@@ -47,13 +47,13 @@ public:
         BQM,                ///< Save the GmicQt settings in right configuration file for the digiKam Batch Queue Manager plugin.
         Showfoto,           ///< Save the GmicQt settings in right configuration file for the Showfoto plugin.
         Generic,            ///< Save the GmicQt settings in right configuration file for the digiKam Generic plugin.
-        Unknow
+        Unknown
     };
 
 public:
 
     /**
-     * @brief Standard contructor.
+     * @brief Standard constructor.
      * @param tool the current digiKam plugin instance.
      * @param filterName will host the name of the G'MIC filter selected in the widget.
      * @param parent the current parent widget.
