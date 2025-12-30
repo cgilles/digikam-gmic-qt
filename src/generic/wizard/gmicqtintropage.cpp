@@ -6,7 +6,7 @@
  * Date        : 2025-04-21
  * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
- * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ * SPDX-FileCopyrightText: 2025-2026 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *

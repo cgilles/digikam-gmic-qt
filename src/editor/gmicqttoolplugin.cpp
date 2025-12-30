@@ -6,7 +6,7 @@
  * Date        : 2019-11-28
  * Description : digiKam image editor plugin for GmicQt.
  *
- * SPDX-FileCopyrightText: 2019-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ * SPDX-FileCopyrightText: 2019-2026 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
@@ -64,12 +64,12 @@ QIcon GmicQtToolPlugin::icon() const
 
 QString GmicQtToolPlugin::description() const
 {
-    return tr("A tool for G'MIC-Qt");
+    return tr("A tool to host G'MIC-Qt in Image Editor");
 }
 
 QString GmicQtToolPlugin::details() const
 {
-    return s_gmicQtPluginDetails(tr("An Image Editor tool for G'MIC-Qt."));
+    return s_gmicQtPluginDetails(tr("An Image Editor tool to host the powerful G'MIC-Qt filters collection."));
 }
 
 QList<DPluginAuthor> GmicQtToolPlugin::authors() const

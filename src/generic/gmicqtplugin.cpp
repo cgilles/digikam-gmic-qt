@@ -6,7 +6,7 @@
  * Date        : 2025-04-21
  * Description : digiKam generic GmicQt plugin supporting layers mode.
  *
- * SPDX-FileCopyrightText: 2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ * SPDX-FileCopyrightText: 2025-2026 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
@@ -57,12 +57,12 @@ QIcon GmicQtPlugin::icon() const
 
 QString GmicQtPlugin::description() const
 {
-    return tr("A tool for G'MIC-Qt supporting layers mode");
+    return tr("A tool to run G'MIC-Qt in layers mode");
 }
 
 QString GmicQtPlugin::details() const
 {
-    return s_gmicQtPluginDetails(tr("An Generic tool for G'MIC-Qt supporting layers mode "
+    return s_gmicQtPluginDetails(tr("A Generic tool for G'MIC-Qt supporting layers mode "
                                     "by selecting more than one item from icon-view or from the stack."));
 }
 

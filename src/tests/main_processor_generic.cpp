@@ -7,7 +7,7 @@
  * Description : digiKam GmicQt tests.
  *               Simulate: ./gmic_qt -a -l -c "fx_montage 0,\"V(H(0,1),H(2,V(3,4)))\",1,0.5,0,0,0,0,0,255,0,0,0,0,0" -o out.jpg in1.jpg in2.jpg in3.jpg
  *
- * SPDX-FileCopyrightText: 2019-2025 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ * SPDX-FileCopyrightText: 2019-2026 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  *
