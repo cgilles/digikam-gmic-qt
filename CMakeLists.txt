@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019-2025, Gilles Caulier, <caulier dot gilles at gmail dot com>
+# Copyright (c) 2019-2026, Gilles Caulier, <caulier dot gilles at gmail dot com>
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
