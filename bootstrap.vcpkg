@@ -13,7 +13,7 @@ set -eE
 trap 'PREVIOUS_COMMAND=$THIS_COMMAND; THIS_COMMAND=$BASH_COMMAND' DEBUG
 trap 'echo "FAILED COMMAND: $PREVIOUS_COMMAND"' ERR
 
-VCPKG_DIR="/c/vcpkg"
+VCPKG_DIR="/e/vcpkg"
 VCPKG_TRIPLET="x64-windows"
 
 INSTALL_DIR=$1
@@ -32,6 +32,17 @@ fi
 
 OPTIONS=$3
 
+CMAKE_BIN="`find "/c/Program Files/Microsoft Visual Studio/" -name "cmake.exe" -type f -executable`"
+echo "$CMAKE_BIN"
+
+if [ ! -f "$CMAKE_BIN" ] ; then
+    echo "CMake CLI tool is not installed"
+    echo "Install VSCommunity C++ CMake tools component."
+    exit 1
+else
+    echo "Check CMake CLI tools passed..."
+fi
+
 echo "Installing to $INSTALL_DIR for target $VCPKG_TRIPLET with build mode $BUILD_TYPE and configure options $OPTIONS"
 
 # Paths rules
@@ -45,7 +56,7 @@ fi
 
 cd build
 
-cmake .. \
+${CMAKE_BIN} .. \
       -DCMAKE_TOOLCHAIN_FILE=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake \
       -DVCPKG_TARGET_TRIPLET=$VCPKG_TRIPLET \
       -DCMAKE_COLOR_MAKEFILE=ON \
