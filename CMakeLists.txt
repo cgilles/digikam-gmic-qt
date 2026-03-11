@@ -12,7 +12,7 @@ project(gmicqt-digiKam)
 
 if(POLICY CMP0074)
 
-    cmake_policy(SET CMP0074 OLD)
+    cmake_policy(SET CMP0074 ON)
 
 endif()
 
