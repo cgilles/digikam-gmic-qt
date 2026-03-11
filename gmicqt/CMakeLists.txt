@@ -3,13 +3,9 @@ project(gmic-qt)
 message(STATUS "Using CMake version: ${CMAKE_VERSION}")
 
 cmake_minimum_required(VERSION 3.10.0 FATAL_ERROR)
+LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(FeatureSummary)
 include(FindPkgConfig)
-
-find_package(ZLIB REQUIRED)
-find_package(PNG REQUIRED)
-
-LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-Dcimg_use_cpp11=1)
@@ -206,6 +202,7 @@ endif()
 #
 # PNG
 #
+find_package(PNG REQUIRED)
 add_definitions(${PNG_DEFINITIONS})
 add_definitions(-Dcimg_use_png)
 include_directories(SYSTEM ${PNG_INCLUDE_DIR})
@@ -217,6 +214,7 @@ endif()
 #
 # ZLIB
 #
+find_package(ZLIB REQUIRED)
 add_definitions(-Dcimg_use_zlib)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} )
 
