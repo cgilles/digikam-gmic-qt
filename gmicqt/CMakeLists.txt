@@ -6,8 +6,8 @@ cmake_minimum_required(VERSION 3.10.0 FATAL_ERROR)
 include(FeatureSummary)
 include(FindPkgConfig)
 
-find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
+find_package(PNG REQUIRED)
 
 LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
