@@ -1,8 +1,23 @@
-diff --git a/gmicqt/CMakeLists.txt b/gmicqt/CMakeLists.txt
-index 47face8..a3a2fa1 100644
---- a/gmicqt/CMakeLists.txt
-+++ b/gmicqt/CMakeLists.txt
-@@ -45,8 +45,8 @@ else()
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 47face8..771379c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,6 +7,14 @@ LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
+ include(FeatureSummary)
+ include(FindPkgConfig)
+ 
++# For ZLIB-LIPNG-FFTW3 detection under Windows
++
++if(POLICY CMP0074)
++
++    cmake_policy(SET CMP0074 NEW)
++
++endif()
++
+ set(CMAKE_CXX_STANDARD 11)
+ add_definitions(-Dcimg_use_cpp11=1)
+ 
+@@ -45,8 +53,8 @@ else()
    option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
  
    set (GMIC_LIB_PATH "${GMIC_PATH}" CACHE STRING "Define the path to the GMIC shared library")
@@ -13,7 +28,21 @@ index 47face8..a3a2fa1 100644
    else()
    set (GMIC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../gmic/src" CACHE STRING "Define the path to the gmic headers")
    endif()
-@@ -781,6 +781,11 @@ elseif (${GMIC_QT_HOST} STREQUAL "8bf")
+@@ -351,7 +359,12 @@ if (APPLE)
+     add_definitions(-D_IS_MACOS_)
+     set(CMAKE_MACOSX_RPATH 1)
+     set(BUILD_WITH_INSTALL_RPATH 1)
+-    add_definitions(-mmacosx-version-min=10.9 -Wno-macro-redefined -Wno-deprecated-register)
++    add_definitions(-Wno-macro-redefined -Wno-deprecated-register)
++    if (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64")
++        add_definitions(-mmacosx-version-min=10.15)
++    else()
++        add_definitions(-mmacosx-version-min=11.3)
++    endif()
+ endif()
+ 
+ if (WIN32)
+@@ -781,6 +794,11 @@ elseif (${GMIC_QT_HOST} STREQUAL "8bf")
  	${LCMS2_LIBRARIES}
      )
  
