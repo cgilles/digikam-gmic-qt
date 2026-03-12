@@ -7,6 +7,14 @@ LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 include(FeatureSummary)
 include(FindPkgConfig)
 
+# For ZLIB-LIPNG-FFTW3 detection under Windows
+
+if(POLICY CMP0074)
+
+    cmake_policy(SET CMP0074 NEW)
+
+endif()
+
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-Dcimg_use_cpp11=1)
 
