@@ -69,7 +69,7 @@ private Q_SLOTS:
 
 private:
 
-    void expandNodes(GmicFilterNode* const node);
+    void expandNodes(const GmicFilterNode* const node);
     bool saveExpandedNodes(const QModelIndex& parent);
     void readSettings();
     void saveSettings();

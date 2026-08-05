@@ -243,7 +243,7 @@ bool GmicFilterWidget::saveExpandedNodes(const QModelIndex& parent)
     return changed;
 }
 
-void GmicFilterWidget::expandNodes(GmicFilterNode* const node)
+void GmicFilterWidget::expandNodes(const GmicFilterNode* const node)
 {
     for (int i = 0 ; i < node->children().count() ; ++i)
     {
