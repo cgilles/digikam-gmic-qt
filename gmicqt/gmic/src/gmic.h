@@ -6,8 +6,8 @@
  #  Description : GREYC's Magic for Image Computing - G'MIC API file
  #                ( https://gmic.eu )
  #
- #  Note        : Include this file in your C++ source code, if you
- #                want to use the G'MIC interpreter in your own program.
+ #  Note        : Include this file in your C++ source code to use the
+ #                G'MIC interpreter in your own program.
  #
  #  Copyright   : David Tschumperlé
  #                ( https://tschumperle.users.greyc.fr/ )
@@ -25,7 +25,7 @@
  #
  #  This software is governed either by the CeCILL or the CeCILL-C license
  #  under French law and abiding by the rules of distribution of free software.
- #  You can  use, modify and or redistribute the software under the terms of
+ #  You can use, modify and/or redistribute the software under the terms of
  #  the CeCILL or CeCILL-C licenses as circulated by CEA, CNRS and INRIA
  #  at the following URL: "http://cecill.info".
  #
@@ -52,7 +52,7 @@
 */
 
 #ifndef gmic_version
-#define gmic_version 360
+#define gmic_version 403
 
 #ifndef gmic_pixel_type
 #define gmic_pixel_type float
@@ -61,7 +61,7 @@
 // Define gmic_uint64 type.
 #ifndef gmic_uint64
 #if cimg_OS==2
-#define gmic_uint64 __int64
+#define gmic_uint64 unsigned __int64
 #else // #if cimg_OS==2
 #if UINTPTR_MAX==0xffffffff || defined(__arm__) || defined(_M_ARM) || ((ULONG_MAX)==(UINT_MAX))
 #define gmic_uint64 unsigned long long
@@ -71,7 +71,7 @@
 #endif // #if cimg_OS==2
 #endif // #ifndef gmic_uint64
 
-// Define some special character codes used for replacement in double quoted strings.
+// Define some special character codes used for replacement in double-quoted strings.
 const char gmic_dollar = 23, gmic_lbrace = 24, gmic_rbrace = 25, gmic_comma = 26, gmic_dquote = 28,
   gmic_store = 29; // <- this one is only used in variable names
 
@@ -91,7 +91,7 @@ namespace gmic_library {
     unsigned int _height; // Number of image lines (dimension along the Y-axis)
     unsigned int _depth; // Number of image slices (dimension along the Z-axis)
     unsigned int _spectrum; // Number of image channels (dimension along the C-axis)
-    bool _is_shared; // Tells if the data buffer has been allocated by another object
+    bool _is_shared; // Indicates whether the data buffer has been allocated by another object
     T *_data; // Pointer to the first pixel value
 
     // Destructor.
@@ -106,7 +106,7 @@ namespace gmic_library {
     gmic_image<T>& assign(const unsigned int size_x, const unsigned int size_y=1,
                           const unsigned int size_z=1, const unsigned int size_c=1);
 
-    // Create image by copying existing buffer of t values.
+    // Create an image by copying existing buffer of 't' values.
     template<typename t>
     gmic_image<T>& assign(const t *const values, const unsigned int size_x, const unsigned int size_y=1,
                           const unsigned int size_z=1, const unsigned int size_c=1);
@@ -123,12 +123,20 @@ namespace gmic_library {
       return _data;
     }
 
-    T& operator()(const unsigned int x, const unsigned int y=0, const unsigned z=0, const unsigned c=0) {
-      return _data[x + y*_width + z*_width*_height + c*_width*_height*_depth ];
+    T& operator()(const unsigned int x, const unsigned int y=0,
+                  const unsigned int z=0, const unsigned int c=0) {
+      return _data[(gmic_uint64)x +
+                   (gmic_uint64)y*_width +
+                   (gmic_uint64)z*_width*_height +
+                   (gmic_uint64)c*_width*_height*_depth];
     }
 
-    const T& operator()(const unsigned int x, const unsigned int y=0, const unsigned z=0, const unsigned c=0) const {
-      return _data[x + y*_width + z*_width*_height + c*_width*_height*_depth ];
+    const T& operator()(const unsigned int x, const unsigned int y=0,
+                        const unsigned int z=0, const unsigned int c=0) const {
+      return _data[(gmic_uint64)x +
+                   (gmic_uint64)y*_width +
+                   (gmic_uint64)z*_width*_height +
+                   (gmic_uint64)c*_width*_height*_depth];
     }
   };
 
@@ -136,7 +144,7 @@ namespace gmic_library {
   //----------------------
   template<typename T> struct gmic_list {
     unsigned int _width; // Number of images in the list
-    unsigned int _allocated_width; // Allocated items in the list (must be 2^N and >size)
+    unsigned int _allocated_width; // Allocated items in the list (must be a power of 2 and >=_width)
     gmic_image<T> *_data; // Pointer to the first image of the list
 
     // Destructor.
@@ -184,7 +192,7 @@ namespace gmic_library {
 
 #include <locale>
 #ifdef cimg_version
-#error "[gmic] *** Error *** File 'CImg.h' has been already included (should have been done first in file 'gmic.h')."
+#error "[gmic] *** Error *** File 'CImg.h' has already been included (should have been done first in file 'gmic.h')."
 #endif
 
 #ifndef cimg_plugin
@@ -205,10 +213,6 @@ namespace gmic_library {
 
 #ifndef cimg_appname
 #define cimg_appname "gmic"
-#endif
-
-#ifdef gmic_is_parallel
-#define cimg_use_pthread
 #endif
 
 #define cimg_library gmic_library
@@ -267,12 +271,17 @@ inline double gmic_mp_store(const double *const ptrs, const unsigned int siz,
 #elif cimg_OS==1
 #include <cerrno>
 #include <sys/resource.h>
-#if !defined(__NetBSD__) && !defined(cimg_use_pthread) && cimg_display!=1
+#if !defined(__NetBSD__) && !defined(cimg_use_pthread)
 #include <sys/syscall.h>
 #endif
 #include <signal.h>
 
 #endif // #if cimg_OS==2
+
+#if defined(gmic_is_parallel) && cimg_OS!=2
+#include <pthread.h>
+#define gmic_parallel_use_pthread
+#endif
 
 #endif // #ifndef gmic_core
 
@@ -350,12 +359,12 @@ struct gmic {
                *(gmic_list<gmic_pixel_type>*)&images,*(gmic_list<char>*)&image_names);
   }
 
-  // These functions return (or init) G'MIC-specific paths.
+  // These functions return (or initialize) G'MIC-specific paths.
   static const char* path_user(const char *const custom_path=0);
   static const char* path_rc(const char *const custom_path=0);
-  static bool init_rc(const char *const custom_path=0);
+  static void init_rc(const char *const custom_path=0);
 
-  // Functions below should be considered as *private*, and should not be used in user's code.
+  // Functions below should be considered *private* and must not be used in user code.
   template<typename T>
   static bool search_sorted(const char *const str, const T& list, const unsigned int length, unsigned int &out_ind);
   static const gmic_image<void*> current_run(const char *const func_name, void *const p_list);
@@ -384,6 +393,7 @@ struct gmic {
   static char *strreplace_bw(char *const str);
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
+  static void warn(const char *format, ...);
 
   template<typename T>
   gmic& _gmic(const char *const command_line, gmic_list<T>& images, gmic_list<char>& image_names,
@@ -414,10 +424,14 @@ struct gmic {
                                           const gmic_list<char>& names, const char *const command,
                                           const bool is_selection=true);
 
-  gmic_image<char>& selection2string(const gmic_image<unsigned int>& selection, const gmic_list<char>& image_names,
+  gmic_image<char>& selection2string(const gmic_image<unsigned int>& selection,
                                      const unsigned int display_selection, gmic_image<char>& res) const;
 
   gmic_list<char> command_line_to_CImgList(const char *const command_line);
+
+  template<typename T>
+  gmic_image<T> _gmic_image_arg(gmic_list<T>& images, const gmic_list<T>& parent_images,
+                                const gmic_image<unsigned int>& selection, const unsigned int uind);
 
   void _gmic_substitute_args(const char *const argument, const char *const argument0, const char *const command,
                              const char *const item);
@@ -444,10 +458,8 @@ struct gmic {
   bool check_cond(const char *const expr, gmic_list<T>& images, const char *const command);
 
   template<typename T>
-  gmic_image<T>& check_image(const gmic_list<T>& list, gmic_image<T>& img);
-  template<typename T>
-  const gmic_image<T>& check_image(const gmic_list<T>& list, const gmic_image<T>& img);
-
+  gmic_image<T>& check_shared_image(const gmic_list<T>& images, const gmic_list<T>& parent_images,
+                                    gmic_image<T>& img);
   template<typename T>
   gmic& remove_images(gmic_list<T>& images, gmic_list<char>& image_names, const gmic_image<unsigned int>& selection,
                       const unsigned int start, const unsigned int end);
@@ -506,7 +518,7 @@ struct gmic_exception {
   }
 
   // Return error message.
-  const char *what() const { // Give the error message returned by the G'MIC interpreter
+  const char *what() const { // Returns the error message from the G'MIC interpreter
     return _message._data?_message._data:"";
   }
 

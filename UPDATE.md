@@ -1,26 +1,28 @@
 Under a Linux Ubuntu 22.04 or later:
 
-Note: desired release tag must be the same for CImg, G'MIC, and G'MIC-Qt.
+Note: desired release tag must be the same for CImg and G'MIC. Look existing tags with command "git tag" in the respective repository.
+To get the code at the desired tag, uses "git tag _version_" command.
 
-* Checkout CImg at the desired release tag (https://github.com/GreycLab/CImg.git).
+* Checkout CImg in an external repository at the desired release tag (https://github.com/GreycLab/CImg.git).
 
-* Checkout G'MIC at the desired release tag (https://github.com/GreycLab/gmic).
+* Checkout G'MIC in an external repository at the desired release tag (https://github.com/GreycLab/gmic).
 
-* Checkout G'MIC-Qt at the same desired release tag (https://github.com/GreycLab/gmic-qt).
+* Checkout G'MIC-Qt code in an external repository at master branch (https://github.com/GreycLab/gmic-qt).
 
-* Fix dependencies to complete the configuration of G'MIC-Qt source code.
+* From the external G'MIC-Qt repository, fix dependencies to complete the configuration of G'MIC-Qt source code.
   Use the _bootstrap-none_ script to configure G'MIC-Qt directory with the "none" host.
-  Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before.
+  Note: The G'MIC-Qt/translations and G'MIC-Qt/translations/filters must be build before. The don't need to be compiled.
 
-* Remove the gmicqt/ directory.
+* From this repository, remove the gmicqt/ directory with "git rm -fr gmicqt".
 
-* When configuration is done copy the G'MIC directory contents to the gmicqt/gmic/.
+* When configuration is done, in this repository:
+    - Copy the external G'MIC-Qt contents to the gmicqt/.
+    - Copy the G'MIC external directory contents to the gmicqt/gmic/.
+    - Copy the CImg.h file from the external CImg directory to the gmicqt/gmic/src/.
 
-* Copy the G'MIC-Qt contents to the gmicqt/.
+* In this reprository, remove the .gitignore and .git files from gmicqt/gmic/ and gmicqt/.
 
-* Remove the .gitignore files from gmicqt/gmic/ and gmicqt/.
-
-* Add gmicqt/ directory to git.
+* Go to the root of this repository and add gmicqt/ directory to git with the command "git add gmicqt".
 
 * Patch gmicqt/CMakeLists.txt to add the "digikam" host rules and to use local gmic dir:
 
@@ -58,25 +60,19 @@ patch -p1 < ./src/patches/05_digikam_plugin_integration.patch
 patch -p1 < ./src/patches/06_digikam_fix_cancel_crash.patch
 ```
 
-* Patch gmicqt/ codes to fix macOS targets:
-
-```
-patch -p1 < ./src/patches/07_digikam_macos_target.patch
-```
-
 * Patch gmicqt/ codes to fix crash when filters tree-view context menu is activated:
 
 ```
-patch -p1 < ./src/patches/08_digikam_fix_crash_495810.patch
+patch -p1 < ./src/patches/07_digikam_fix_crash_495810.patch
 ```
 
 * Patch gmicqt/ codes to change lead dialog from QMainWindow to QWidget to be included in QWizad as page:
 
 ```
-patch -p1 < ./src/patches/09_digikam_qmainwindow_to_qwidget.patch
+patch -p1 < ./src/patches/08_digikam_qmainwindow_to_qwidget.patch
 ```
 
 * Check if new files need to be appended with "git status". Add files to git repository if necessary.
 
-* Check compilation with "digikam" host.
+* Check compilation with "digikam" host eg. using the bootstrap.linux.
 

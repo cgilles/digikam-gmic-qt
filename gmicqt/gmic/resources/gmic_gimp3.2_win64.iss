@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp3.0_win64.iss
+; File : gmic_gimp3.2_win64.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -17,7 +17,7 @@
 AppName={#AppName}
 AppVersion=XXX
 AppPublisherURL=https://gmic.eu/
-DefaultDirName={userappdata}\GIMP\3.0\plug-ins\gmic_gimp_qt\
+DefaultDirName={userappdata}\GIMP\3.2\plug-ins\gmic_gimp_qt\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_qt.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
@@ -29,7 +29,7 @@ DirExistsWarning=no
 WizardImageFile=gmic_instimg.bmp
 WizardSmallImageFile=gmic_instimg_small.bmp
 PrivilegesRequired=lowest
-OutputBaseFilename=gmic_XXX_gimp3.0_win64
+OutputBaseFilename=gmic_XXX_gimp3.2_win64
 
 [Files]
 Source: build64-gimp\platforms\qdirect2d.dll; DestDir: {app}\platforms
@@ -54,9 +54,9 @@ Source: build64-gimp\libcurl-4.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libdouble-conversion.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libfftw3_threads-3.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libfftw3-3.dll; DestDir: {app}; Flags: ignoreversion
-Source: build64-gimp\libicudt75.dll; DestDir: {app}; Flags: ignoreversion
-Source: build64-gimp\libicuin75.dll; DestDir: {app}; Flags: ignoreversion
-Source: build64-gimp\libicuuc75.dll; DestDir: {app}; Flags: ignoreversion
+Source: build64-gimp\libicudt78.dll; DestDir: {app}; Flags: ignoreversion
+Source: build64-gimp\libicuin78.dll; DestDir: {app}; Flags: ignoreversion
+Source: build64-gimp\libicuuc78.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libmd4c.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libomp.dll; DestDir: {app}; Flags: ignoreversion
 Source: build64-gimp\libpcre2-16-0.dll; DestDir: {app}; Flags: ignoreversion

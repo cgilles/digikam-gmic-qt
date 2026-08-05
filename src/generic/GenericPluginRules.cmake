@@ -11,8 +11,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src/generic/wizard
 )
 
 set(gmicqt_generic_SRCS
-    ${CMAKE_SOURCE_DIR}/src/generic/gmicqtplugin.cpp
-
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtwizard.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtintropage.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/wizard/gmicqtimagespage.cpp
@@ -23,6 +21,8 @@ set(gmicqt_generic_SRCS
     ${CMAKE_SOURCE_DIR}/src/generic/manager/gmicqtsettings.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/manager/gmicqtprocessorthread.cpp
     ${CMAKE_SOURCE_DIR}/src/generic/manager/host_digikam_generic.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/generic/gmicqtplugin.cpp
 )
 
 foreach(_file ${gmicqt_generic_SRCS})

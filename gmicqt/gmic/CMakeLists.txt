@@ -55,6 +55,8 @@
 
 cmake_minimum_required(VERSION 3.14.0)
 
+project(gmic CXX C)
+
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message("Build directory is equal to source directory. Binaries will be put in the src directory.")
   message("")
@@ -66,18 +68,27 @@ else()
 endif()
 
 set(CMAKE_CXX_STANDARD 11)
-set(CXX_STANDARD_REQUIRED ON)
-
-project(gmic CXX C)
-
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(PkgConfig)
 include(FeatureSummary)
 include(GNUInstallDirs)
 
 find_package(CImg REQUIRED)
 find_package(GMicStdlib REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(PkgConfig REQUIRED)
+
+find_package(PNG)
+find_package(JPEG)
+find_package(TIFF)
+pkg_check_modules(FFTW fftw3)
+pkg_check_modules(CURL libcurl)
+
+# X11 uniquement sur les systèmes non-Apple/non-Windows (miroir du Makefile)
+if(NOT APPLE AND NOT WIN32)
+  pkg_check_modules(X11 x11)
+endif()
 
 # options controlling the build process
 option(BUILD_LIB "Build the GMIC shared library" ON)
@@ -88,6 +99,7 @@ option(BUILD_BASH_COMPLETION "Build Bash completion" ON)
 option(CUSTOM_CFLAGS "Override default compiler optimization flags" OFF)
 option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
 option(ENABLE_LTO "Enable -flto (Link Time Optimizer) on gcc and clang" OFF)
+option(ENABLE_CHECK_SHARED_IMAGES "Enable extra checking of shared images (adds -Dgmic_check_shared_images, slows down code)" ON)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -96,13 +108,42 @@ endif()
 # compile flags
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
 
-list(APPEND GMIC_CXX_COMPILE_FLAGS -Dcimg_use_vt100 -Dgmic_is_parallel -Dcimg_use_abort)
+list(APPEND GMIC_CXX_COMPILE_FLAGS
+  -Dgmic_is_parallel
+  -Dcimg_use_abort
+  "-Dcimg_date=\"\""
+  "-Dcimg_time=\"\""
+  -Dcimg_use_zlib
+  -pedantic
+)
+
+# -Dcimg_use_vt100: enabled on Unix only (mirrors Makefile behaviour)
+if(NOT APPLE AND NOT WIN32)
+  list(APPEND GMIC_CXX_COMPILE_FLAGS -Dcimg_use_vt100)
+endif()
+
+# -Dgmic_check_shared_images: extra shared-image checking, enabled by default (mirrors Makefile CHECK_SHARED_IMAGES_CFLAGS)
+if(ENABLE_CHECK_SHARED_IMAGES)
+  list(APPEND GMIC_CXX_COMPILE_FLAGS -Dgmic_check_shared_images)
+endif()
+
 if(APPLE)
     list(APPEND GMIC_CXX_COMPILE_FLAGS -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions -fpermissive)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     list(APPEND GMIC_CXX_COMPILE_FLAGS -Wno-error=c++11-narrowing -fpermissive)
 else()
-    list(APPEND GMIC_CXX_COMPILE_FLAGS -Wno-error=narrowing -fno-ipa-sra -fpermissive)
+    list(APPEND GMIC_CXX_COMPILE_FLAGS -Wno-error=narrowing -fpermissive)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  list(APPEND GMIC_CXX_COMPILE_FLAGS
+    -Wall
+    -Wextra
+    -Wfatal-errors
+    -Werror=unknown-pragmas
+    -Werror=unused-label
+    -Wshadow
+  )
 endif()
 
 if(NOT "${PRERELEASE_TAG}" STREQUAL "")
@@ -130,7 +171,7 @@ endif()
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 if (${CMAKE_BUILD_TYPE_LOWER} STREQUAL "debug")
-    list(PREPEND GMIC_CXX_COMPILE_FLAGS -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3)
+    list(PREPEND GMIC_CXX_COMPILE_FLAGS -g -Wall -Wextra -pedantic -Dcimg_verbosity=3)
 endif()
 if (${CMAKE_BUILD_TYPE_LOWER} STREQUAL "relwithdebinfo")
     list(PREPEND GMIC_CXX_COMPILE_FLAGS -g)
@@ -140,15 +181,91 @@ if (NOT CUSTOM_CFLAGS)
     if (${CMAKE_BUILD_TYPE_LOWER} STREQUAL "debug")
         list(PREPEND GMIC_CXX_COMPILE_FLAGS -Og)
     else()
-        list(PREPEND GMIC_CXX_COMPILE_FLAGS -O3)
+        list(PREPEND GMIC_CXX_COMPILE_FLAGS -O3 -mtune=generic)
     endif()
 endif()
 
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+  message(STATUS "OpenMP found — enabling parallel processing (-Dcimg_use_openmp)")
+  list(APPEND GMIC_CXX_COMPILE_FLAGS -Dcimg_use_openmp)
+else()
+  message(STATUS "OpenMP not found — parallel processing disabled")
+endif()
+
+set(GMIC_OPTIONAL_COMPILE_FLAGS "")
+set(GMIC_OPTIONAL_LIBS "")
+
+if(PNG_FOUND)
+  message(STATUS "libpng found — enabling PNG support (-Dcimg_use_png)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_use_png)
+  list(APPEND GMIC_OPTIONAL_LIBS PNG::PNG)
+endif()
+
+if(JPEG_FOUND)
+  message(STATUS "libjpeg found — enabling JPEG support (-Dcimg_use_jpeg)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_use_jpeg)
+  list(APPEND GMIC_OPTIONAL_LIBS JPEG::JPEG)
+endif()
+
+if(TIFF_FOUND)
+  message(STATUS "libtiff found — enabling TIFF support (-Dcimg_use_tiff)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_use_tiff)
+  list(APPEND GMIC_OPTIONAL_LIBS TIFF::TIFF)
+endif()
+
+if(FFTW_FOUND)
+  message(STATUS "fftw3 found — enabling FFT support (-Dcimg_use_fftw3)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_use_fftw3)
+  find_library(FFTW3_THREADS_LIB fftw3_threads)
+  if(FFTW3_THREADS_LIB)
+    list(APPEND GMIC_OPTIONAL_LIBS ${FFTW_LIBRARIES} ${FFTW3_THREADS_LIB})
+  else()
+    list(APPEND GMIC_OPTIONAL_LIBS ${FFTW_LIBRARIES})
+  endif()
+  list(APPEND GMIC_OPTIONAL_INCLUDE_DIRS ${FFTW_INCLUDE_DIRS})
+endif()
+
+if(CURL_FOUND)
+  message(STATUS "libcurl found — enabling network download support (-Dcimg_use_curl)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_use_curl)
+  list(APPEND GMIC_OPTIONAL_LIBS ${CURL_LIBRARIES})
+  list(APPEND GMIC_OPTIONAL_INCLUDE_DIRS ${CURL_INCLUDE_DIRS})
+endif()
+
+if(X11_FOUND)
+  message(STATUS "X11 found — enabling display support (-Dcimg_display=1)")
+  list(APPEND GMIC_OPTIONAL_COMPILE_FLAGS -Dcimg_display=1)
+  list(APPEND GMIC_OPTIONAL_LIBS ${X11_LIBRARIES})
+  list(APPEND GMIC_OPTIONAL_INCLUDE_DIRS ${X11_INCLUDE_DIRS})
+endif()
+
 # source files
-set(CLI_Sources src/gmic.cpp)
+set(GMIC_LIB_SOURCES src/gmic.cpp)
+
+function(gmic_apply_common_deps target_name)
+  target_link_libraries(${target_name} PRIVATE ZLIB::ZLIB)
+
+  if(OpenMP_CXX_FOUND)
+    target_link_libraries(${target_name} PRIVATE OpenMP::OpenMP_CXX)
+  endif()
+
+  if(GMIC_OPTIONAL_LIBS)
+    target_link_libraries(${target_name} PRIVATE ${GMIC_OPTIONAL_LIBS})
+  endif()
+
+  if(GMIC_OPTIONAL_COMPILE_FLAGS)
+    target_compile_options(${target_name} PRIVATE ${GMIC_OPTIONAL_COMPILE_FLAGS})
+  endif()
+
+  if(GMIC_OPTIONAL_INCLUDE_DIRS)
+    target_include_directories(${target_name} PRIVATE ${GMIC_OPTIONAL_INCLUDE_DIRS})
+  endif()
+
+endfunction()
 
 if(BUILD_LIB)
-  add_library(libgmic SHARED ${CLI_Sources})
+  add_library(libgmic SHARED ${GMIC_LIB_SOURCES})
   target_compile_options(libgmic PRIVATE ${GMIC_CXX_COMPILE_FLAGS} -Dgmic_core)
   set_target_properties(libgmic PROPERTIES SOVERSION "1" OUTPUT_NAME "gmic")
   target_link_libraries(libgmic
@@ -162,23 +279,25 @@ if(BUILD_LIB)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   )
 
+  gmic_apply_common_deps(libgmic)
+
   install(TARGETS libgmic EXPORT GmicTargets
-    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   )
-  install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 endif()
 
 
 if(BUILD_LIB_STATIC)
-  add_library(libgmicstatic STATIC ${CLI_Sources})
+  add_library(libgmicstatic STATIC ${GMIC_LIB_SOURCES})
   target_compile_options(libgmicstatic PRIVATE ${GMIC_CXX_COMPILE_FLAGS} -Dgmic_core)
   set_target_properties(libgmicstatic PROPERTIES OUTPUT_NAME "gmic")
   target_link_libraries(libgmicstatic
-    CImg::CImg
-    GMicStdlib::Stdlib
+    PRIVATE
+      CImg::CImg
+      GMicStdlib::Stdlib
   )
   target_include_directories(libgmicstatic
     PUBLIC
@@ -186,12 +305,19 @@ if(BUILD_LIB_STATIC)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   )
 
+  gmic_apply_common_deps(libgmicstatic)
+
   install(TARGETS libgmicstatic EXPORT GmicTargets ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+endif()
+
+if(BUILD_LIB OR BUILD_LIB_STATIC)
   install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 endif()
 
-
 if(BUILD_CLI)
+  if(NOT ENABLE_DYNAMIC_LINKING AND NOT BUILD_LIB_STATIC)
+    message(FATAL_ERROR "BUILD_CLI requires either BUILD_LIB_STATIC=ON or ENABLE_DYNAMIC_LINKING=ON")
+  endif()
   add_executable(gmic src/gmic_cli.cpp)
   target_compile_options(gmic PRIVATE ${GMIC_CXX_COMPILE_FLAGS})
   if(ENABLE_DYNAMIC_LINKING)
@@ -202,10 +328,31 @@ if(BUILD_CLI)
         CImg::CImg
     )
   else()
-    target_link_libraries(gmic libgmicstatic)
+    target_link_libraries(gmic PRIVATE libgmicstatic)
   endif()
 
-  install(TARGETS gmic RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+  gmic_apply_common_deps(gmic)
+
+  if(NOT ${CMAKE_BUILD_TYPE_LOWER} STREQUAL "debug")
+    find_program(STRIP_TOOL strip)
+    if(STRIP_TOOL)
+      add_custom_command(TARGET gmic POST_BUILD
+        COMMAND ${STRIP_TOOL} $<TARGET_FILE:gmic>
+        COMMENT "Stripping gmic binary (like 'strip gmic' in the Makefile)"
+      )
+    endif()
+  endif()
+
+  install(TARGETS gmic
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  )
+endif()
+
+if(BUILD_MAN OR BUILD_BASH_COMPLETION)
+  if(NOT BUILD_CLI)
+    message(FATAL_ERROR "BUILD_MAN and BUILD_BASH_COMPLETION require BUILD_CLI=ON")
+  endif()
 endif()
 
 if(BUILD_MAN)
@@ -213,7 +360,13 @@ if(BUILD_MAN)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/man/gmic.1
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${GMIC_BINARIES_PATH} ${GMIC_BINARIES_PATH}/gmic ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic it ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic reference man > ${CMAKE_BINARY_DIR}/man/gmic.1
+    COMMAND ${CMAKE_COMMAND} -E env
+      "LD_LIBRARY_PATH=${GMIC_BINARIES_PATH}"
+      "DYLD_LIBRARY_PATH=${GMIC_BINARIES_PATH}"
+      ${GMIC_BINARIES_PATH}/gmic
+        ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic
+        it ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic
+        reference man > ${CMAKE_BINARY_DIR}/man/gmic.1
   )
   add_custom_target(man ALL DEPENDS ${CMAKE_BINARY_DIR}/man/gmic.1)
   install(FILES ${CMAKE_BINARY_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
@@ -224,7 +377,14 @@ if(BUILD_BASH_COMPLETION)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${GMIC_BINARIES_PATH} ${GMIC_BINARIES_PATH}/gmic ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic it ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic parse_cli bashcompletion > ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
+    COMMAND ${CMAKE_COMMAND} -E env
+      "LD_LIBRARY_PATH=${GMIC_BINARIES_PATH}"
+      "DYLD_LIBRARY_PATH=${GMIC_BINARIES_PATH}"
+      ${GMIC_BINARIES_PATH}/gmic
+        ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic
+        it ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic
+        parse_cli bashcompletion
+        > ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
   )
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
   install(FILES ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
