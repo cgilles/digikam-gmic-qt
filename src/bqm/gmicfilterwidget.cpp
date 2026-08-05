@@ -490,8 +490,8 @@ QMap<QString, QVariant> GmicFilterWidget::currentGmicFilters() const
 
     if (index.isValid())
     {
-        index                = d->proxyModel->mapToSource(index);
-        GmicFilterNode* node = d->manager->commandsModel()->node(index);
+        index                      = d->proxyModel->mapToSource(index);
+        const GmicFilterNode* node = d->manager->commandsModel()->node(index);
 
         if (node && (node->type() == GmicFilterNode::Item))
         {
