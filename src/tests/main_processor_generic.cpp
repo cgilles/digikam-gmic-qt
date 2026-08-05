@@ -33,9 +33,16 @@
 namespace DigikamBqmGmicQtPlugin
 {
 
-QString s_imagePath;
+QString     s_imagePath;
 
 } // namespace DigikamBqmGmicQtPlugin
+
+namespace DigikamGenericGmicQtPlugin
+{
+
+QList<QUrl> s_urlList;
+
+} // namespace DigikamGenericGmicQtPlugin
 
 using namespace Digikam;
 using namespace DigikamGmicQtPluginCommon;
