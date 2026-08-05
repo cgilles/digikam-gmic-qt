@@ -124,7 +124,7 @@ void GmicQtProcessorThread::run()
 
     for (const QUrl& url : std::as_const(d->settings->inputImages))
     {
-        paths.append(url.toLocalFile());
+        paths.append(url.toLocalFile());    // cppcheck-suppress useStlAlgorithm
     }
 
     d->proc->setInputFiles(paths);

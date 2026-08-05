@@ -98,7 +98,7 @@ void GmicXmlWriter::writeItem(const GmicFilterNode* const parent)
 
                 for (const QVariant& v : std::as_const(vals))
                 {
-                    filters.append(v.toString());
+                    filters.append(v.toString());       // cppcheck-suppress useStlAlgorithm
                 }
 
                 writeAttribute(QLatin1String("names"),   names.join(QLatin1Char(';')));
