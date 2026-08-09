@@ -76,9 +76,9 @@ GmicFilterNode::Type GmicFilterNode::type() const
     return d->type;
 }
 
-void GmicFilterNode::setType(Type type)
+void GmicFilterNode::setType(Type tp)
 {
-    d->type = type;
+    d->type = tp;
 }
 
 QList<GmicFilterNode*> GmicFilterNode::children() const

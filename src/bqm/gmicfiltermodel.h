@@ -55,32 +55,32 @@ public:
     QVariant headerData(int section,
                         Qt::Orientation orientation,
                         int role = Qt::DisplayRole)                     const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-    int columnCount(const QModelIndex& parent = QModelIndex())          const override;
-    int rowCount(const QModelIndex& parent = QModelIndex())             const override;
+    QVariant data(const QModelIndex& ind, int role = Qt::DisplayRole)   const override;
+    int columnCount(const QModelIndex& prnt = QModelIndex())            const override;
+    int rowCount(const QModelIndex& prnt = QModelIndex())               const override;
     QModelIndex index(int, int, const QModelIndex& = QModelIndex())     const override;
-    QModelIndex parent(const QModelIndex& index= QModelIndex())         const override;
-    Qt::ItemFlags flags(const QModelIndex& index)                       const override;
+    QModelIndex parent(const QModelIndex& ind = QModelIndex())          const override;
+    Qt::ItemFlags flags(const QModelIndex& ind)                         const override;
     Qt::DropActions supportedDropActions ()                             const override;
     QMimeData* mimeData(const QModelIndexList& indexes)                 const override;
     QStringList mimeTypes()                                             const override;
-    bool hasChildren(const QModelIndex& parent = QModelIndex())         const override;
-    GmicFilterNode* node(const QModelIndex& index)                      const;
-    QModelIndex index(GmicFilterNode* node)                             const;
+    bool hasChildren(const QModelIndex& prnt = QModelIndex())           const override;
+    GmicFilterNode* node(const QModelIndex& ind)                        const;
+    QModelIndex index(GmicFilterNode* nd)                               const;
 
     bool dropMimeData(const QMimeData* data, Qt::DropAction action,
-                      int row, int column, const QModelIndex& parent)         override;
+                      int row, int column, const QModelIndex& prnt)           override;
 
     bool removeRows(int row, int count,
-                    const QModelIndex& parent = QModelIndex())                override;
+                    const QModelIndex& prnt = QModelIndex())                  override;
 
-    bool setData(const QModelIndex& index, const QVariant& value,
+    bool setData(const QModelIndex& ind, const QVariant& value,
                  int role = Qt::EditRole)                                     override;
 
 public Q_SLOTS:
 
     void slotEntryAdded(GmicFilterNode* item);
-    void slotEntryRemoved(GmicFilterNode* parent, int row, GmicFilterNode* item);
+    void slotEntryRemoved(GmicFilterNode* prnt, int row, GmicFilterNode* item);
     void slotEntryChanged(GmicFilterNode* item);
 
 private:
