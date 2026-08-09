@@ -76,16 +76,16 @@ GmicFilterManager* GmicFilterModel::manager() const
     return d->manager;
 }
 
-QModelIndex GmicFilterModel::index(GmicFilterNode* node) const
+QModelIndex GmicFilterModel::index(GmicFilterNode* nd) const
 {
-    const GmicFilterNode* const item = node->parent();
+    const GmicFilterNode* const item = nd->parent();
 
     if (!item)
     {
         return QModelIndex();
     }
 
-    return createIndex(item->children().indexOf(node), 0, node);
+    return createIndex(item->children().indexOf(nd), 0, nd);
 }
 
 void GmicFilterModel::slotEntryAdded(GmicFilterNode* item)
@@ -103,13 +103,13 @@ void GmicFilterModel::slotEntryAdded(GmicFilterNode* item)
     endInsertRows();
 }
 
-void GmicFilterModel::slotEntryRemoved(GmicFilterNode* parent, int row, GmicFilterNode* item)
+void GmicFilterModel::slotEntryRemoved(GmicFilterNode* prnt, int row, GmicFilterNode* item)
 {
     // item was already removed, re-add so beginRemoveRows works
 
-    parent->add(item, row);
-    beginRemoveRows(index(parent), row, row);
-    parent->remove(item);
+    prnt->add(item, row);
+    beginRemoveRows(index(prnt), row, row);
+    prnt->remove(item);
     endRemoveRows();
 }
 
@@ -120,14 +120,14 @@ void GmicFilterModel::slotEntryChanged(GmicFilterNode* item)
     Q_EMIT dataChanged(idx, idx);
 }
 
-bool GmicFilterModel::removeRows(int row, int count, const QModelIndex& parent)
+bool GmicFilterModel::removeRows(int row, int count, const QModelIndex& prnt)
 {
-    if ((row < 0) || (count <= 0) || ((row + count) > rowCount(parent)))
+    if ((row < 0) || (count <= 0) || ((row + count) > rowCount(prnt)))
     {
         return false;
     }
 
-    const GmicFilterNode* const fnode = node(parent);
+    const GmicFilterNode* const fnode = node(prnt);
 
     for (int i = (row + count - 1) ; i >= row ; --i)
     {
@@ -165,14 +165,14 @@ QVariant GmicFilterModel::headerData(int section, Qt::Orientation orientation, i
     return QAbstractItemModel::headerData(section, orientation, role);
 }
 
-QVariant GmicFilterModel::data(const QModelIndex& index, int role) const
+QVariant GmicFilterModel::data(const QModelIndex& ind, int role) const
 {
-    if (!index.isValid() || (index.model() != this))
+    if (!ind.isValid() || (ind.model() != this))
     {
         return QVariant();
     }
 
-    const GmicFilterNode* const commandNode = node(index);
+    const GmicFilterNode* const commandNode = node(ind);
 
     switch (role)
     {
@@ -213,7 +213,7 @@ QVariant GmicFilterModel::data(const QModelIndex& index, int role) const
                 return QVariant();
             }
 
-            switch (index.column())
+            switch (ind.column())
             {
                 case 0:
                 {
@@ -251,7 +251,7 @@ QVariant GmicFilterModel::data(const QModelIndex& index, int role) const
 
         case Qt::DecorationRole:
         {
-            if (index.column() == 0)
+            if (ind.column() == 0)
             {
                 if      (commandNode->type() == GmicFilterNode::Item)
                 {
@@ -276,35 +276,35 @@ QVariant GmicFilterModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-int GmicFilterModel::columnCount(const QModelIndex& parent) const
+int GmicFilterModel::columnCount(const QModelIndex& prnt) const
 {
-    return ((parent.column() > 0) ? 0 : 2);
+    return ((prnt.column() > 0) ? 0 : 2);
 }
 
-int GmicFilterModel::rowCount(const QModelIndex& parent) const
+int GmicFilterModel::rowCount(const QModelIndex& prnt) const
 {
-    if (parent.column() > 0)
+    if (prnt.column() > 0)
     {
         return 0;
     }
 
-    if (!parent.isValid())
+    if (!prnt.isValid())
     {
         return d->manager->commands()->children().count();
     }
 
-    const GmicFilterNode* const item = static_cast<GmicFilterNode*>(parent.internalPointer());
+    const GmicFilterNode* const item = static_cast<GmicFilterNode*>(prnt.internalPointer());
 
     return item->children().count();
 }
 
-QModelIndex GmicFilterModel::index(int row, int column, const QModelIndex& parent) const
+QModelIndex GmicFilterModel::index(int row, int column, const QModelIndex& prnt) const
 {
     if (
         (row    <  0)                ||
         (column <  0)                ||
-        (row    >= rowCount(parent)) ||
-        (column >= columnCount(parent))
+        (row    >= rowCount(prnt))   ||
+        (column >= columnCount(prnt))
        )
     {
         return QModelIndex();
@@ -312,19 +312,19 @@ QModelIndex GmicFilterModel::index(int row, int column, const QModelIndex& paren
 
     // get the parent node
 
-    const GmicFilterNode* const parentNode = node(parent);
+    const GmicFilterNode* const parentNode = node(prnt);
 
     return createIndex(row, column, parentNode->children().at(row));
 }
 
-QModelIndex GmicFilterModel::parent(const QModelIndex& index) const
+QModelIndex GmicFilterModel::parent(const QModelIndex& ind) const
 {
-    if (!index.isValid())
+    if (!ind.isValid())
     {
         return QModelIndex();
     }
 
-    const GmicFilterNode* const itemNode = node(index);
+    const GmicFilterNode* const itemNode = node(ind);
     GmicFilterNode* const parentNode     = (itemNode ? itemNode->parent() : nullptr);
 
     if (!parentNode || (parentNode == d->manager->commands()))
@@ -342,14 +342,14 @@ QModelIndex GmicFilterModel::parent(const QModelIndex& index) const
     return createIndex(parentRow, 0, parentNode);
 }
 
-bool GmicFilterModel::hasChildren(const QModelIndex& parent) const
+bool GmicFilterModel::hasChildren(const QModelIndex& prnt) const
 {
-    if (!parent.isValid())
+    if (!prnt.isValid())
     {
         return true;
     }
 
-    const GmicFilterNode* const parentNode = node(parent);
+    const GmicFilterNode* const parentNode = node(prnt);
 
     return (
             (parentNode->type() == GmicFilterNode::Folder) ||
@@ -357,22 +357,22 @@ bool GmicFilterModel::hasChildren(const QModelIndex& parent) const
            );
 }
 
-Qt::ItemFlags GmicFilterModel::flags(const QModelIndex& index) const
+Qt::ItemFlags GmicFilterModel::flags(const QModelIndex& ind) const
 {
-    if (!index.isValid())
+    if (!ind.isValid())
     {
         return Qt::NoItemFlags;
     }
 
     Qt::ItemFlags flags                     = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    const GmicFilterNode* const commandNode = node(index);
+    const GmicFilterNode* const commandNode = node(ind);
 
     if (commandNode->type() != GmicFilterNode::RootFolder)
     {
         flags |= Qt::ItemIsDragEnabled;
     }
 
-    if (hasChildren(index))
+    if (hasChildren(ind))
     {
         flags |= Qt::ItemIsDropEnabled;
     }
@@ -420,22 +420,22 @@ QMimeData* GmicFilterModel::mimeData(const QModelIndexList& indexes) const
     return mimeData;
 }
 
-bool GmicFilterModel::dropMimeData(const QMimeData* data,
+bool GmicFilterModel::dropMimeData(const QMimeData* mdata,
                                    Qt::DropAction action,
                                    int row, int column,
-                                   const QModelIndex& parent)
+                                   const QModelIndex& prnt)
 {
     if (action == Qt::IgnoreAction)
     {
         return true;
     }
 
-    if (!data->hasFormat(QLatin1String("application/gmicfilters.xml")) || (column > 0))
+    if (!mdata->hasFormat(QLatin1String("application/gmicfilters.xml")) || (column > 0))
     {
         return false;
     }
 
-    QByteArray ba = data->data(QLatin1String("application/gmicfilters.xml"));
+    QByteArray ba = mdata->data(QLatin1String("application/gmicfilters.xml"));
     QDataStream stream(&ba, QIODevice::ReadOnly);
 
     if (stream.atEnd())
@@ -465,7 +465,7 @@ bool GmicFilterModel::dropMimeData(const QMimeData* data,
             GmicFilterNode* const commandNode = children.at(i);
             rootNode->remove(commandNode);
             row                               = qMax(0, row);
-            GmicFilterNode* const parentNode  = node(parent);
+            GmicFilterNode* const parentNode  = node(prnt);
             d->manager->addEntry(parentNode, commandNode, row);
             d->endMacro                       = true;
         }
@@ -476,26 +476,26 @@ bool GmicFilterModel::dropMimeData(const QMimeData* data,
     return true;
 }
 
-bool GmicFilterModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool GmicFilterModel::setData(const QModelIndex& ind, const QVariant& value, int role)
 {
-    if (!index.isValid())
+    if (!ind.isValid())
     {
         return false;
     }
 
-    GmicFilterNode* const item = node(index);
+    GmicFilterNode* const item = node(ind);
 
     switch (role)
     {
         case Qt::DisplayRole:
         {
-            if (index.column() == 0)
+            if (ind.column() == 0)
             {
                 d->manager->setTitle(item, value.toString());
                 break;
             }
 
-            if (index.column() == 1)
+            if (ind.column() == 1)
             {
                 d->manager->setComment(item, value.toString());
                 break;
@@ -519,9 +519,9 @@ bool GmicFilterModel::setData(const QModelIndex& index, const QVariant& value, i
     return true;
 }
 
-GmicFilterNode* GmicFilterModel::node(const QModelIndex& index) const
+GmicFilterNode* GmicFilterModel::node(const QModelIndex& ind) const
 {
-    GmicFilterNode* const itemNode = static_cast<GmicFilterNode*>(index.internalPointer());
+    GmicFilterNode* const itemNode = static_cast<GmicFilterNode*>(ind.internalPointer());
 
     if (!itemNode)
     {

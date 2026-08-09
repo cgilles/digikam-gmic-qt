@@ -41,13 +41,13 @@ public:
                                      const QString& command);
     ~GmicFilterChainViewItem()                         override;
 
-    void setCommand(const QString& command);
+    void setCommand(const QString& cmd);
     QString command()                            const;
 
-    void setTitle(const QString& title);
+    void setTitle(const QString& ttl);
     QString title()                              const;
 
-    void setIndex(int index);
+    void setIndex(int ind);
     int index()                                  const;
 
 private:

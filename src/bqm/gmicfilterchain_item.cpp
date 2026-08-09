@@ -37,9 +37,9 @@ GmicFilterChainViewItem::~GmicFilterChainViewItem()
     delete d;
 }
 
-void GmicFilterChainViewItem::setCommand(const QString& command)
+void GmicFilterChainViewItem::setCommand(const QString& cmd)
 {
-    d->command = command;
+    d->command = cmd;
     setText(GmicFilterChainView::Command, d->command);
 }
 
@@ -48,9 +48,9 @@ QString GmicFilterChainViewItem::command() const
     return d->command;
 }
 
-void GmicFilterChainViewItem::setTitle(const QString& title)
+void GmicFilterChainViewItem::setTitle(const QString& ttl)
 {
-    d->title = title;
+    d->title = ttl;
     setText(GmicFilterChainView::Title, d->title);
 }
 
@@ -59,9 +59,9 @@ QString GmicFilterChainViewItem::title() const
     return d->title;
 }
 
-void GmicFilterChainViewItem::setIndex(int index)
+void GmicFilterChainViewItem::setIndex(int ind)
 {
-    d->index = index;
+    d->index = ind;
     setText(GmicFilterChainView::Index, QString::fromLatin1("%1").arg(d->index + 1));
 }
 
