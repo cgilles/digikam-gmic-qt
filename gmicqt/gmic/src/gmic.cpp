@@ -1805,19 +1805,20 @@ inline char *_gmic_argument_text(const char *const argument, char *const argumen
 }
 #define gmic_argument_text_printed() _gmic_argument_text(argument,gmic_use_argument_text,is_verbose)
 #define gmic_argument_text() _gmic_argument_text(argument,gmic_use_argument_text,true)
-/*
+
 // Macro for having 'get' or 'non-get' versions of G'MIC commands.
 // Set 'optim_inplace' to true only for function implementations that act in-place.
-#if gmic_pixel_type==half
+//#if gmic_pixel_type==half
+#ifdef _gmic_not_defined                            // Temporary fix for Windows build (https://github.com/GreycLab/gmic/issues/210#issuecomment-5398680209)
 #define _gmic_apply(function,optim_inplace) \
   images[uind].get_##function.move_to(images)
-#else*/
+#else
 #define _gmic_apply(function,optim_inplace) \
   if (optim_inplace) \
     CImg<gmic_pixel_type>(images[uind],false).function.move_to(images); /* Surprisingly faster */ \
   else \
     images[uind].get_##function.move_to(images)
-//#endif
+#endif
 
 #define gmic_apply(function,optim_inplace) { \
     uind = selection[l]; \
