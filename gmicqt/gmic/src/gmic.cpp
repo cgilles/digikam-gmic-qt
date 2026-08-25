@@ -1808,8 +1808,7 @@ inline char *_gmic_argument_text(const char *const argument, char *const argumen
 
 // Macro for having 'get' or 'non-get' versions of G'MIC commands.
 // Set 'optim_inplace' to true only for function implementations that act in-place.
-//#if gmic_pixel_type==half
-#ifdef _gmic_not_defined                            // Temporary fix for Windows build (https://github.com/GreycLab/gmic/issues/210#issuecomment-5398680209)
+#ifdef gmic_pixel_type_is_half
 #define _gmic_apply(function,optim_inplace) \
   images[uind].get_##function.move_to(images)
 #else
