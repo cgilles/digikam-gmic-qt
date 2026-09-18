@@ -49,7 +49,7 @@ QString s_gmicQtPluginDetails(const QString& title)
     QImage img(QLatin1String(":resources/logos.png"));
     QByteArray byteArray;
     QBuffer    buffer(&byteArray);
-    img.save(&buffer, "PNG");
+    (void)img.save(&buffer, "PNG");
 
     QString logo = QString::fromLatin1("<p><img src=\"data:image/png;base64,%1\"></p>")
                    .arg(QString::fromLatin1(byteArray.toBase64().data()));

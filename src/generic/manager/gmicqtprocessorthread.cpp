@@ -227,14 +227,15 @@ void GmicQtProcessorThread::run()
                         QDateTime dt    = meta->getItemDateTime();
 
                         meta->load(outFilePath);
-                        meta->setIptc(iptc);
-                        meta->setXmp(xmp);
-                        meta->setXmpTagString("Xmp.tiff.Make",  make);
-                        meta->setXmpTagString("Xmp.tiff.Model", model);
-                        meta->setImageDateTime(dt);
-                        meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
-                        meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->settings->gmicCommand);
-                        meta->applyChanges(true);
+                        bool b = meta->setIptc(iptc);
+                        b     &= meta->setXmp(xmp);
+                        b     &= meta->setXmpTagString("Xmp.tiff.Make",  make);
+                        b     &= meta->setXmpTagString("Xmp.tiff.Model", model);
+                        b     &= meta->setImageDateTime(dt);
+                        b     &= meta->setXmpTagString("Xmp.digiKam.GmicInputFiles", filesList);
+                        b     &= meta->setXmpTagString("Xmp.digiKam.GmicCommand",    d->settings->gmicCommand);
+                        b     &= meta->applyChanges(true);
+                        qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GmicGenericTool: update XMP metadata done:" << b;
 
                         Q_EMIT signalUpdateHostApp(QUrl::fromLocalFile(outFilePath));
                     }
