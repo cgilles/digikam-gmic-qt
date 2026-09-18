@@ -37,7 +37,7 @@ GmicFilterNode::~GmicFilterNode()
         d->parent->remove(this);
     }
 
-    while (d->children.size())
+    while (!d->children.isEmpty())
     {
         delete d->children.takeFirst();
     }

@@ -31,10 +31,6 @@ no-qstring-insensitive-allocation,\
 no-function-args-by-value,\
 no-fully-qualified-moc-types,\
 no-unexpected-flag-enumerator-value,\
-qt6-qhash-signature,\
-qt6-deprecated-api-fixes,\
-qt6-fwd-fixes,\
-qt6-header-fixes,\
 no-module-include,\
 signal-with-return-value,\
 raw-environment-function,\
@@ -42,5 +38,15 @@ qt-keywords,\
 missing-qobject-macro,\
 range-loop-detach,\
 range-loop-reference,\
-use-static-qregularexpression\
+use-static-qregularexpression,\
+container-inside-loop,\
+isempty-vs-count,\
+qstring-ref,\
+raw-environment-function,\
+compare-member-check,\
+sanitize-inline-keyword,\
+unexpected-flag-enumerator-value,\
+unused-result-check,\
+use-arrow-operator-instead-of-data,\
+used-qunused-variable\
 "
