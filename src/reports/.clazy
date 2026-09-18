@@ -9,6 +9,7 @@
 # --- Directories to exclude from Clazy static analysis.
 
 IGNORE_DIRS=".*include.*|"
+IGNORE_DIRS+=".moc_*.*|"
 IGNORE_DIRS+=".*/opt/qt6/include/.*|"
 IGNORE_DIRS+=".*/usr/include/.*|"
 IGNORE_DIRS+=".*gmicqt/src/.*|"
