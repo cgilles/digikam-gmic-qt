@@ -207,12 +207,13 @@ void GmicQtProcessorThread::run()
 
                             if (meta->getGPSInfo(alt, lat, lng))
                             {
+                                bool b = meta->load(outFilePath);
+                                b     &= meta->setGPSInfo(alt, lat, lng);
+                                b     &= meta->applyChanges(true);
+
                                 qCDebug(DIGIKAM_DPLUGIN_GENERIC_LOG) << "GPS info found from"
                                                                      << inpath << "and saved in"
-                                                                     << outFilePath;
-                                meta->load(outFilePath);
-                                meta->setGPSInfo(alt, lat, lng);
-                                meta->applyChanges(true);
+                                                                     << outFilePath << ":" << b;
                                 break;
                             }
                         }
