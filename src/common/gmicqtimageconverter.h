@@ -55,16 +55,16 @@ private:
     /**
      * @brief Helper method to bound float value from a CImg pixel to DImg unsigned char pixel for 8 bits color depth.
      */
-    static unsigned char  float2ucharBounded(const float& in);
+    inline static unsigned char  float2ucharBounded(const float& in);
 
     /**
      * @brief Helper method to bound float value from a CImg pixel to DImg unsigned short pixel for 16 bits color depth.
      */
-    static unsigned short float2ushortBounded(const float& in);
+    inline static unsigned short float2ushortBounded(const float& in);
 
 private:
 
-    // Disable
+    /// @note Disable
     GMicQtImageConverter()  = delete;
     ~GMicQtImageConverter() = delete;
 };

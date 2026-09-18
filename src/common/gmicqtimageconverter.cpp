@@ -21,7 +21,7 @@
 namespace DigikamGmicQtPluginCommon
 {
 
-inline unsigned char GMicQtImageConverter::float2ucharBounded(const float& in)
+unsigned char GMicQtImageConverter::float2ucharBounded(const float& in)
 {
     return (
             (in < 0.0f) ? 0
@@ -30,7 +30,7 @@ inline unsigned char GMicQtImageConverter::float2ucharBounded(const float& in)
            );
 }
 
-inline unsigned short GMicQtImageConverter::float2ushortBounded(const float& in)
+unsigned short GMicQtImageConverter::float2ushortBounded(const float& in)
 {
     return (
             (in < 0.0f) ? 0
