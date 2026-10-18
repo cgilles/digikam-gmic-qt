@@ -2,7 +2,7 @@
 
 # SPDX-FileCopyrightText: 2013-2026 by Gilles Caulier, <caulier dot gilles at gmail dot com>
 #
-# Run CodeSpell static analyzer on whole source code.
+# Run CodeSpell static analyzer on whole digiKam source code.
 # https://github.com/codespell-project/codespell
 #
 # To install last version: pipx install codespell
@@ -18,7 +18,7 @@
 . ./common.sh
 
 # Analyzer configuration.
-. .codespell
+. ../../.codespell
 
 StartScript
 checksCPUCores
@@ -28,7 +28,7 @@ if ! which codespell ; then
     echo "CodeSpell Static analyzer is not available."
     echo "Please install CodeSpell from https://github.com/codespell-project/codespell"
     echo "Aborted..."
-    exit -1
+    exit 1
 
 else
 
@@ -41,7 +41,7 @@ REPORT_DIR="report.codespell"
 
 # Get active git branches to create report description string
 
-TITLE="digiKam-$(parseGitBranch)$(parseGitHash)"
+TITLE="Gmic-Qt-$(parseGitBranch)$(parseGitHash)"
 echo "CodeSpell Static Analyzer task name: $TITLE"
 
 rm -fr $ORIG_WD/$REPORT_DIR
@@ -49,11 +49,29 @@ mkdir -p "$ORIG_WD/$REPORT_DIR"
 
 CODESPELL_VERSION=$(codespell --version)
 
+# Source code root dir (resolved as absolu path)
+
+TOP_DIR="$(realpath ../)"
+
 # Print the skipped directories taken from the config file.
 
-echo "CodeSpell ignore pattern: $CODESPELL_IGNORE_PATTERN"
-echo "CodeSpell ignore words  : $CODESPELL_IGNORE_WORDS"
-echo "CodeSpell version       : $CODESPELL_VERSION"
+echo "CodeSpell exclude paths   : $CODESPELL_EXCLUDE_PATHS"
+echo "CodeSpell exclude files   : $CODESPELL_EXCLUDE_FILES"
+echo "CodeSpell ignore words    : $CODESPELL_IGNORE_WORDS"
+echo "CodeSpell version         : $CODESPELL_VERSION"
+
+FILES=()
+mapfile -t FILES < <(ListFiles "$TOP_DIR" "$CODESPELL_EXCLUDE_PATHS" "$CODESPELL_EXCLUDE_FILES")
+
+if [[ ${#FILES[@]} -eq 0 ]]; then
+    echo "No files to scan. Aborted..."
+    exit 1
+fi
+
+echo "CodeSpell files to process: "${#FILES[@]}""
+# Uncomment to debug
+#FILES_LIST="${FILES[*]}"
+#echo "$FILES_LIST"
 
 # Generate TXT report
 
@@ -61,9 +79,8 @@ codespell \
          --count \
          -q 0 \
          -C 1 \
-         -S "$CODESPELL_IGNORE_PATTERN" \
-         -L $CODESPELL_IGNORE_WORDS \
-         ../../ \
+         -L "$CODESPELL_IGNORE_WORDS" \
+        "${FILES[@]}" \
          1> ./codespell-trace.txt
 
 # NOTE: codespell return value is not documented and not suitable.
@@ -88,15 +105,32 @@ if [[ -f ./codespell-trace.txt ]] ; then
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>CodeSpell Report</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1 { color: #333; }
+                :root {
+                    --bg: #1e1e1e;
+                    --fg: #d4d4d4;
+                    --border: #3c3c3c;
+                    --th-bg: #2d2d2d;
+                    --row-even: #252525;
+                }
+                @media (prefers-color-scheme: light) {
+                    :root {
+                        --bg: #ffffff;
+                        --fg: #333333;
+                        --border: #dddddd;
+                        --th-bg: #f2f2f2;
+                        --row-even: #f9f9f9;
+                    }
+                }
+                body { font-family: Arial, sans-serif; margin: 20px; background-color: var(--bg); color: var(--fg); }
+                h1 { color: var(--fg); }
                 table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f2f2f2; }
-                tr:nth-child(even) { background-color: #f9f9f9; }
-                .error { color: red; font-weight: bold; }
-                .file { color: blue; }
-                .line { color: green; }
+                th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
+                th { background-color: var(--th-bg); }
+                tr:nth-child(even) { background-color: var(--row-even); }
+                .error { color: #ff6b6b; font-weight: bold; }
+                .file { color: #6cb6ff; }
+                .line { color: #7fd17f; }
+                a { color: #6cb6ff; }
             </style>
         </head>
         <body>
@@ -133,9 +167,10 @@ while IFS= read -r line ; do
         error=$(echo "$line" | awk -F'==' '{print $1}' | awk '{print $NF}')
         suggestion=$(echo "$line" | awk -F'==' '{print $2}' | awk '{print $2}')
 
-        # Cleanup file path to remove ../../
+        # Cleanup file path to make it relative to the repository root
 
-        clean_file=$(echo "$file" | sed 's|^\.\./\.\./||')
+        clean_file="${file#$TOP_DIR/}"
+        clean_file="${clean_file#../../}"
 
         # ESC special char for the HTML code
 
