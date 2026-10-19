@@ -253,7 +253,7 @@ def writeList(f, num_used_checks, names_of_used, args, external_link, external_n
     f.write("<div id=\"container\" style=\"margin-left: 2%; margin-right: 2%;\">\n")
     f.write("\t<div id=\"header\" style=\"height: 55px; display: flex; justify-content: left; position: relative;\">\n")
     f.write("\t\t<h3 style=\"text-align: center; color: #111; font-family: 'Helvetica Neue', sans-serif; font-weight: bold; \
-    letter-spacing: 0.5px; line-height: 1;\">digiKam Clazy Checks - %s</h3>\n" % (now.strftime("%m/%d/%Y %H:%M:%S")))
+    letter-spacing: 0.5px; line-height: 1;\">Gmic-Qt Clazy Checks - %s</h3>\n" % (now.strftime("%m/%d/%Y %H:%M:%S")))
     f.write("\t\t<div class=\"btn-group\" role=\"group\" style=\"position: absolute; right: 0;\">\n")
     f.write("\t\t</div>\n\t</div><br>\n")
     f.write("\t<ul id=\"list\" class=\"list-group\" align=\"left\" style=\"display: block; width: 25%; height: 0; margin-bottom: 0;\">\n")
