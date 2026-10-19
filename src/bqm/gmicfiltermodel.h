@@ -66,7 +66,7 @@ public:
     QStringList mimeTypes()                                             const override;
     bool hasChildren(const QModelIndex& prnt = QModelIndex())           const override;
     GmicFilterNode* node(const QModelIndex& ind)                        const;
-    QModelIndex index(GmicFilterNode* nd)                               const;
+    QModelIndex index(GmicFilterNode* node)                             const;
 
     bool dropMimeData(const QMimeData* data, Qt::DropAction action,
                       int row, int column, const QModelIndex& prnt)           override;

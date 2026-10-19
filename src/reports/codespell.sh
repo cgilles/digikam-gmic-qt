@@ -18,7 +18,7 @@
 . ./common.sh
 
 # Analyzer configuration.
-. ../../.codespell
+. .codespell
 
 StartScript
 checksCPUCores
@@ -51,7 +51,7 @@ CODESPELL_VERSION=$(codespell --version)
 
 # Source code root dir (resolved as absolu path)
 
-TOP_DIR="$(realpath ../)"
+TOP_DIR="$(realpath ../../)"
 
 # Print the skipped directories taken from the config file.
 
@@ -180,7 +180,7 @@ while IFS= read -r line ; do
 
         # Generate the URL for the Git repository
 
-        git_url="https://invent.kde.org/graphics/digikam/-/tree/master/$clean_file?ref_type=heads#L$line_num"
+        git_url="https://github.com/cgilles/digikam-gmic-qt/blob/master/$clean_file?ref_type=heads#L$line_num"
 
         # Append a line to the spreadsheet
 

@@ -76,16 +76,16 @@ GmicFilterManager* GmicFilterModel::manager() const
     return d->manager;
 }
 
-QModelIndex GmicFilterModel::index(GmicFilterNode* nd) const
+QModelIndex GmicFilterModel::index(GmicFilterNode* node) const
 {
-    const GmicFilterNode* const item = nd->parent();
+    const GmicFilterNode* const item = node->parent();
 
     if (!item)
     {
         return QModelIndex();
     }
 
-    return createIndex(item->children().indexOf(nd), 0, nd);
+    return createIndex(item->children().indexOf(node), 0, node);
 }
 
 void GmicFilterModel::slotEntryAdded(GmicFilterNode* item)

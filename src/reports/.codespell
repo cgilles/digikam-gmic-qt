@@ -15,8 +15,8 @@
 
 CODESPELL_EXCLUDE_PATHS+="*/.git/*,"
 CODESPELL_EXCLUDE_PATHS+="*/gmicqt/*,"
-CODESPELL_EXCLUDE_PATHS+="*/src/patches/*,"
-CODESPELL_EXCLUDE_PATHS+="*/src/reports/report.*,"
+CODESPELL_EXCLUDE_PATHS+="*/patches/*,"
+CODESPELL_EXCLUDE_PATHS+="*/reports/report.*,"
 CODESPELL_EXCLUDE_PATHS+="*/build*,"
 CODESPELL_EXCLUDE_PATHS+="*/LICENSES/*,"
 # Remove last character
@@ -25,6 +25,7 @@ CODESPELL_EXCLUDE_PATHS=${CODESPELL_EXCLUDE_PATHS::-1}
 CODESPELL_EXCLUDE_FILES+="*.html,"
 CODESPELL_EXCLUDE_FILES+="*.svg,"
 CODESPELL_EXCLUDE_FILES+="*.webp,"
+CODESPELL_EXCLUDE_FILES+="*.patch,"
 CODESPELL_EXCLUDE_FILES+="*-trace.txt,"
 # Remove last character
 CODESPELL_EXCLUDE_FILES=${CODESPELL_EXCLUDE_FILES::-1}
@@ -32,4 +33,4 @@ CODESPELL_EXCLUDE_FILES=${CODESPELL_EXCLUDE_FILES::-1}
 # --- Defines to use with static analysis.
 
 # NOTE: words must be lower-case
-CODESPELL_IGNORE_WORDS="afile,ahd,asign,caf,childs,claus,cyphertext,defaut,destroi,fle,fo,foto,hist,indx,indexin,inout,ist,iten,lod,mata,mye,nam,nd,ned,oly,optio,parm,previousy,requestor,sav,shft,siz,smal,spred,tage,tempdate,tesselate,thet,toolsbox,tru,visiblestage,visibles,uptodate,wheight,manuel,readding,bloaded,wont,alllocations,abitrate,goup,alledges,allright,readded,pixelx,targetin,anwer,tung,fillin,lamda,optin,filessystem"
+CODESPELL_IGNORE_WORDS="afile,ahd,asign,caf,childs,claus,cyphertext,defaut,destroi,fle,fo,foto,hist,indx,indexin,inout,ist,iten,lod,mata,mye,nam,nd,ned,oly,optio,parm,previousy,requestor,sav,shft,siz,smal,spred,tage,tempdate,tesselate,thet,toolsbox,tru,visiblestage,visibles,uptodate,wheight,manuel,readding,bloaded,wont,alllocations,abitrate,goup,alledges,allright,readded,pixelx,targetin,anwer,tung,fillin,lamda,optin,filessystem,fave"
